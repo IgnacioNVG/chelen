@@ -8,267 +8,236 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 // 1. LLAMADA DINÁMICA AL BLOG
 import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog')).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
+// Definimos las variables para el diseño escalable
 const featuredPost = posts[0];
-const secondaryPosts = posts.slice(1, 3);
+const otherPosts = posts.slice(1); // Esto evita el ReferenceError
 
 // 2. LLAMADA DINÁMICA A LAS GRÁFICAS
 import { Image } from 'astro:assets';
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/*.{webp,png,jpg,jpeg}');
 const graphics = await Promise.all(
-    Object.keys(graphicFiles).map(async (path) => {
-        const img = await graphicFiles[path]();
-        const name = path.split('/').pop()?.split('.')[0] || 'Archivo Visual';
-        return { src: img.default, name: name.replace('-', ' ') };
-    })
+	Object.keys(graphicFiles).map(async (path) => {
+		const img = await graphicFiles[path]();
+		const name = path.split('/').pop()?.split('.')[0] || 'Archivo Visual';
+		return { src: img.default, name: name.replace('-', ' ') };
+	})
 );
 const featuredGraphics = graphics.slice(0, 2);
 ---
 
 <!doctype html>
 <html lang="es">
-    <head>
-        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-        <style>
-            main {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 2em 1em;
-            }
-            
-            .section-header {
-                border-bottom: 4px solid #111;
-                margin-bottom: 2rem;
-                padding-bottom: 0.5rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-end;
-            }
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2em 1em;
+			}
+			
+			.section-header {
+				border-bottom: 4px solid #111;
+				margin-bottom: 2rem;
+				padding-bottom: 0.5rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+			}
 
-            .section-header h2 {
-                font-size: 2.5rem;
-                text-transform: uppercase;
-                margin: 0;
-                letter-spacing: -0.02em;
-                font-family: 'Sifonn', sans-serif;
-            }
+			.section-header h2 {
+				font-size: 2.5rem;
+				text-transform: uppercase;
+				margin: 0;
+				letter-spacing: -0.02em;
+				font-family: 'Sifonn', sans-serif;
+			}
 
-            .ver-mas {
-                color: #111;
-                font-weight: bold;
-                text-decoration: none;
-                text-transform: uppercase;
-                font-size: 0.9rem;
-            }
+			.ver-mas {
+				color: #111;
+				font-weight: bold;
+				text-decoration: none;
+				text-transform: uppercase;
+				font-size: 0.9rem;
+			}
 
-            /* --- ESTILO DESTACADO (Sin Grayscale) --- */
-            .featured-content {
-                display: flex;
-                gap: 3rem;
-                align-items: center;
-            }
+			/* --- GRID ORIGINAL --- */
+			.columns-grid {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 2px;
+				background-color: #111;
+				border: 2px solid #111;
+				margin-bottom: 6rem;
+			}
 
-            .featured-image-container {
-                flex-shrink: 0;
-            }
+			.column-card {
+				background-color: #fff;
+				padding: 3rem 2rem;
+				grid-column: span 6;
+				display: flex;
+				flex-direction: column;
+				transition: background-color 0.2s ease;
+				text-decoration: none;
+				color: inherit;
+			}
 
-            .featured-image-container img {
-                width: 320px;
-                height: 320px;
-                object-fit: cover;
-                border: 4px solid #111;
-                display: block;
-                /* Eliminado filter: grayscale */
-            }
+			.column-card.featured {
+				grid-column: span 12;
+			}
 
-            .featured-text {
-                flex-grow: 1;
-            }
+			.column-card:hover {
+				background-color: #f4f4f4;
+			}
 
-            /* --- GRID GENERAL --- */
-            .columns-grid {
-                display: grid;
-                grid-template-columns: repeat(12, 1fr);
-                gap: 2px;
-                background-color: #111;
-                border: 2px solid #111;
-                margin-bottom: 6rem;
-            }
+			.column-card h3 {
+				font-size: 2.5rem;
+				text-transform: uppercase;
+				line-height: 1;
+				margin: 1rem 0;
+				letter-spacing: -0.04em;
+			}
+			
+			.column-card.featured h3 {
+				font-size: 3.5rem;
+			}
 
-            .column-card {
-                background-color: #fff;
-                padding: 3rem 2rem;
-                grid-column: span 6;
-                display: flex;
-                flex-direction: column;
-                transition: background-color 0.2s ease;
-            }
+			.featured-content {
+				display: flex;
+				gap: 3rem;
+				align-items: center;
+			}
 
-            .column-card.featured {
-                grid-column: span 12;
-            }
+			.featured-image-container img {
+				width: 320px;
+				height: 320px;
+				object-fit: cover;
+				border: 4px solid #111;
+				display: block;
+			}
 
-            .column-card:hover {
-                background-color: #f4f4f4;
-            }
+			.label {
+				font-weight: bold;
+				text-transform: uppercase;
+				font-size: 0.85rem;
+				background: #111;
+				color: #fff;
+				padding: 0.2rem 0.6rem;
+				display: inline-block;
+				margin-bottom: 1rem;
+			}
 
-            .column-card a {
-                text-decoration: none;
-                color: inherit;
-            }
+			.meta-date {
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				color: #666;
+				border-top: 1px solid #ccc;
+				padding-top: 1rem;
+				margin-top: auto;
+			}
 
-            .column-card h3 {
-                font-size: 2.5rem;
-                text-transform: uppercase;
-                line-height: 1;
-                margin: 1rem 0;
-                letter-spacing: -0.04em;
-            }
-            
-            .column-card.featured h3 {
-                font-size: 3.5rem;
-            }
+			/* --- GRÁFICAS ORIGINAL --- */
+			.graphics-preview {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2.5rem;
+				margin-bottom: 5rem;
+			}
 
-            .label {
-                font-weight: bold;
-                text-transform: uppercase;
-                font-size: 0.85rem;
-                background: #111;
-                color: #fff;
-                padding: 0.2rem 0.6rem;
-                display: inline-block;
-                margin-bottom: 1rem;
-            }
+			.graphic-card {
+				border: 1px solid #111;
+				padding: 1.5rem;
+				background: #fff;
+				text-decoration: none;
+				color: inherit;
+			}
 
-            .meta-date {
-                font-size: 0.9rem;
-                text-transform: uppercase;
-                color: #666;
-                border-top: 1px solid #ccc;
-                padding-top: 1rem;
-                margin-top: auto;
-            }
+			.graphic-card img {
+				width: 100%;
+				height: auto;
+				aspect-ratio: 4 / 5;
+				object-fit: cover;
+				border: 1px solid #111;
+				margin-bottom: 1.5rem;
+				display: block;
+			}
 
-            /* --- GRÁFICAS (Sin Grayscale) --- */
-            .graphics-preview {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 2.5rem;
-                margin-bottom: 5rem;
-            }
+			@media (max-width: 768px) {
+				.featured-content { flex-direction: column; align-items: flex-start; }
+				.column-card, .column-card.featured { grid-column: span 12; }
+				.graphics-preview { grid-template-columns: 1fr; }
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro-box" style="margin-bottom: 3rem;">
+				<p>
+					Chelén es una publicación dedicada al análisis de la teoría social materialista y la marginalidad. <a href="/about">Acerca de</a>.
+				</p>
+			</section>
 
-            .graphic-card {
-                border: 1px solid #111;
-                padding: 1.5rem;
-                background: #fff;
-            }
+			<div class="section-header">
+				<h2>Columnas Recientes</h2>
+				<a href="/blog" class="ver-mas">Archivo Textual →</a>
+			</div>
+			
+			<div class="columns-grid">
+				{/* 1. EL DESTACADO (Siempre el más reciente) */}
+				{featuredPost && (
+					<a href={`/blog/${featuredPost.id}/`} class="column-card featured">
+						<div class="featured-content">
+							{featuredPost.data.heroImage && (
+								<div class="featured-image-container">
+									<img src={featuredPost.data.heroImage} alt="" />
+								</div>
+							)}
+							<div class="featured-text">
+								<span class="label">Última Publicación</span>
+								<h3>{featuredPost.data.title}</h3>
+								<p>{featuredPost.data.description}</p>
+								<div class="meta-date">
+									<FormattedDate date={featuredPost.data.pubDate} />
+								</div>
+							</div>
+						</div>
+					</a>
+				)}
 
-            .graphic-card img {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 4 / 5;
-                object-fit: cover;
-                border: 1px solid #111;
-                margin-bottom: 1.5rem;
-                display: block;
-                /* Eliminado filter: grayscale */
-            }
+				{/* 2. EL RESTO (Se organizan en la rejilla original) */}
+				{otherPosts.map((post) => (
+					<a href={`/blog/${post.id}/`} class="column-card">
+						<span class="label">Lectura</span>
+						<h3>{post.data.title}</h3>
+						<p>{post.data.description}</p>
+						<div class="meta-date">
+							<FormattedDate date={post.data.pubDate} />
+						</div>
+					</a>
+				))}
+			</div>
 
-            /* --- RESPONSIVE --- */
-            @media (max-width: 768px) {
-                .featured-content {
-                    flex-direction: column;
-                    gap: 1.5rem;
-                    align-items: flex-start;
-                }
-                .featured-image-container img {
-                    width: 100%;
-                    height: 250px;
-                }
-                .column-card.featured h3 {
-                    font-size: 2.2rem;
-                }
-                .column-card {
-                    grid-column: span 12;
-                }
-                .graphics-preview {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <Header />
-        <main>
-            <section class="intro-box">
-                <p>
-                    Chelén es una publicación dedicada al análisis de la teoría social materialista y la marginalidad. <a href="/about">Acerca de</a>.
-                </p>
-            </section>
+			<div class="section-header">
+				<h2>Gráficas Destacadas</h2>
+				<a href="/grafica" class="ver-mas">Ver Archivo Gráfico →</a>
+			</div>
 
-            <div class="section-header">
-                <h2>Columnas Recientes</h2>
-                <a href="/blog" class="ver-mas">Archivo Textual →</a>
-            </div>
-            
-            <div class="columns-grid">
-                {featuredPost && (
-                    <article class="column-card featured">
-                        <a href={`/blog/${featuredPost.id}/`}>
-                            <div class="featured-content">
-                                {featuredPost.data.heroImage && (
-                                    <div class="featured-image-container">
-                                        <img src={featuredPost.data.heroImage} alt={featuredPost.data.title} />
-                                    </div>
-                                )}
-                                <div class="featured-text">
-                                    <span class="label">Última Publicación</span>
-                                    <h3>{featuredPost.data.title}</h3>
-                                    <p>{featuredPost.data.description}</p>
-                                    <div class="meta-date">
-                                        <FormattedDate date={featuredPost.data.pubDate} />
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </article>
-                )}
-
-                {secondaryPosts.map((post) => (
-                    <article class="column-card">
-                        <a href={`/blog/${post.id}/`}>
-                            <span class="label">Lectura</span>
-                            <h3>{post.data.title}</h3>
-                            <p>{post.data.description}</p>
-                            <div class="meta-date">
-                                <FormattedDate date={post.data.pubDate} />
-                            </div>
-                        </a>
-                    </article>
-                ))}
-            </div>
-
-            <div class="section-header">
-                <h2>Gráficas Destacadas</h2>
-                <a href="/grafica" class="ver-mas">Ver Archivo Gráfico →</a>
-            </div>
-
-            <div class="graphics-preview">
-                {featuredGraphics.map((graphic, index) => (
-                    <div class="graphic-card">
-                        <a href="/grafica">
-                            <Image src={graphic.src} alt={graphic.name} width={800} />
-                            <div class="graphic-info">
-                                <span class="label">Composición 0{index + 1}</span>
-                                <h4>{graphic.name.toUpperCase()}</h4>
-                            </div>
-                        </a>
-                    </div>
-                ))}
-            </div>
-        </main>
-        <Footer />
-    </body>
+			<div class="graphics-preview">
+				{featuredGraphics.map((graphic, index) => (
+					<a href="/grafica" class="graphic-card">
+						<Image src={graphic.src} alt={graphic.name} width={800} />
+						<div class="graphic-info">
+							<span class="label">Composición 0{index + 1}</span>
+							<h4 style="margin:0; text-transform: uppercase;">{graphic.name}</h4>
+						</div>
+					</a>
+				))}
+			</div>
+		</main>
+		<Footer />
+	</body>
 </html>

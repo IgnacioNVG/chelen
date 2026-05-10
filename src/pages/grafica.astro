@@ -1,6 +1,9 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import { Image } from 'astro:assets';
+import { SITE_TITLE } from '../consts';
 
 // Imports de imágenes
 import img1 from '../assets/grafica-01.webp';
@@ -12,124 +15,155 @@ import img6 from '../assets/grafica-06.webp';
 import img7 from '../assets/grafica-07.webp';
 
 const graphics = [img1, img2, img3, img4, img5, img6, img7];
+const description = "Registro Visual / Revista Chelén";
 ---
 
-<Layout
-	title="Material Gráfico"
-	description="Registro Visual / Revista Chelén"
-	pubDate={new Date('2026-05-10')}
->
-	<style>
-		/* RETÍCULA MASONRY BRUTALISTA */
-		.masonry-grid {
-			column-width: 300px;
-			column-gap: 2rem;
-			width: 100%;
-			margin-top: 2rem;
-		}
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={description} />
+		<style>
+			main {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2em 1em;
+			}
 
-		.grid-item {
-			position: relative;
-			background-color: #000;
-			cursor: zoom-in;
-			break-inside: avoid;
-			margin-bottom: 2rem;
-			border: 3px solid #000;
-			box-shadow: 8px 8px 0px 0px #000;
-			transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		}
+			.page-header {
+				border-bottom: 4px solid #111;
+				margin-bottom: 2rem;
+				padding-bottom: 1rem;
+			}
 
-		.grid-item img {
-			width: 100%;
-			height: auto;
-			display: block;
-			filter: saturate(1.1);
-		}
+			.page-header h1 {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 3.5rem;
+				text-transform: uppercase;
+				margin: 0;
+				letter-spacing: -0.02em;
+				line-height: 1;
+			}
 
-		.grid-item:hover {
-			transform: translate(-4px, -4px);
-			box-shadow: 12px 12px 0px 0px #ff0000; /* Acento rojo en hover */
-		}
+			/* RETÍCULA MASONRY BRUTALISTA */
+			.masonry-grid {
+				column-width: 300px;
+				column-gap: 2rem;
+				width: 100%;
+			}
 
-		.caption {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			background: #000;
-			padding: 0.3rem 0.8rem;
-			font-family: monospace;
-			font-size: 0.75rem;
-			color: #fff;
-			opacity: 0;
-			transform: translateX(-10px);
-			transition: all 0.3s ease;
-		}
+			.grid-item {
+				position: relative;
+				background-color: #000;
+				cursor: zoom-in;
+				break-inside: avoid;
+				margin-bottom: 2rem;
+				border: 3px solid #000;
+				box-shadow: 8px 8px 0px 0px #000;
+				transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			}
 
-		.grid-item:hover .caption {
-			opacity: 1;
-			transform: translateX(0);
-		}
+			.grid-item img {
+				width: 100%;
+				height: auto;
+				display: block;
+				filter: saturate(1.1);
+			}
 
-		/* LIGHTBOX */
-		.lightbox {
-			display: none;
-			position: fixed;
-			z-index: 9999;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.95);
-			justify-content: center;
-			align-items: center;
-			padding: 2rem;
-		}
+			.grid-item:hover {
+				transform: translate(-4px, -4px);
+				box-shadow: 12px 12px 0px 0px #ff0000;
+			}
 
-		.lightbox.active { display: flex; }
-		.lightbox img { 
-			max-width: 90%; 
-			max-height: 90%; 
-			border: 4px solid #fff; 
-			box-shadow: 15px 15px 0px #ff0000;
-		}
+			.caption {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				background: #000;
+				padding: 0.3rem 0.8rem;
+				font-family: monospace;
+				font-size: 0.75rem;
+				color: #fff;
+				opacity: 0;
+				transform: translateX(-10px);
+				transition: all 0.3s ease;
+			}
 
-		@media (max-width: 720px) {
-			.masonry-grid { column-width: 100%; }
-		}
-	</style>
+			.grid-item:hover .caption {
+				opacity: 1;
+				transform: translateX(0);
+			}
 
-	<section class="masonry-grid">
-		{graphics.map((img, index) => (
-			<div class="grid-item">
-				<Image src={img} alt={`Diseño Editorial ${index + 1}`} />
-				<div class="caption">ID_CHE_{index + 1}</div>
+			/* LIGHTBOX */
+			.lightbox {
+				display: none;
+				position: fixed;
+				z-index: 9999;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.95);
+				justify-content: center;
+				align-items: center;
+				padding: 2rem;
+			}
+
+			.lightbox.active { display: flex; }
+			.lightbox img { 
+				max-width: 90%; 
+				max-height: 90%; 
+				border: 4px solid #fff; 
+				box-shadow: 15px 15px 0px #ff0000;
+			}
+
+			@media (max-width: 720px) {
+				.masonry-grid { column-width: 100%; }
+				.page-header h1 { font-size: 2.5rem; }
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<header class="page-header">
+				<h1>Material Gráfico</h1>
+			</header>
+
+			<section class="masonry-grid">
+				{graphics.map((img, index) => (
+					<div class="grid-item">
+						<Image src={img} alt={`Diseño Editorial ${index + 1}`} />
+						<div class="caption">ID_CHE_{index + 1}</div>
+					</div>
+				))}
+			</section>
+
+			<div id="lightbox" class="lightbox">
+				<img id="lightbox-img" src="" alt="Gráfica ampliada" />
 			</div>
-		))}
-	</section>
+		</main>
+		<Footer />
 
-	<div id="lightbox" class="lightbox">
-		<img id="lightbox-img" src="" alt="Gráfica ampliada" />
-	</div>
+		<script>
+			const gridItems = document.querySelectorAll('.grid-item');
+			const lightbox = document.getElementById('lightbox');
+			const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
 
-	<script>
-		const gridItems = document.querySelectorAll('.grid-item');
-		const lightbox = document.getElementById('lightbox');
-		const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-
-		gridItems.forEach(item => {
-			item.addEventListener('click', () => {
-				const img = item.querySelector('img');
-				if (img && lightbox && lightboxImg) {
-					lightboxImg.src = img.src;
-					lightbox.classList.add('active');
-					document.body.style.overflow = 'hidden';
-				}
+			gridItems.forEach(item => {
+				item.addEventListener('click', () => {
+					const img = item.querySelector('img');
+					if (img && lightbox && lightboxImg) {
+						lightboxImg.src = (img as HTMLImageElement).src;
+						lightbox.classList.add('active');
+						document.body.style.overflow = 'hidden';
+					}
+				});
 			});
-		});
 
-		lightbox?.addEventListener('click', () => {
-			lightbox.classList.remove('active');
-			document.body.style.overflow = '';
-		});
-	</script>
-</Layout>
+			lightbox?.addEventListener('click', () => {
+				lightbox.classList.remove('active');
+				document.body.style.overflow = '';
+			});
+		</script>
+	</body>
+</html>
