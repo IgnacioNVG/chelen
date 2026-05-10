@@ -5,17 +5,20 @@ import { SITE_TITLE } from '../consts';
 
 <header>
     <nav>
-        <div class="logo">
-            <a href="/">
+        <div class="logo nav-item">
+            <a href="/" class="logo-link">
                 <img src="/favicon.svg" alt="Logo Chelén" width="24" height="24" />
                 <span class="sifonn">{SITE_TITLE}</span>
             </a>
         </div>
 
-        <div class="internal-links">
-            <HeaderLink href="/grafica">Grafica</HeaderLink>
-            <HeaderLink href="/blog">Blog</HeaderLink>
-            <HeaderLink href="/about">Nosotros</HeaderLink>
+        <div class="internal-links-container">
+            <div class="internal-links">
+                <HeaderLink href="/grafica" class="nav-item">Grafica</HeaderLink>
+                <HeaderLink href="/blog" class="nav-item">Blog</HeaderLink>
+                <HeaderLink href="/about" class="nav-item">Nosotros</HeaderLink>
+            </div>
+            <div class="nav-indicator"></div>
         </div>
 
         <div class="contact-links">
@@ -34,7 +37,7 @@ import { SITE_TITLE } from '../consts';
         margin: 0;
         padding: 0 2rem;
         background: #E5E5E5;
-        border-bottom: 2px solid #ff0000;
+        border-bottom: 2px solid #000;
     }
 
     nav {
@@ -44,6 +47,7 @@ import { SITE_TITLE } from '../consts';
         min-height: 70px;
         max-width: 1400px;
         margin: 0 auto;
+        position: relative; /* Importante para el cálculo del indicador */
     }
 
     .logo a {
@@ -52,6 +56,7 @@ import { SITE_TITLE } from '../consts';
         gap: 10px;
         text-decoration: none;
         color: #000;
+        padding: 0.5rem 0;
     }
 
     .sifonn {
@@ -59,6 +64,11 @@ import { SITE_TITLE } from '../consts';
         font-size: 1.8rem;
         text-transform: uppercase;
         line-height: 1;
+    }
+
+    .internal-links-container {
+        display: flex;
+        align-items: center;
     }
 
     .internal-links {
@@ -74,61 +84,73 @@ import { SITE_TITLE } from '../consts';
         font-family: monospace;
         font-weight: bold;
         font-size: 0.9rem;
-        border-bottom: 3px solid transparent;
+        transition: color 0.3s ease;
     }
 
-    header :global(a.active),
-    header :global(a:hover) {
-        border-bottom-color: #ff0000;
+    /* INDICADOR MEJORADO */
+    .nav-indicator {
+        position: absolute;
+        bottom: -2px; /* Justo sobre el borde del header */
+        height: 4px;
+        background: #ff0000;
+        transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        pointer-events: none;
+        opacity: 0;
     }
 
-    /* BLOQUE ICONOS DERECHA */
     .contact-links {
         display: flex;
         gap: 0.5rem;
-        align-items: center;
-    }
-
-    .contact-links a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem;
-        border-bottom: none !important; /* Quitamos la línea para los iconos */
-        transition: transform 0.2s ease, color 0.2s ease;
-    }
-
-    .contact-links a:hover {
-        color: #ff0000; /* El icono cambia al rojo de la revista */
-        transform: translateY(-2px); /* Pequeño salto al pasar el mouse */
     }
 
     @media (max-width: 720px) {
-        header {
-            padding: 0;
-        }
-
-        nav {
-            flex-direction: column;
-        }
-
-        .logo {
-            padding: 1.5rem 0;
-            width: 100%;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            justify-content: center;
-            display: flex;
-        }
-
-        .internal-links {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            width: 100%;
-        }
-
-        /* En móvil ocultamos los iconos para mantener el minimalismo que querías */
-        .contact-links {
-            display: none;
-        }
+        .nav-indicator { display: none; }
+        nav { flex-direction: column; padding-bottom: 1rem; }
     }
 </style>
+
+<script>
+    function initNav() {
+        const nav = document.querySelector('nav');
+        const indicator = document.querySelector('.nav-indicator') as HTMLElement;
+        const links = document.querySelectorAll('nav a'); // Selecciona todos, incluyendo el logo
+        
+        function move(el: HTMLElement) {
+            if (!el || !indicator || !nav) return;
+            const navRect = nav.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            
+            indicator.style.width = `${elRect.width}px`;
+            indicator.style.left = `${elRect.left - navRect.left}px`;
+            indicator.style.opacity = '1';
+        }
+
+        // Detectar página actual
+        const currentPath = window.location.pathname;
+        links.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+                link.classList.add('active');
+                move(link as HTMLElement);
+            }
+        });
+
+        // Eventos de Hover
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => move(link as HTMLElement));
+        });
+
+        // Al salir del nav, vuelve al activo o al logo si estamos en home
+        nav?.addEventListener('mouseleave', () => {
+            const active = document.querySelector('nav a.active') as HTMLElement;
+            if (active) {
+                move(active);
+            } else {
+                indicator.style.opacity = '0';
+            }
+        });
+    }
+
+    initNav();
+    document.addEventListener('astro:after-swap', initNav);
+</script>

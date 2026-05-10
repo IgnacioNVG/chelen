@@ -3,15 +3,20 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { render } from 'astro:content';
 
+// 1. Genera las rutas para cada archivo Markdown en src/content/blog/
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
 	return posts.map((post) => ({
-		params: { slug: post.id },
+		// El "slug" será el nombre del archivo (id)
+		// Astro se encarga de que sea una URL válida
+		params: { slug: post.id }, 
 		props: post,
 	}));
 }
+
 type Props = CollectionEntry<'blog'>;
 
+// 2. Obtiene la nota específica y procesa el contenido Markdown
 const post = Astro.props;
 const { Content } = await render(post);
 ---
