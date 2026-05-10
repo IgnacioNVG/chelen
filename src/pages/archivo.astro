@@ -1,0 +1,102 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+// Aquí podrías en el futuro automatizar la lectura, 
+// por ahora podemos manejarlo como un array de recursos clave.
+const recursos = [
+    { title: "Documento de Renovación Socialista", type: "PDF", year: "1985", link: "LINK_DIRECTO" },
+    { title: "Acta de Convergencia", type: "DOC", year: "1979", link: "LINK_DIRECTO" },
+    // ...
+];
+---
+
+<style>
+    /* Estilo de Carpeta de Archivo */
+    .archive-container {
+        border: 3px solid #000;
+        background: #fafafa;
+        padding: 2rem;
+        box-shadow: 12px 12px 0px #000;
+    }
+
+    .archive-header {
+        border-bottom: 5px solid #000;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+    }
+
+    .archive-header h1 {
+        font-family: 'Sifonn', sans-serif;
+        font-size: 3.5rem;
+        text-transform: uppercase;
+        line-height: 0.8;
+    }
+
+    .file-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 100px 150px;
+        border-bottom: 1px solid #000;
+        padding: 1rem 0;
+        align-items: center;
+        font-family: monospace;
+        transition: background 0.2s;
+    }
+
+    .file-row:hover {
+        background: #ffebeb;
+    }
+
+    .file-type {
+        font-weight: bold;
+        background: #000;
+        color: #fff;
+        text-align: center;
+        padding: 2px 5px;
+        font-size: 0.8rem;
+    }
+
+    .file-title {
+        font-weight: bold;
+        text-transform: uppercase;
+        padding-left: 1rem;
+    }
+
+    .btn-access {
+        border: 2px solid #000;
+        padding: 0.3rem 0.5rem;
+        text-align: center;
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        font-size: 0.7rem;
+    }
+
+    .btn-access:hover {
+        background: #000;
+        color: #fff;
+    }
+</style>
+
+<Header />
+<main>
+    <div class="archive-container">
+        <div class="archive-header">
+            <h1>Memoria Socialista</h1>
+            <p>REPOSITORIO DE BIBLIOGRAFÍA Y CONTENIDO EN DIFUSIÓN</p>
+        </div>
+        
+        <div class="file-list">
+            <div class="file-row">
+                <span class="file-type">DIR</span>
+                <span class="file-title">Acceso Completo a la Carpeta Drive</span>
+                <span>2026</span>
+                <a href="https://drive.google.com/drive/folders/1QklUcvulfL0tdlG_COOHixlKLMdtGqW2" target="_blank" class="btn-access">ABRIR CARPETA</a>
+            </div>
+            {/* Aquí mapearías tus documentos destacados */}
+        </div>
+    </div>
+</main>
+<Footer />

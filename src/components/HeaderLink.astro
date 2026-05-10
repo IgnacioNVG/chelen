@@ -7,13 +7,19 @@ const { href, class: className, ...props } = Astro.props;
 
 const { pathname } = Astro.url;
 
-// Lógica mejorada: es activo si la ruta coincide exactamente 
-// o si es una sub-ruta (ej: estar en un post del blog activa el link "Blog")
-const isActive = href === pathname || href === pathname.replace(/\/$/, '');
-const isSubRoute = pathname.startsWith(href + '/') && href !== '/';
+// Normalizamos las rutas para comparar sin preocuparnos por la barra final "/"
+const normalizedPathname = pathname.replace(/\/$/, "");
+const normalizedHref = typeof href === 'string' ? href.replace(/\/$/, "") : href;
+
+// Es activo si:
+// 1. La ruta es idéntica
+// 2. Es la página de inicio (exacta)
+// 3. Es una sub-ruta de la sección (evitando que "/" active todo)
+const isActive = normalizedHref === normalizedPathname || 
+                 (normalizedHref !== "" && normalizedPathname.startsWith(normalizedHref as string));
 ---
 
-<a href={href} class:list={[className, { active: isActive || isSubRoute }]} {...props}>
+<a href={href} class:list={[className, { active: isActive }]} {...props}>
 	<slot />
 </a>
 
@@ -21,13 +27,17 @@ const isSubRoute = pathname.startsWith(href + '/') && href !== '/';
 	a {
 		display: inline-block;
 		text-decoration: none;
+		transition: color 0.2s ease;
 	}
-    /* Ya no necesitamos el border-bottom aquí, 
-       porque ahora lo maneja el nav-indicator del Header. 
-       Solo mantenemos el estilo del texto.
-    */
+
+	/* El estilo visual de "activo" para el texto */
 	a.active {
-		font-weight: bolder;
+		font-weight: 900; /* Un poco más de peso para el estilo brutalista */
 		color: #000;
+	}
+
+	/* Opcional: un ligero cambio de color en hover si no está activo */
+	a:not(.active):hover {
+		color: #ff0000;
 	}
 </style>
