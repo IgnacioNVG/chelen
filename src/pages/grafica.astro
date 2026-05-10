@@ -1,10 +1,8 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Layout from '../layouts/BlogPost.astro';
 import { Image } from 'astro:assets';
 
+// Imports de imágenes
 import img1 from '../assets/grafica-01.webp';
 import img2 from '../assets/grafica-02.webp';
 import img3 from '../assets/grafica-03.webp';
@@ -12,215 +10,126 @@ import img4 from '../assets/grafica-04.webp';
 import img5 from '../assets/grafica-05.webp';
 import img6 from '../assets/grafica-06.webp';
 import img7 from '../assets/grafica-07.webp';
+
+const graphics = [img1, img2, img3, img4, img5, img6, img7];
 ---
 
-<!doctype html>
-<html lang="es">
-    <head>
-        <BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
-        <style>
-            main {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 3rem 2%;
-            }
+<Layout
+	title="Material Gráfico"
+	description="Registro Visual / Revista Chelén"
+	pubDate={new Date('2026-05-10')}
+>
+	<style>
+		/* RETÍCULA MASONRY BRUTALISTA */
+		.masonry-grid {
+			column-width: 300px;
+			column-gap: 2rem;
+			width: 100%;
+			margin-top: 2rem;
+		}
 
-            .intro {
-                margin-bottom: 4rem;
-                text-align: left;
-                border-left: 12px solid var(--accent);
-                padding-left: 1.5rem;
-            }
+		.grid-item {
+			position: relative;
+			background-color: #000;
+			cursor: zoom-in;
+			break-inside: avoid;
+			margin-bottom: 2rem;
+			border: 3px solid #000;
+			box-shadow: 8px 8px 0px 0px #000;
+			transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
 
-            .intro h1 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: 4.5rem;
-                margin: 0;
-                text-transform: uppercase;
-                line-height: 0.85;
-                letter-spacing: -2px;
-            }
-            
-            .intro p {
-                color: #000;
-                font-family: monospace;
-                font-weight: bold;
-                font-size: 1.1rem;
-                text-transform: uppercase;
-                margin-top: 0.75rem;
-                letter-spacing: 1px;
-            }
+		.grid-item img {
+			width: 100%;
+			height: auto;
+			display: block;
+			filter: saturate(1.1);
+		}
 
-            /* RETÍCULA CONSTRUCTIVISTA (MASONRY) */
-            .masonry-grid {
-                column-width: 320px; 
-                column-gap: 30px; 
-                width: 100%;
-            }
+		.grid-item:hover {
+			transform: translate(-4px, -4px);
+			box-shadow: 12px 12px 0px 0px #ff0000; /* Acento rojo en hover */
+		}
 
-            .grid-item {
-                position: relative;
-                overflow: hidden;
-                background-color: #000;
-                cursor: zoom-in;
-                break-inside: avoid;
-                margin-bottom: 30px;
-                display: block;
-                /* ÁNGULOS RECTOS */
-                border-radius: 0; 
-                border: 4px solid #000;
-                /* SOMBRA SÓLIDA TIPO BLOQUE */
-                box-shadow: 10px 10px 0px 0px #000;
-                transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
-            }
+		.caption {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			background: #000;
+			padding: 0.3rem 0.8rem;
+			font-family: monospace;
+			font-size: 0.75rem;
+			color: #fff;
+			opacity: 0;
+			transform: translateX(-10px);
+			transition: all 0.3s ease;
+		}
 
-            .grid-item img {
-                width: 100%;
-                height: auto;
-                display: block;
-                border-radius: 0;
-                /* COLOR SIEMPRE PRESENTE */
-                filter: saturate(1.1); 
-                transition: all 0.4s ease;
-            }
+		.grid-item:hover .caption {
+			opacity: 1;
+			transform: translateX(0);
+		}
 
-            /* HOVER: EL COLOR ESTALLA Y LA SOMBRA CAMBIA AL ACENTO */
-            .grid-item:hover {
-                transform: translate(-6px, -6px);
-                box-shadow: 16px 16px 0px 0px var(--accent);
-            }
+		/* LIGHTBOX */
+		.lightbox {
+			display: none;
+			position: fixed;
+			z-index: 9999;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.95);
+			justify-content: center;
+			align-items: center;
+			padding: 2rem;
+		}
 
-            .grid-item:hover img {
-                filter: saturate(1.5) contrast(1.1);
-                transform: scale(1.03);
-            }
+		.lightbox.active { display: flex; }
+		.lightbox img { 
+			max-width: 90%; 
+			max-height: 90%; 
+			border: 4px solid #fff; 
+			box-shadow: 15px 15px 0px #ff0000;
+		}
 
-            /* CAPTION: BLOQUE NEGRO SÓLIDO */
-            .caption {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                background: #000;
-                padding: 0.5rem 1.2rem;
-                font-family: monospace;
-                font-size: 0.85rem;
-                font-weight: bold;
-                color: #fff;
-                opacity: 0;
-                transform: translateX(-100%);
-                transition: all 0.3s ease;
-            }
+		@media (max-width: 720px) {
+			.masonry-grid { column-width: 100%; }
+		}
+	</style>
 
-            .grid-item:hover .caption {
-                opacity: 1;
-                transform: translateX(0);
-            }
+	<section class="masonry-grid">
+		{graphics.map((img, index) => (
+			<div class="grid-item">
+				<Image src={img} alt={`Diseño Editorial ${index + 1}`} />
+				<div class="caption">ID_CHE_{index + 1}</div>
+			</div>
+		))}
+	</section>
 
-            /* LIGHTBOX MODERNO RÍGIDO */
-            .lightbox {
-                display: none;
-                position: fixed;
-                z-index: 9999;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.98);
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-            }
+	<div id="lightbox" class="lightbox">
+		<img id="lightbox-img" src="" alt="Gráfica ampliada" />
+	</div>
 
-            .lightbox.active {
-                display: flex;
-            }
+	<script>
+		const gridItems = document.querySelectorAll('.grid-item');
+		const lightbox = document.getElementById('lightbox');
+		const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
 
-            .lightbox img {
-                max-width: 90%;
-                max-height: 90%;
-                border: 6px solid #fff;
-                border-radius: 0;
-                box-shadow: 20px 20px 0px 0px var(--accent);
-            }
+		gridItems.forEach(item => {
+			item.addEventListener('click', () => {
+				const img = item.querySelector('img');
+				if (img && lightbox && lightboxImg) {
+					lightboxImg.src = img.src;
+					lightbox.classList.add('active');
+					document.body.style.overflow = 'hidden';
+				}
+			});
+		});
 
-            .close-lightbox {
-                position: absolute;
-                top: 20px;
-                right: 40px;
-                color: #fff;
-                font-size: 5rem;
-                font-weight: lighter;
-                cursor: pointer;
-                transition: color 0.2s ease;
-            }
-
-            .close-lightbox:hover {
-                color: var(--accent);
-            }
-
-            @media (max-width: 720px) {
-                .intro h1 { font-size: 3rem; }
-                .masonry-grid { column-width: 100%; }
-                .grid-item { box-shadow: 8px 8px 0px 0px #000; }
-            }
-        </style>
-    </head>
-    <body>
-        <Header />
-        <main>
-            <div class="intro">
-                <h1>Material Gráfico</h1>
-                <p>// Registro Visual / Revista Chelén</p>
-            </div>
-            
-            <section class="masonry-grid">
-                {[img1, img2, img3, img4, img5, img6, img7].map((img, index) => (
-                    <div class="grid-item">
-                        <Image src={img} alt={`Diseño Editorial ${index + 1}`} />
-                        <div class="caption">ID_CHE_{index + 1}</div>
-                    </div>
-                ))}
-            </section>
-        </main>
-        <Footer />
-
-        <div id="lightbox" class="lightbox">
-            <span class="close-lightbox">&times;</span>
-            <img id="lightbox-img" src="" alt="Gráfica ampliada" />
-        </div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const gridItems = document.querySelectorAll('.grid-item');
-                const lightbox = document.getElementById('lightbox');
-                const lightboxImg = document.getElementById('lightbox-img');
-                const closeBtn = document.querySelector('.close-lightbox');
-
-                const closeLightbox = () => {
-                    lightbox.classList.remove('active');
-                    document.body.style.overflow = '';
-                };
-
-                gridItems.forEach(item => {
-                    item.addEventListener('click', () => {
-                        const img = item.querySelector('img');
-                        if (img) {
-                            (lightboxImg as HTMLImageElement).src = img.src;
-                            lightbox.classList.add('active');
-                            document.body.style.overflow = 'hidden';
-                        }
-                    });
-                });
-
-                closeBtn.addEventListener('click', closeLightbox);
-                lightbox.addEventListener('click', (e) => {
-                    if (e.target === lightbox) closeLightbox();
-                });
-
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') closeLightbox();
-                });
-            });
-        </script>
-    </body>
-</html>
+		lightbox?.addEventListener('click', () => {
+			lightbox.classList.remove('active');
+			document.body.style.overflow = '';
+		});
+	</script>
+</Layout>

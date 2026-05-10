@@ -11,88 +11,90 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <html lang="es">
-    <head>
-        <BaseHead title={title} description={description} />
-        <style>
-            main {
-                width: 100%;
-                margin: 0;
-                padding-top: 2rem;
-            }
-            article {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 0 1.5rem;
-            }
-            .hero-image {
-                margin-bottom: 3rem;
-                border: 1px solid #ddd; /* Estructura más definida */
-            }
-            .hero-image img {
-                display: block;
-                width: 100%;
-                height: auto;
-                filter: grayscale(20%); /* Tono más serio/documental */
-            }
-            .prose {
-                max-width: 680px; /* Ancho óptimo para legibilidad de lectura larga */
-                margin: 0 auto;
-                line-height: 1.6;
-            }
-            .header-content {
-                margin-bottom: 4rem;
-                text-align: left; /* Menos centrado de "blog", más editorial */
-            }
-            .header-content h1 {
-                font-family: 'Sifonn', sans-serif; /* Usando la tipografía del proyecto */
-                font-size: 3.5rem;
-                margin: 0.5rem 0;
-                text-transform: uppercase;
-                letter-spacing: -0.02em;
-            }
-            .meta {
-                font-size: 0.9rem;
-                color: #666;
-                text-transform: uppercase;
-                display: flex;
-                gap: 1rem;
-                border-bottom: 1px solid #000;
-                padding-bottom: 0.5rem;
-            }
-            hr {
-                border: none;
-                border-top: 4px solid #000; /* Línea gruesa tipo constructivista */
-                margin: 2rem 0;
-            }
-        </style>
-    </head>
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			main {
+				width: calc(100% - 3rem);
+				max-width: 960px; /* Igual al índice del blog */
+				margin: 0 auto;
+				padding: 3rem 0;
+			}
+			article {
+				width: 100%;
+			}
+			.hero-image {
+				width: 100%;
+				margin-bottom: 2rem;
+			}
+			.hero-image img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border: 3px solid #000;
+				filter: grayscale(20%);
+				box-shadow: 10px 10px 0px #000;
+			}
+			.header-content {
+				margin-bottom: 3rem;
+				border-bottom: 5px solid #000;
+				padding-bottom: 2rem;
+			}
+			.header-content h1 {
+				font-family: 'Sifonn', sans-serif;
+				font-size: clamp(2.5rem, 8vw, 4.5rem);
+				margin: 0.5rem 0;
+				text-transform: uppercase;
+				line-height: 0.9;
+				letter-spacing: -1px;
+			}
+			.meta {
+				font-family: monospace;
+				font-size: 1rem;
+				color: #ff0000;
+				text-transform: uppercase;
+				font-weight: bold;
+				margin-bottom: 1rem;
+			}
+			.description {
+				font-size: 1.4rem;
+				line-height: 1.2;
+				color: #444;
+				font-style: italic;
+			}
+			.prose {
+				width: 100%;
+				line-height: 1.6;
+			}
+			/* Ajustes para el slot de contenido */
+			:global(.prose p) {
+				margin-bottom: 1.5rem;
+				font-size: 1.15rem;
+			}
+		</style>
+	</head>
 
-    <body>
-        <Header />
-        <main>
-            <article>
-                <header class="header-content">
-                    <div class="meta">
-                        <FormattedDate date={pubDate} />
-                        {updatedDate && (
-                            <span> — ACTUALIZADO: <FormattedDate date={updatedDate} /></span>
-                        )}
-                    </div>
-                    <h1>{title}</h1>
-                    <p class="description"><em>{description}</em></p>
-                </header>
-
-                {heroImage && (
-                    <div class="hero-image">
-                        <img width={1020} height={510} src={heroImage} alt="" />
-                    </div>
-                )}
-
-                <div class="prose">
-                    <slot />
-                </div>
-            </article>
-        </main>
-        <Footer />
-    </body>
+	<body>
+		<Header />
+		<main>
+			<article>
+				{heroImage && (
+					<div class="hero-image">
+						<img width={1020} height={510} src={heroImage} alt="" />
+					</div>
+				)}
+				<header class="header-content">
+					<div class="meta">
+						[ <FormattedDate date={pubDate} /> ]
+					</div>
+					<h1>{title}</h1>
+					<p class="description">{description}</p>
+				</header>
+				<div class="prose">
+					<slot />
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
 </html>
