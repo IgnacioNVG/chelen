@@ -3,11 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-
-// 1. Importamos la herramienta de optimización de Astro
 import { Image } from 'astro:assets';
 
-// 2. Importamos tus imágenes (cambia los nombres por los tuyos reales)
 import img1 from '../assets/grafica-01.webp';
 import img2 from '../assets/grafica-02.webp';
 import img3 from '../assets/grafica-03.webp';
@@ -23,54 +20,55 @@ import img7 from '../assets/grafica-07.webp';
 		<BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				max-width: 1200px;
+				max-width: 100%;
 				margin: 0 auto;
-				padding: 2em 1em;
+				padding: 2em 2%;
 			}
 
 			.intro {
-				margin-bottom: 3rem;
-				border-bottom: 2px solid #333;
-				padding-bottom: 1rem;
+				margin-bottom: 2.5rem;
+				text-align: center;
 			}
 
 			.intro h1 {
-				font-size: 3rem;
+				font-size: 2.5rem;
 				margin: 0;
-				line-height: 1;
-				text-transform: uppercase;
+				font-weight: bold;
 				letter-spacing: -0.02em;
 			}
+			
+			.intro p {
+				color: #666;
+				font-size: 1.1rem;
+			}
 
-			/* Layout tipo Pinterest (Masonry con CSS Columns) */
+			/* La magia tipo Pinterest */
 			.masonry-grid {
-				column-count: 3; /* 3 columnas en pantallas grandes */
-				column-gap: 2rem; /* Espaciado entre columnas */
+				column-width: 260px; 
+				column-gap: 16px; 
+				width: 100%;
 			}
 
 			.grid-item {
-				background-color: #d1d1d1;
 				position: relative;
 				overflow: hidden;
-				border: 1px solid #999;
-				
-				/* Fundamental para que las imágenes no se corten entre columnas */
-				break-inside: avoid; 
-				margin-bottom: 2rem; /* Espaciado vertical entre elementos */
-				
+				border-radius: 16px;
+				background-color: #f4f4f4;
+				cursor: zoom-in; /* Cambiamos el cursor para indicar que se puede ampliar */
+				break-inside: avoid;
+				margin-bottom: 16px;
 				display: block;
 			}
 
 			.grid-item img {
 				width: 100%;
-				height: auto; /* Permite que la imagen fluya según su propia proporción 4:5 u otra */
+				height: auto;
 				display: block;
-				filter: grayscale(100%); /* Mantiene el rigor y la cohesión visual del archivo */
-				transition: filter 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+				border-radius: 16px;
+				transition: transform 0.3s ease;
 			}
 
 			.grid-item:hover img {
-				filter: grayscale(0%);
 				transform: scale(1.03);
 			}
 
@@ -79,26 +77,86 @@ import img7 from '../assets/grafica-07.webp';
 				bottom: 0;
 				left: 0;
 				width: 100%;
-				background: rgba(230, 230, 230, 0.95);
-				padding: 0.75rem 1rem;
-				font-size: 0.8rem;
+				background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+				padding: 2.5rem 1.2rem 1rem;
+				font-size: 1rem;
 				font-weight: bold;
-				border-top: 1px solid #333;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
-				color: #111;
+				color: #fff;
+				opacity: 0;
+				transition: opacity 0.3s ease;
+				pointer-events: none;
 			}
 
-			/* Adaptabilidad a diferentes pantallas */
-			@media (max-width: 1024px) {
+			.grid-item:hover .caption {
+				opacity: 1;
+			}
+
+			/* --- ESTILOS DEL LIGHTBOX (MODAL) --- */
+			.lightbox {
+				display: none; /* Oculto por defecto */
+				position: fixed;
+				z-index: 9999; /* Por encima de todo */
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro semitransparente */
+				justify-content: center;
+				align-items: center;
+				padding: 2rem;
+				opacity: 0;
+				transition: opacity 0.3s ease;
+			}
+
+			.lightbox.active {
+				display: flex;
+				opacity: 1;
+			}
+
+			.lightbox img {
+				max-width: 100%;
+				max-height: 100%;
+				object-fit: contain; /* Asegura que la imagen no se corte */
+				border-radius: 8px;
+				box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+			}
+
+			.close-lightbox {
+				position: absolute;
+				top: 20px;
+				right: 30px;
+				color: #fff;
+				font-size: 3rem;
+				cursor: pointer;
+				user-select: none;
+				transition: color 0.2s ease;
+			}
+
+			.close-lightbox:hover {
+				color: #ccc;
+			}
+
+			@media (max-width: 600px) {
+				main { padding: 1em 3%; }
 				.masonry-grid {
-					column-count: 2; /* 2 columnas en tablets */
+					column-width: 150px;
+					column-gap: 12px;
 				}
-			}
-
-			@media (max-width: 768px) {
-				.masonry-grid {
-					column-count: 1; /* 1 columna en móviles */
+				.grid-item {
+					margin-bottom: 12px;
+					border-radius: 12px;
+				}
+				.grid-item img { border-radius: 12px; }
+				.caption {
+					opacity: 1; 
+					background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+					padding: 2rem 1rem 0.8rem;
+					font-size: 0.85rem;
+				}
+				.lightbox { padding: 1rem; }
+				.close-lightbox {
+					top: 10px;
+					right: 20px;
 				}
 			}
 		</style>
@@ -108,40 +166,88 @@ import img7 from '../assets/grafica-07.webp';
 		<main>
 			<div class="intro">
 				<h1>Material Gráfico</h1>
-				<p>Archivo visual, carteles y composiciones editoriales.</p>
+				<p>Archivo visual de Chelén.</p>
 			</div>
 			
 			<section class="masonry-grid">
 				<div class="grid-item">
-					<Image src={img1} alt="Composición gráfica 1" />
+					<Image src={img1} alt="Gráfica 1" />
 					<div class="caption">Archivo 01</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img2} alt="Composición gráfica 2" />
+					<Image src={img2} alt="Gráfica 2" />
 					<div class="caption">Archivo 02</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img3} alt="Composición gráfica 3" />
+					<Image src={img3} alt="Gráfica 3" />
 					<div class="caption">Archivo 03</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img4} alt="Composición gráfica 4" />
+					<Image src={img4} alt="Gráfica 4" />
 					<div class="caption">Archivo 04</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img5} alt="Composición gráfica 5" />
+					<Image src={img5} alt="Gráfica 5" />
 					<div class="caption">Archivo 05</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img6} alt="Composición gráfica 6" />
+					<Image src={img6} alt="Gráfica 6" />
 					<div class="caption">Archivo 06</div>
 				</div>
 				<div class="grid-item">
-					<Image src={img7} alt="Composición gráfica 7" />
+					<Image src={img7} alt="Gráfica 7" />
 					<div class="caption">Archivo 07</div>
 				</div>
 			</section>
 		</main>
 		<Footer />
+
+		<div id="lightbox" class="lightbox">
+			<span class="close-lightbox">&times;</span>
+			<img id="lightbox-img" src="" alt="Gráfica ampliada" />
+		</div>
+
+		<script>
+			// Esperamos a que el DOM cargue
+			document.addEventListener('DOMContentLoaded', () => {
+				const gridItems = document.querySelectorAll('.grid-item');
+				const lightbox = document.getElementById('lightbox');
+				const lightboxImg = document.getElementById('lightbox-img');
+				const closeBtn = document.querySelector('.close-lightbox');
+
+				// Función para cerrar
+				const closeLightbox = () => {
+					lightbox.classList.remove('active');
+					document.body.style.overflow = ''; // Restauramos el scroll de la página
+				};
+
+				// Asignamos el evento de clic a cada tarjeta
+				gridItems.forEach(item => {
+					item.addEventListener('click', () => {
+						const img = item.querySelector('img');
+						if (img) {
+							lightboxImg.src = img.src; // Copiamos la ruta de la imagen clickeada
+							lightbox.classList.add('active'); // Mostramos el lightbox
+							document.body.style.overflow = 'hidden'; // Ocultamos el scroll de fondo
+						}
+					});
+				});
+
+				// Eventos para cerrar el lightbox
+				closeBtn.addEventListener('click', closeLightbox);
+				
+				// Cerrar al hacer clic en el fondo negro
+				lightbox.addEventListener('click', (e) => {
+					if (e.target === lightbox) closeLightbox();
+				});
+
+				// Cerrar al presionar la tecla Escape
+				document.addEventListener('keydown', (e) => {
+					if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+						closeLightbox();
+					}
+				});
+			});
+		</script>
 	</body>
 </html>

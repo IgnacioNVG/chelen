@@ -2,18 +2,12 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
-// Obtenemos los artículos y los ordenamos por fecha
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-
-// Separamos el contenido para la jerarquía visual
-const featuredPost = posts[0];
-const secondaryPosts = posts.slice(1, 4);
+// Importamos un par de gráficas destacadas desde tus assets
+import destacada1 from '../assets/grafica-01.webp';
+import destacada2 from '../assets/grafica-02.webp';
 ---
 
 <!doctype html>
@@ -25,91 +19,136 @@ const secondaryPosts = posts.slice(1, 4);
 				max-width: 1200px;
 				margin: 0 auto;
 				padding: 2em 1em;
-				font-family: 'Atkinson', sans-serif;
 			}
 			
-			/* Grilla editorial principal */
-			.editorial-grid {
-				display: grid;
-				grid-template-columns: repeat(12, 1fr);
-				gap: 2rem;
-				margin-bottom: 4rem;
+			/* Encabezados de sección con rigor constructivista */
+			.section-header {
+				border-bottom: 4px solid #111;
+				margin-bottom: 2rem;
+				padding-bottom: 0.5rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
 			}
 
-			/* Artículo destacado (ocupa más espacio) */
-			.featured-article {
-				grid-column: span 8;
-				border-bottom: 2px solid #333; /* Líneas duras para separar contenido */
-				padding-bottom: 2rem;
-			}
-
-			.featured-article img {
-				width: 100%;
-				height: auto;
-				aspect-ratio: 16/9;
-				object-fit: cover;
-				margin-bottom: 1.5rem;
-				filter: grayscale(100%); /* Opcional: un toque más sobrio/monocromático */
-			}
-
-			.featured-article h2 {
-				font-size: 3rem;
-				line-height: 1.1;
-				margin: 0 0 1rem 0;
+			.section-header h2 {
+				font-size: 2.5rem;
+				text-transform: uppercase;
+				margin: 0;
 				letter-spacing: -0.02em;
 			}
 
-			/* Artículos secundarios (columna lateral) */
-			.secondary-articles {
-				grid-column: span 4;
+			/* Texto de introducción con link al Acerca de */
+			.intro-box {
+				margin-bottom: 5rem;
+				max-width: 900px;
+			}
+
+			.intro-box p {
+				font-size: 1.75rem;
+				line-height: 1.3;
+				color: #111;
+			}
+
+			.intro-box a {
+				color: #111;
+				text-decoration: underline;
+				text-decoration-thickness: 3px;
+				font-weight: bold;
+			}
+
+			/* Grilla de Columnas Destacadas */
+			.columns-grid {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 2px;
+				background-color: #111;
+				border: 2px solid #111;
+				margin-bottom: 6rem;
+			}
+
+			.column-card {
+				background-color: #fff;
+				padding: 3rem 2rem;
+				grid-column: span 6;
 				display: flex;
 				flex-direction: column;
-				gap: 2rem;
-				border-left: 1px solid #ccc;
-				padding-left: 2rem;
+				transition: background-color 0.2s ease;
 			}
 
-			.secondary-item {
-				border-bottom: 1px solid #eee;
-				padding-bottom: 1.5rem;
+			.column-card.featured {
+				grid-column: span 12;
+				border-bottom: 2px solid #111;
 			}
 
-			.secondary-item:last-child {
-				border-bottom: none;
+			.column-card:hover {
+				background-color: #f9f9f9;
 			}
 
-			.secondary-item h3 {
-				font-size: 1.5rem;
-				margin: 0.5rem 0;
-				line-height: 1.2;
-			}
-
-			a {
-				text-decoration: none;
-				color: inherit;
-			}
-
-			a:hover {
-				color: #555;
-			}
-
-			.meta {
-				font-size: 0.85rem;
+			.column-card h3 {
+				font-size: 3.5rem;
 				text-transform: uppercase;
-				letter-spacing: 0.05em;
-				color: #666;
+				line-height: 0.95;
+				margin: 1rem 0;
+				letter-spacing: -0.04em;
 			}
 
-			@media (max-width: 768px) {
-				.editorial-grid {
-					display: flex;
-					flex-direction: column;
+			.column-card.small h3 {
+				font-size: 2rem;
+			}
+
+			.label {
+				font-weight: bold;
+				text-transform: uppercase;
+				font-size: 0.85rem;
+				background: #111;
+				color: #fff;
+				padding: 0.2rem 0.6rem;
+				display: inline-block;
+				align-self: flex-start;
+			}
+
+			/* Gráficas Destacadas (Preview) */
+			.graphics-preview {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2.5rem;
+				margin-bottom: 5rem;
+			}
+
+			.graphic-card {
+				border: 1px solid #111;
+				padding: 1.5rem;
+				background: #fff;
+			}
+
+			.graphic-card img {
+				width: 100%;
+				height: auto;
+				filter: grayscale(100%);
+				border: 1px solid #111;
+				margin-bottom: 1.5rem;
+			}
+
+			.graphic-card:hover img {
+				filter: grayscale(0%);
+			}
+
+			.graphic-info h4 {
+				text-transform: uppercase;
+				margin: 0;
+				font-size: 1.2rem;
+			}
+
+			@media (max-width: 900px) {
+				.column-card, .column-card.featured {
+					grid-column: span 12;
 				}
-				.secondary-articles {
-					border-left: none;
-					padding-left: 0;
-					border-top: 2px solid #333;
-					padding-top: 2rem;
+				.graphics-preview {
+					grid-template-columns: 1fr;
+				}
+				.column-card h3 {
+					font-size: 2.5rem;
 				}
 			}
 		</style>
@@ -117,33 +156,58 @@ const secondaryPosts = posts.slice(1, 4);
 	<body>
 		<Header />
 		<main>
-			<section class="editorial-grid">
-				{featuredPost && (
-					<article class="featured-article">
-						<a href={`/blog/${featuredPost.slug}/`}>
-							<img src={featuredPost.data.heroImage} alt="" />
-							<div class="meta">
-								<FormattedDate date={featuredPost.data.pubDate} />
-							</div>
-							<h2>{featuredPost.data.title}</h2>
-							<p>{featuredPost.data.description}</p>
-						</a>
-					</article>
-				)}
-
-				<aside class="secondary-articles">
-					{secondaryPosts.map((post) => (
-						<article class="secondary-item">
-							<a href={`/blog/${post.slug}/`}>
-								<div class="meta">
-									<FormattedDate date={post.data.pubDate} />
-								</div>
-								<h3>{post.data.title}</h3>
-							</a>
-						</article>
-					))}
-				</aside>
+			<section class="intro-box">
+				<p>
+					Chelén es una publicación dedicada al análisis de la teoría social materialista, la marginalidad y los procesos de organización comunitaria. Puedes leer más sobre nuestra visión editorial y equipo en la sección <a href="/about">Acerca de</a>.
+				</p>
 			</section>
+
+			<div class="section-header">
+				<h2>Columnas Destacadas</h2>
+				<span>Crítica y Teoría</span>
+			</div>
+			
+			<div class="columns-grid">
+				<article class="column-card featured">
+					<span class="label">Análisis Económico</span>
+					<h3>Pague sus créditos, pague el plusvalor</h3>
+					<p style="font-size: 1.2rem;">Una revisión sobre las dinámicas de endeudamiento y el papel del funcionario público Jorge Quiroz en la estructura institucional actual.</p>
+				</article>
+
+				<article class="column-card">
+					<span class="label">Sociología</span>
+					<h3 style="font-size: 2rem;">Producir la marginalidad</h3>
+					<p>Apuntes sobre el simposio respecto a las condiciones del sistema penitenciario y la construcción de sujetos marginales.</p>
+				</article>
+
+				<article class="column-card">
+					<span class="label">Territorio</span>
+					<h3 style="font-size: 2rem;">Organización en Lo Hermida</h3>
+					<p>Investigación cualitativa sobre las prácticas de articulación territorial y comunitaria entre 2020 y 2026.</p>
+				</article>
+			</div>
+
+			<div class="section-header">
+				<h2>Gráficas Destacadas</h2>
+				<a href="/grafica" style="color: #111; font-weight: bold; text-decoration: none;">Ver archivo completo →</a>
+			</div>
+
+			<div class="graphics-preview">
+				<div class="graphic-card">
+					<Image src={destacada1} alt="Gráfica destacada 01" />
+					<div class="graphic-info">
+						<span class="label">Composición</span>
+						<h4>Archivo Visual #01</h4>
+					</div>
+				</div>
+				<div class="graphic-card">
+					<Image src={destacada2} alt="Gráfica destacada 02" />
+					<div class="graphic-info">
+						<span class="label">Cartelería</span>
+						<h4>Archivo Visual #02</h4>
+					</div>
+				</div>
+			</div>
 		</main>
 		<Footer />
 	</body>
