@@ -6,10 +6,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 
-// Se obtienen los posts y se ordenan por fecha de publicación
 const posts = (await getCollection('blog')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const categories = [...new Set(posts.map(post => post.data.category || 'Artículo'))];
 ---
 
 <!doctype html>
@@ -23,161 +24,201 @@ const posts = (await getCollection('blog')).sort(
                 margin: 0 auto; 
                 padding: 3rem 0;
             }
+
+            /* CONTROLES */
+            .controls {
+                margin-bottom: 3rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #000;
+                padding-bottom: 1.5rem;
+            }
+
+            .filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+            button, select {
+                background: #fff;
+                border: 2px solid #000;
+                padding: 0.4rem 0.8rem;
+                font-family: monospace;
+                font-size: 0.75rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                cursor: pointer;
+            }
+
+            button.active {
+                background: #000;
+                color: #fff;
+            }
+
+            /* GRILLA DE POSTS */
             ul {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 3rem; /* Espacio aumentado para aire de revista */
+                gap: 2.5rem;
                 list-style-type: none;
                 margin: 0;
                 padding: 0;
             }
-            ul li {
-                width: calc(50% - 1.5rem);
-            }
-            ul li * {
-                text-decoration: none;
-                transition: all 0.2s ease;
+
+            ul li { 
+                width: calc(50% - 1.25rem); 
+                transition: transform 0.2s ease;
             }
 
-            /* ESTILO CONSTRUCTIVISTA / BRUTALISTA */
-            ul li img {
-                margin-bottom: 1rem;
-                border-radius: 0; 
-                border: 3px solid #000;
-                filter: grayscale(100%) contrast(1.1);
-                display: block;
-                box-shadow: 0px 0px 0px 0px #000;
-            }
+            ul li.hidden { display: none; }
 
-            /* Primer post destacado */
-            ul li:first-child {
+            /* ESTILO DESTACADO (Dinámico) */
+            ul li.featured-item {
                 width: 100%;
-                margin-bottom: 3rem;
-                text-align: left;
-                border-bottom: 5px solid #000;
-                padding-bottom: 2rem;
+                margin-bottom: 2rem;
             }
-            ul li:first-child img {
-                width: 100%;
-                filter: none;
-            }
-            ul li:first-child .title {
-                font-size: 4.5rem;
+            ul li.featured-item img { filter: none !important; }
+            ul li.featured-item .title { font-size: clamp(2.5rem, 6vw, 4rem); }
+
+            /* AJUSTE DE CATEGORÍA (Más fino) */
+            .post-category {
+                background: #000;
+                color: #fff;
+                padding: 0.15rem 0.5rem; /* Reducido */
+                font-size: 0.7rem;
+                font-family: monospace;
                 text-transform: uppercase;
-                margin-top: 1rem;
-                line-height: 0.9;
+                border: 1px solid #000; /* Borde mucho más delgado */
+            }
+
+            ul li img {
+                width: 100%;
+                margin-bottom: 1rem;
+                border: 2px solid #000;
+                filter: grayscale(100%);
+                transition: all 0.2s ease;
             }
 
             .title {
                 margin: 0.5rem 0;
                 color: #000;
-                line-height: 1;
                 font-family: 'Sifonn', sans-serif;
-                font-weight: bold;
+                line-height: 1;
                 text-transform: uppercase;
             }
 
-            /* FILA DE METADATOS (Categoría y Fecha) */
             .post-info-row {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin: 0.5rem 0;
-                font-family: monospace;
-                font-weight: bold;
+                margin-bottom: 0.5rem;
             }
 
-            .post-category {
-                background: #000;
-                color: #fff;
-                padding: 0.2rem 0.6rem;
-                font-size: 0.8rem;
-                text-transform: uppercase;
-            }
+            .date { font-family: monospace; font-size: 0.8rem; margin: 0; }
 
-            .date {
-                margin: 0;
-                color: #444;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-            }
-
-            /* FILA DE AUTOR Y FACULTAD (Alineación Izquierda/Derecha) */
             .post-author-row {
+                margin-top: 0.5rem;
+                padding-top: 0.5rem;
+                border-top: 1px solid #eee;
                 display: flex;
                 justify-content: space-between;
-                margin-top: 0.5rem;
                 font-family: monospace;
-                font-size: 0.85rem;
-                font-weight: bold;
-                text-transform: uppercase;
-                border-top: 1px solid #000;
-                padding-top: 0.5rem;
+                font-size: 0.75rem;
             }
 
-            .author-name {
-                color: var(--accent);
-            }
-
-            .author-affiliation {
-                color: #666;
-            }
-
-            /* EFECTOS HOVER */
+            /* HOVER */
             ul li a:hover img {
                 filter: grayscale(0%);
-                transform: translate(-8px, -8px);
-                box-shadow: 8px 8px 0px 0px var(--accent);
-            }
-
-            ul li a:hover .title {
-                color: var(--accent);
+                box-shadow: 8px 8px 0px #ff0000;
+                transform: translate(-4px, -4px);
             }
 
             @media (max-width: 720px) {
-                main { width: 100%; }
-                ul li { width: 100%; }
-                ul li:first-child .title { font-size: 2.5rem; }
-                .post-author-row { flex-direction: column; gap: 0.2rem; }
+                ul li { width: 100% !important; }
+                .controls { flex-direction: column; gap: 1rem; }
             }
         </style>
     </head>
     <body>
         <Header />
         <main>
-            <section>
-                <ul>
-                    {
-                        posts.map((post) => (
-                            <li>
-                                { /* Se usa post.id para vincular correctamente con las rutas generadas */ }
-                                <a href={`/blog/${post.id}/`}>
-                                    <img width={720} height={360} src={post.data.heroImage} alt="" />
-                                    
-                                    <div class="post-info-row">
-                                        <span class="post-category">{post.data.category || 'Artículo'}</span>
-                                        <p class="date">
-                                            [ <FormattedDate date={post.data.pubDate} /> ]
-                                        </p>
-                                    </div>
+            <div class="controls">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    {categories.map(cat => (
+                        <button class="filter-btn" data-filter={cat}>{cat}</button>
+                    ))}
+                </div>
+                <select id="sort-select">
+                    <option value="newest">Recientes primero</option>
+                    <option value="oldest">Antiguos primero</option>
+                </select>
+            </div>
 
-                                    <h4 class="title">{post.data.title}</h4>
-                                    
-                                    <div class="post-author-row">
-                                        <span class="author-name">
-                                            {post.data.author ? `Por ${post.data.author}` : 'Redacción Chelén'}
-                                        </span>
-                                        <span class="author-affiliation">
-                                            {post.data.affiliation || 'FACSO UCh'}
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                        ))
-                    }
+            <section>
+                <ul id="post-list">
+                    {posts.map((post) => (
+                        <li class="post-item" 
+                            data-category={post.data.category || 'Artículo'} 
+                            data-date={post.data.pubDate.valueOf()}>
+                            <a href={`/blog/${post.id}/`}>
+                                <img src={post.data.heroImage} alt="" />
+                                <div class="post-info-row">
+                                    <span class="post-category">{post.data.category || 'Artículo'}</span>
+                                    <p class="date">[ <FormattedDate date={post.data.pubDate} /> ]</p>
+                                </div>
+                                <h4 class="title">{post.data.title}</h4>
+                                <div class="post-author-row">
+                                    <span>{post.data.author || 'Redacción'}</span>
+                                    <span>{post.data.affiliation || 'UCh'}</span>
+                                </div>
+                            </a>
+                        </li>
+                    ))}
                 </ul>
             </section>
         </main>
         <Footer />
+
+        <script>
+            const postList = document.getElementById('post-list');
+            const items = Array.from(document.querySelectorAll('.post-item'));
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+
+            function update() {
+                const filter = document.querySelector('.filter-btn.active')?.getAttribute('data-filter');
+                const sort = sortSelect.value;
+
+                // Filtrar
+                items.forEach(el => {
+                    const cat = el.getAttribute('data-category');
+                    el.classList.toggle('hidden', filter !== 'all' && cat !== filter);
+                });
+
+                // Ordenar y Re-estilizar
+                const visible = items.filter(el => !el.classList.contains('hidden'));
+                visible.sort((a, b) => {
+                    const da = parseInt(a.getAttribute('data-date')!);
+                    const db = parseInt(b.getAttribute('data-date')!);
+                    return sort === 'newest' ? db - da : da - db;
+                });
+
+                visible.forEach((el, index) => {
+                    // La primera de la lista (según el filtro/orden actual) es la grande
+                    el.classList.toggle('featured-item', index === 0);
+                    postList?.appendChild(el);
+                });
+            }
+
+            filterBtns.forEach(btn => btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                update();
+            }));
+
+            sortSelect.addEventListener('change', update);
+            update();
+        </script>
     </body>
 </html>

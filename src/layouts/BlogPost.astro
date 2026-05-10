@@ -4,6 +4,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -64,7 +65,6 @@ const { title, description, pubDate, updatedDate, heroImage, author, affiliation
 				letter-spacing: -1px;
 			}
 
-			/* FICHA TÉCNICA DEL AUTOR */
 			.author-box {
 				display: flex;
 				justify-content: space-between;
@@ -104,7 +104,6 @@ const { title, description, pubDate, updatedDate, heroImage, author, affiliation
 				margin-top: 1rem;
 			}
 
-			/* CONTENIDO MARKDOWN */
 			.prose {
 				width: 100%;
 				line-height: 1.6;
@@ -144,20 +143,58 @@ const { title, description, pubDate, updatedDate, heroImage, author, affiliation
 				line-height: 1.2;
 			}
 
-			:global(.prose ul) {
-				margin-bottom: 1.5rem;
-				padding-left: 1.5rem;
+			/* BLOQUE PARTICIPA Y OPINA */
+			.cta-participa {
+				margin-top: 5rem;
+				padding: 3rem;
+				background-color: #f4f4f4;
+				border: 4px solid #000;
+				box-shadow: 15px 15px 0px #ff0000;
 			}
 
-			:global(.prose li) {
-				margin-bottom: 0.5rem;
+			.cta-content h3 {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 2.5rem;
+				text-transform: uppercase;
+				margin-bottom: 1rem;
+				line-height: 1;
+			}
+
+			.cta-content p {
 				font-size: 1.15rem;
+				margin-bottom: 2rem;
+				line-height: 1.4;
+			}
+
+			.cta-button {
+				display: inline-block;
+				background: #000;
+				color: #fff;
+				padding: 1rem 2rem;
+				text-decoration: none;
+				font-family: monospace;
+				font-weight: bold;
+				text-transform: uppercase;
+				border: 2px solid #000;
+				transition: all 0.2s ease;
+			}
+
+			.cta-button:hover {
+				background: #ff0000;
+				color: #000;
+				transform: translate(-5px, -5px);
+				box-shadow: 5px 5px 0px #000;
 			}
 
 			@media (max-width: 720px) {
 				.author-box {
 					flex-direction: column;
 					gap: 0.5rem;
+				}
+				.cta-participa {
+					padding: 1.5rem;
+					margin: 3rem 0;
+					box-shadow: 8px 8px 0px #ff0000;
 				}
 			}
 		</style>
@@ -196,6 +233,19 @@ const { title, description, pubDate, updatedDate, heroImage, author, affiliation
 				<div class="prose">
 					<slot />
 				</div>
+
+				<section class="cta-participa">
+					<div class="cta-content">
+						<h3>Participa y opina</h3>
+						<p>
+							En <strong>{SITE_TITLE}</strong> creemos en la construcción colectiva de ideas. 
+							Si tienes una respuesta, una crítica o quieres proponer un tema, escríbenos.
+						</p>
+						<a href="mailto:contacto@chelen.cl" class="cta-button">
+							Enviar mi opinión
+						</a>
+					</div>
+				</section>
 			</article>
 		</main>
 		<Footer />
