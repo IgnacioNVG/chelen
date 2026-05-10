@@ -1,0 +1,48 @@
+---
+import FormattedDate from './FormattedDate.astro';
+const { post, isFeatured = false } = Astro.props;
+---
+
+<article class={`column-card ${isFeatured ? 'featured' : ''}`}>
+    <a href={`/blog/${post.id}/`}>
+        <div class="content-wrapper">
+            {isFeatured && post.data.heroImage && (
+                <div class="featured-image-container">
+                    <img src={post.data.heroImage} alt="" />
+                </div>
+            )}
+            <div class="text-content">
+                <span class="label">{isFeatured ? 'Destacado' : 'Lectura'}</span>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.description}</p>
+                <div class="meta-date">
+                    <FormattedDate date={post.data.pubDate} />
+                </div>
+            </div>
+        </div>
+    </a>
+</article>
+
+<style>
+    /* Mueve aquí los estilos de .column-card que ya tienes */
+    .column-card {
+        background-color: #fff;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .featured .content-wrapper {
+        flex-direction: row; /* En desktop el destacado es horizontal */
+    }
+    @media (max-width: 768px) {
+        .featured .content-wrapper { flex-direction: column; }
+    }
+    /* ... resto de tus estilos de tarjetas ... */
+</style>
