@@ -4,163 +4,198 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
-// Array dinámico para que sea escalable
 const recursos = [
-	{ title: "Acceso Completo a la Carpeta Drive", type: "DIR", year: "2026", link: "https://drive.google.com/drive/folders/1QklUcvulfL0tdlG_COOHixlKLMdtGqW2" },
-	{ title: "Documento de Renovación Socialista", type: "PDF", year: "1985", link: "#" },
-	{ title: "Acta de Convergencia", type: "DOC", year: "1979", link: "#" },
+    { title: "Acceso Completo a la Carpeta Drive", type: "DIR", year: "2026", link: "https://drive.google.com/drive/folders/1QklUcvulfL0tdlG_COOHixlKLMdtGqW2" },
+    { title: "Documento de Renovación Socialista", type: "PDF", year: "1985", link: "#" },
+    { title: "Acta de Convergencia", type: "DOC", year: "1979", link: "#" },
 ];
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<BaseHead title={`Archivo | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
-		<style>
-			/* Reset crítico para evitar marcos blancos */
-			:global(body) {
-				margin: 0;
-				padding: 0;
-			}
+    <head>
+        <BaseHead title={`Archivo | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+        <style>
+            :global(body) {
+                margin: 0;
+                padding: 0;
+                /* Evita desbordamiento horizontal */
+                overflow-x: hidden; 
+            }
 
-			main {
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 4rem 1rem;
-			}
+            main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem 1rem;
+            }
 
-			.archive-container {
-				border: 3px solid #000;
-				background: #fafafa;
-				padding: 3rem;
-				box-shadow: 12px 12px 0px #000;
-			}
+            .archive-container {
+                border: 3px solid #000;
+                background: #fafafa;
+                padding: 2rem;
+                box-shadow: 8px 8px 0px #000;
+            }
 
-			.archive-header {
-				border-bottom: 5px solid #000;
-				margin-bottom: 3rem;
-				padding-bottom: 1.5rem;
-			}
+            .archive-header {
+                border-bottom: 5px solid #000;
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+            }
 
-			.archive-header h1 {
-				font-family: 'Sifonn', sans-serif;
-				font-size: 4rem;
-				text-transform: uppercase;
-				line-height: 0.8;
-				margin: 0 0 1rem 0;
-				letter-spacing: -0.02em;
-			}
+            .archive-header h1 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.5rem, 8vw, 4rem); /* Tamaño fluido */
+                text-transform: uppercase;
+                line-height: 0.9;
+                margin: 0 0 1rem 0;
+                letter-spacing: -0.02em;
+            }
 
-			.archive-header p {
-				font-family: monospace;
-				font-weight: bold;
-				margin: 0;
-				text-transform: uppercase;
-			}
+            .archive-header p {
+                font-family: monospace;
+                font-weight: bold;
+                margin: 0;
+                text-transform: uppercase;
+                font-size: 0.9rem;
+            }
 
-			.file-list {
-				display: flex;
-				flex-direction: column;
-			}
+            .file-list {
+                display: flex;
+                flex-direction: column;
+            }
 
-			.file-row {
-				display: grid;
-				grid-template-columns: 80px 1fr 100px 160px;
-				border-bottom: 2px solid #000;
-				padding: 1.2rem 0;
-				align-items: center;
-				font-family: monospace;
-				transition: background 0.2s;
-			}
+            /* --- ESTRUCTURA DE FILA (Desktop) --- */
+            .file-row {
+                display: grid;
+                grid-template-columns: 80px 1fr 100px 160px;
+                border-bottom: 2px solid #000;
+                padding: 1.2rem 0;
+                align-items: center;
+                font-family: monospace;
+                transition: background 0.2s;
+            }
 
-			.file-row:hover {
-				background: #f0f0f0;
-			}
+            .file-row:hover {
+                background: #f0f0f0;
+            }
 
-			.file-type {
-				font-weight: bold;
-				background: #000;
-				color: #fff;
-				text-align: center;
-				padding: 4px 8px;
-				font-size: 0.8rem;
-				width: fit-content;
-			}
+            .file-type {
+                font-weight: bold;
+                background: #000;
+                color: #fff;
+                text-align: center;
+                padding: 4px 8px;
+                font-size: 0.8rem;
+                width: fit-content;
+            }
 
-			.file-title {
-				font-weight: bold;
-				text-transform: uppercase;
-				padding-left: 1.5rem;
-				font-size: 1.1rem;
-			}
+            .file-title {
+                font-weight: bold;
+                text-transform: uppercase;
+                padding-left: 1.5rem;
+                font-size: 1.1rem;
+            }
 
-			.file-year {
-				color: #666;
-				text-align: center;
-			}
+            .file-year {
+                color: #666;
+                text-align: center;
+                font-weight: bold;
+            }
 
-			.btn-access {
-				border: 2px solid #000;
-				padding: 0.5rem;
-				text-align: center;
-				text-decoration: none;
-				color: #000;
-				font-weight: bold;
-				font-size: 0.75rem;
-				text-transform: uppercase;
-				transition: all 0.2s;
-			}
+            .btn-access {
+                border: 2px solid #000;
+                padding: 0.6rem;
+                text-align: center;
+                text-decoration: none;
+                color: #000;
+                font-weight: bold;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                display: block;
+                transition: all 0.2s;
+            }
 
-			.btn-access:hover {
-				background: #000;
-				color: #fff;
-			}
+            .btn-access:hover {
+                background: #000;
+                color: #fff;
+            }
 
-			/* Estilo especial para el Directorio/Drive */
-			.row-dir {
-				background: #fff4f4;
-			}
+            .row-dir { background: #fff4f4; }
 
-			@media (max-width: 768px) {
-				.archive-header h1 { font-size: 2.5rem; }
-				.file-row {
-					grid-template-columns: 70px 1fr;
-					gap: 10px;
-				}
-				.file-year, .btn-access-cell {
-					display: none;
-				}
-				.file-title { padding-left: 0.5rem; font-size: 0.9rem; }
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<div class="archive-container">
-				<div class="archive-header">
-					<h1>Memoria Socialista</h1>
-					<p>Repositorio de bibliografía y contenido en difusión</p>
-				</div>
-				
-				<div class="file-list">
-					{recursos.map((item) => (
-						<div class={`file-row ${item.type === 'DIR' ? 'row-dir' : ''}`}>
-							<div class="file-type-cell">
-								<span class="file-type">{item.type}</span>
-							</div>
-							<div class="file-title">{item.title}</div>
-							<div class="file-year">{item.year}</div>
-							<div class="btn-access-cell">
-								<a href={item.link} target="_blank" class="btn-access">
-									{item.type === 'DIR' ? 'Abrir Carpeta' : 'Descargar Archivo'}
-								</a>
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		</main>
-		<Footer />
-	</body>
+            /* --- RESPONSIVO (Mobile) --- */
+            @media (max-width: 768px) {
+                main { padding: 1rem 0.5rem; }
+
+                .archive-container {
+                    padding: 1.5rem;
+                    box-shadow: 5px 5px 0px #000;
+                }
+
+                .file-row {
+                    /* Cambiamos a bloque para que los elementos fluyan hacia abajo */
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                    padding: 1.5rem 0;
+                }
+
+                .file-title {
+                    padding-left: 0;
+                    font-size: 1rem;
+                    line-height: 1.2;
+                }
+
+                .file-year {
+                    text-align: left;
+                    font-size: 0.8rem;
+                }
+
+                .file-year::before {
+                    content: "AÑO: ";
+                    color: #000;
+                }
+
+                .btn-access-cell {
+                    width: 100%;
+                }
+
+                .btn-access {
+                    width: 100%;
+                    box-sizing: border-box;
+                    background: #000;
+                    color: #fff; /* Más fácil de clickear en móvil */
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <div class="archive-container">
+                <div class="archive-header">
+                    <h1>Memoria Socialista</h1>
+                    <p>Repositorio de bibliografía y contenido en difusión</p>
+                </div>
+                
+                <div class="file-list">
+                    {recursos.map((item) => (
+                        <div class={`file-row ${item.type === 'DIR' ? 'row-dir' : ''}`}>
+                            <div class="file-type-cell">
+                                <span class="file-type">{item.type}</span>
+                            </div>
+                            <div class="file-title">{item.title}</div>
+                            <div class="file-year">{item.year}</div>
+                            <div class="btn-access-cell">
+                                <a href={item.link} target="_blank" class="btn-access">
+                                    {item.type === 'DIR' ? 'Abrir Carpeta' : 'Descargar Archivo'}
+                                </a>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </main>
+        <Footer />
+    </body>
 </html>
