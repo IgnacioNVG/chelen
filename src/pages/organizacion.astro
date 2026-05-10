@@ -1,0 +1,202 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+---
+
+<Layout
+    title="Organización y Estructura"
+    description="Estructura operativa y política de Revista Chelén"
+    pubDate={new Date('May 10 2026')}
+    heroImage="/blog-placeholder-about.png"
+>
+    <style>
+        .org-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        /* Títulos con impacto */
+        h2 {
+            font-family: 'Sifonn', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            text-transform: uppercase;
+            line-height: 0.85;
+            margin-bottom: 3rem;
+            color: #000;
+        }
+
+        h3 {
+            font-family: 'Sifonn', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            color: #ff0000;
+            margin-bottom: 1rem;
+        }
+
+        .manifesto-box {
+            grid-column: 1 / 13;
+            border-left: 10px solid #000;
+            padding: 2rem;
+            background: #f4f4f4;
+            margin-bottom: 4rem;
+            font-family: monospace;
+        }
+
+        /* Grid de Comisiones */
+        .commissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .commission-card {
+            border-top: 4px solid #000;
+            padding-top: 1.5rem;
+        }
+
+        .commission-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        .commission-card li {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .commission-card li::before {
+            content: "//";
+            position: absolute;
+            left: 0;
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        /* Secciones de Dirección */
+        .leadership-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 5rem;
+        }
+
+        .leadership-box {
+            background: #000;
+            color: #fff;
+            padding: 3rem;
+        }
+
+        .leadership-box h3 { color: #fff; border-bottom: 2px solid #ff0000; display: inline-block; }
+        .leadership-box p { font-size: 1rem; opacity: 0.9; margin-top: 1rem; }
+
+        /* Espacios Transversales */
+        .transversal-section {
+            margin-top: 6rem;
+            padding: 4rem;
+            background: #ff0000;
+            color: #fff;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .transversal-section h2, .transversal-section h3 { color: #fff; }
+        .transversal-section h2 { border-bottom: 8px solid #000; }
+
+        @media (max-width: 900px) {
+            .leadership-section, .transversal-section {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+        }
+    </style>
+
+    <div class="org-container">
+        <header>
+            <h2>Estructura Operativa</h2>
+            <div class="manifesto-box">
+                <p>CONTRA EL HIPERCENTRALISMO: Diseñamos una organización basada en la autonomía de áreas, el relevo generacional y la formación constante de cuadros para la agitación cultural.</p>
+            </div>
+        </header>
+
+        <section class="leadership-section">
+            <div class="leadership-box">
+                <h3>Dirección General</h3>
+                <p>Responsable de la coherencia global y la línea política del proyecto. Define la orientación intelectual, resuelve tensiones estratégicas y proyecta alianzas externas.</p>
+            </div>
+            <div class="leadership-box" style="background: #222;">
+                <h3>Coordinación General</h3>
+                <p>El motor organizativo. Gestión de calendarios editoriales, seguimiento de tareas internas y metodologías de trabajo para asegurar el flujo constante de la revista.</p>
+            </div>
+        </section>
+
+        <h2>Comisiones de Trabajo</h2>
+        <div class="commissions-grid">
+            <div class="commission-card">
+                <h3>Contenido Escrito</h3>
+                <p>El corazón ideológico. Gestión de ensayos, columnas, entrevistas y la rigurosidad de la corrección de estilo.</p>
+                <ul>
+                    <li>Edición de textos</li>
+                    <li>Propuestas temáticas</li>
+                    <li>Redacción crítica</li>
+                </ul>
+            </div>
+
+            <div class="commission-card">
+                <h3>Gráfica e Identidad</h3>
+                <p>Construcción visual de la revista. Más que diseño, es la materialización estética del proyecto.</p>
+                <ul>
+                    <li>Diagramación editorial</li>
+                    <li>Línea estética</li>
+                    <li>Material impreso</li>
+                </ul>
+            </div>
+
+            <div class="commission-card">
+                <h3>Audiovisual</h3>
+                <p>Expansión del alcance mediante nuevos lenguajes. Registro y producción de contenido dinámico.</p>
+                <ul>
+                    <li>Podcast y Clips</li>
+                    <li>Producción de video</li>
+                    <li>Nuevas narrativas</li>
+                </ul>
+            </div>
+
+            <div class="commission-card">
+                <h3>Difusión y Redes</h3>
+                <p>Estrategia de circulación. Pensar cómo y dónde viaja nuestro contenido para romper el algoritmo.</p>
+                <ul>
+                    <li>Estrategia de alcance</li>
+                    <li>Crecimiento orgánico</li>
+                    <li>Gestión de comunidades</li>
+                </ul>
+            </div>
+
+            <div class="commission-card">
+                <h3>Física y Territorial</h3>
+                <p>Presencia material. Sacar la revista de internet para llevarla a las facultades y las calles.</p>
+                <ul>
+                    <li>Distribución y Mesas</li>
+                    <li>Lanzamientos en barrios</li>
+                    <li>Intervenciones físicas</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="transversal-section">
+            <div>
+                <h2>Consejo Editorial</h2>
+                <p>Espacio de debate político y estratégico. Evalúa el contenido y propone dossiers temáticos para mantener la revista conectada con la realidad nacional.</p>
+            </div>
+            <div>
+                <h2>Equipo de Formación</h2>
+                <p>Garantía de futuro. Talleres de edición, diseño y formación política para integrar a nuevos colaboradores y democratizar el conocimiento técnico.</p>
+            </div>
+        </section>
+    </div>
+</Layout>

@@ -4,127 +4,131 @@ import { SITE_TITLE } from '../consts';
 ---
 
 <header>
-	<nav>
-		<div class="logo">
-			<a href="/">
-				<img src="/favicon.svg" alt="" width="24" height="24" />
-				<span class="sifonn">{SITE_TITLE}</span>
-			</a>
-		</div>
+    <nav>
+        <div class="logo">
+            <a href="/">
+                <img src="/favicon.svg" alt="Logo Chelén" width="24" height="24" />
+                <span class="sifonn">{SITE_TITLE}</span>
+            </a>
+        </div>
 
-		<div class="internal-links">
-			<HeaderLink href="/">Inicio</HeaderLink>
-			<HeaderLink href="/grafica">Grafica</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">Nosotros</HeaderLink>
-		</div>
+        <div class="internal-links">
+            <HeaderLink href="/grafica">Grafica</HeaderLink>
+            <HeaderLink href="/blog">Blog</HeaderLink>
+            <HeaderLink href="/about">Nosotros</HeaderLink>
+        </div>
 
-		<div class="contact-links">
-			<a href="https://instagram.com/revista.chelen" target="_blank">IG</a>
-			<a href="mailto:contacto@chelen.cl">Mail</a>
-		</div>
-	</nav>
+        <div class="contact-links">
+            <a href="https://instagram.com/revista.chelen" target="_blank" aria-label="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="mailto:contacto@chelen.cl" aria-label="Enviar Mail">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </a>
+        </div>
+    </nav>
 </header>
 
 <style>
-	header {
-		margin: 0;
-		padding: 0 2rem;
-		background: #E5E5E5;
-		border-bottom: 2px solid #ff0000;
-	}
+    header {
+        margin: 0;
+        padding: 0 2rem;
+        background: #E5E5E5;
+        border-bottom: 2px solid #ff0000;
+    }
 
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between; /* Esto separa los 3 bloques */
-		min-height: 70px;
-		max-width: 1400px;
-		margin: 0 auto;
-	}
+    nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-	/* BLOQUE LOGO */
-	.logo a {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		text-decoration: none;
-		color: #000;
-	}
+    .logo a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #000;
+    }
 
-	.sifonn {
-		font-family: 'Sifonn', sans-serif;
-		font-size: 1.8rem;
-		text-transform: uppercase;
-		line-height: 1;
-	}
+    .sifonn {
+        font-family: 'Sifonn', sans-serif;
+        font-size: 1.8rem;
+        text-transform: uppercase;
+        line-height: 1;
+    }
 
-	/* BLOQUE NAVEGACIÓN (Centro) */
-	.internal-links {
-		display: flex;
-		gap: 0.5rem;
-	}
+    .internal-links {
+        display: flex;
+        gap: 0.5rem;
+    }
 
-	header :global(a) {
-		padding: 0.5rem 1rem;
-		color: #000;
-		text-decoration: none;
-		text-transform: uppercase;
-		font-family: monospace;
-		font-weight: bold;
-		font-size: 0.9rem;
-		border-bottom: 3px solid transparent;
-	}
+    header :global(a) {
+        padding: 0.5rem 1rem;
+        color: #000;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border-bottom: 3px solid transparent;
+    }
 
-	header :global(a.active),
-	header :global(a:hover) {
-		border-bottom-color: #ff0000;
-	}
+    header :global(a.active),
+    header :global(a:hover) {
+        border-bottom-color: #ff0000;
+    }
 
-	/* BLOQUE DERECHA */
-	.contact-links {
-		display: flex;
-		gap: 1rem;
-	}
+    /* BLOQUE ICONOS DERECHA */
+    .contact-links {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
 
-	.contact-links a {
-		font-size: 0.8rem;
-		opacity: 0.7;
-	}
+    .contact-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        border-bottom: none !important; /* Quitamos la línea para los iconos */
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
 
-	/* --- RESPONSIVE MÓVIL --- */
-	@media (max-width: 720px) {
-		header {
-			padding: 0;
-		}
+    .contact-links a:hover {
+        color: #ff0000; /* El icono cambia al rojo de la revista */
+        transform: translateY(-2px); /* Pequeño salto al pasar el mouse */
+    }
 
-		nav {
-			flex-direction: column;
-			min-height: auto;
-		}
+    @media (max-width: 720px) {
+        header {
+            padding: 0;
+        }
 
-		.logo {
-			padding: 1rem 0;
-			width: 100%;
-			border-bottom: 1px solid rgba(0,0,0,0.1);
-			display: flex;
-			justify-content: center;
-		}
+        nav {
+            flex-direction: column;
+        }
 
-		.internal-links {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			width: 100%;
-			gap: 0;
-		}
+        .logo {
+            padding: 1.5rem 0;
+            width: 100%;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            justify-content: center;
+            display: flex;
+        }
 
-		header :global(a) {
-			text-align: center;
-			padding: 1.2rem 0;
-		}
+        .internal-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 100%;
+        }
 
-		.contact-links {
-			display: none; /* Ocultamos redes en móvil para priorizar secciones */
-		}
-	}
+        /* En móvil ocultamos los iconos para mantener el minimalismo que querías */
+        .contact-links {
+            display: none;
+        }
+    }
 </style>
