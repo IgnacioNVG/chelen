@@ -7,105 +7,175 @@ import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									<img width={720} height={360} src={post.data.heroImage} alt="" />
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
+<html lang="es">
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            main {
+                width: 960px;
+                max-width: calc(100% - 3rem);
+                margin: 0 auto; 
+                padding: 3rem 0;
+            }
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 3rem; /* Espacio aumentado para aire de revista */
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            ul li {
+                width: calc(50% - 1.5rem);
+            }
+            ul li * {
+                text-decoration: none;
+                transition: all 0.2s ease;
+            }
+
+            /* ESTILO CONSTRUCTIVISTA / BRUTALISTA */
+            ul li img {
+                margin-bottom: 1rem;
+                border-radius: 0; 
+                border: 3px solid #000;
+                filter: grayscale(100%) contrast(1.1);
+                display: block;
+                box-shadow: 0px 0px 0px 0px #000;
+            }
+
+            /* Primer post destacado */
+            ul li:first-child {
+                width: 100%;
+                margin-bottom: 3rem;
+                text-align: left;
+                border-bottom: 5px solid #000;
+                padding-bottom: 2rem;
+            }
+            ul li:first-child img {
+                width: 100%;
+                filter: none;
+            }
+            ul li:first-child .title {
+                font-size: 4.5rem;
+                text-transform: uppercase;
+                margin-top: 1rem;
+                line-height: 0.9;
+            }
+
+            .title {
+                margin: 0.5rem 0;
+                color: #000;
+                line-height: 1;
+                font-family: 'Sifonn', sans-serif;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            /* FILA DE METADATOS (Categoría y Fecha) */
+            .post-info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 0.5rem 0;
+                font-family: monospace;
+                font-weight: bold;
+            }
+
+            .post-category {
+                background: #000;
+                color: #fff;
+                padding: 0.2rem 0.6rem;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+            }
+
+            .date {
+                margin: 0;
+                color: #444;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+            }
+
+            /* FILA DE AUTOR Y FACULTAD (Alineación Izquierda/Derecha) */
+            .post-author-row {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+                font-family: monospace;
+                font-size: 0.85rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                border-top: 1px solid #000;
+                padding-top: 0.5rem;
+            }
+
+            .author-name {
+                color: var(--accent);
+            }
+
+            .author-affiliation {
+                color: #666;
+            }
+
+            /* EFECTOS HOVER */
+            ul li a:hover img {
+                filter: grayscale(0%);
+                transform: translate(-8px, -8px);
+                box-shadow: 8px 8px 0px 0px var(--accent);
+            }
+
+            ul li a:hover .title {
+                color: var(--accent);
+            }
+
+            @media (max-width: 720px) {
+                main { width: 100%; }
+                ul li { width: 100%; }
+                ul li:first-child .title { font-size: 2.5rem; }
+                .post-author-row { flex-direction: column; gap: 0.2rem; }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <section>
+                <ul>
+                    {
+                        posts.map((post) => (
+                            <li>
+                                <a href={`/blog/${post.slug}/`}>
+                                    <img width={720} height={360} src={post.data.heroImage} alt="" />
+                                    
+                                    <div class="post-info-row">
+                                        <span class="post-category">{post.data.category || 'Artículo'}</span>
+                                        <p class="date">
+                                            [ <FormattedDate date={post.data.pubDate} /> ]
+                                        </p>
+                                    </div>
+
+                                    <h4 class="title">{post.data.title}</h4>
+                                    
+                                    <div class="post-author-row">
+                                        <span class="author-name">
+                                            {post.data.author ? `Por ${post.data.author}` : 'Redacción Chelén'}
+                                        </span>
+                                        <span class="author-affiliation">
+                                            {post.data.affiliation || 'FACSO UCh'}
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </section>
+        </main>
+        <Footer />
+    </body>
 </html>
