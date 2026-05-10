@@ -72,7 +72,7 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
 
             ul li.hidden { display: none; }
 
-            /* ESTILO DESTACADO (Dinámico) */
+            /* ESTILO DESTACADO */
             ul li.featured-item {
                 width: 100%;
                 margin-bottom: 2rem;
@@ -80,15 +80,15 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
             ul li.featured-item img { filter: none !important; }
             ul li.featured-item .title { font-size: clamp(2.5rem, 6vw, 4rem); }
 
-            /* AJUSTE DE CATEGORÍA (Más fino) */
+            /* CATEGORÍA */
             .post-category {
                 background: #000;
                 color: #fff;
-                padding: 0.15rem 0.5rem; /* Reducido */
+                padding: 0.15rem 0.5rem;
                 font-size: 0.7rem;
                 font-family: monospace;
                 text-transform: uppercase;
-                border: 1px solid #000; /* Borde mucho más delgado */
+                border: 1px solid #000;
             }
 
             ul li img {
@@ -105,6 +105,13 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                 font-family: 'Sifonn', sans-serif;
                 line-height: 1;
                 text-transform: uppercase;
+                /* Eliminamos cualquier subrayado por defecto */
+                text-decoration: none; 
+            }
+
+            /* Quitamos el subrayado de los enlaces */
+            ul li a {
+                text-decoration: none;
             }
 
             .post-info-row {
@@ -114,7 +121,7 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                 margin-bottom: 0.5rem;
             }
 
-            .date { font-family: monospace; font-size: 0.8rem; margin: 0; }
+            .date { font-family: monospace; font-size: 0.8rem; margin: 0; color: #000; }
 
             .post-author-row {
                 margin-top: 0.5rem;
@@ -124,12 +131,20 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                 justify-content: space-between;
                 font-family: monospace;
                 font-size: 0.75rem;
+                color: #000;
             }
 
-            /* HOVER */
+            /* HOVER - LIMPIO DE ROJO */
+            ul li a:hover .title {
+                /* Aseguramos que el título no se subraye en rojo al hacer hover */
+                text-decoration: none;
+                color: #000;
+            }
+
             ul li a:hover img {
                 filter: grayscale(0%);
-                box-shadow: 8px 8px 0px #ff0000;
+                /* Sombra en negro para estilo brutalista */
+                box-shadow: 8px 8px 0px #000; 
                 transform: translate(-4px, -4px);
             }
 
@@ -190,13 +205,11 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                 const filter = document.querySelector('.filter-btn.active')?.getAttribute('data-filter');
                 const sort = sortSelect.value;
 
-                // Filtrar
                 items.forEach(el => {
                     const cat = el.getAttribute('data-category');
                     el.classList.toggle('hidden', filter !== 'all' && cat !== filter);
                 });
 
-                // Ordenar y Re-estilizar
                 const visible = items.filter(el => !el.classList.contains('hidden'));
                 visible.sort((a, b) => {
                     const da = parseInt(a.getAttribute('data-date')!);
@@ -205,7 +218,6 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                 });
 
                 visible.forEach((el, index) => {
-                    // La primera de la lista (según el filtro/orden actual) es la grande
                     el.classList.toggle('featured-item', index === 0);
                     postList?.appendChild(el);
                 });
