@@ -5,286 +5,264 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
-// 1. LLAMADA DINÁMICA AL BLOG (Colecciones de contenido)
+// 1. LLAMADA DINÁMICA AL BLOG
 import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-// Tomamos el último post para destacarlo, y los siguientes 2 para la grilla secundaria
+
 const featuredPost = posts[0];
 const secondaryPosts = posts.slice(1, 3);
 
 // 2. LLAMADA DINÁMICA A LAS GRÁFICAS
 import { Image } from 'astro:assets';
-// import.meta.glob escanea automáticamente la carpeta assets buscando imágenes
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/*.{webp,png,jpg,jpeg}');
-// Extraemos las imágenes para poder usarlas
 const graphics = await Promise.all(
-	Object.keys(graphicFiles).map(async (path) => {
-		const img = await graphicFiles[path]();
-		// Usamos el nombre del archivo (ej: grafica-01) para limpiarlo y usarlo como título
-		const name = path.split('/').pop()?.split('.')[0] || 'Archivo Visual';
-		return { src: img.default, name: name.replace('-', ' ') };
-	})
+    Object.keys(graphicFiles).map(async (path) => {
+        const img = await graphicFiles[path]();
+        const name = path.split('/').pop()?.split('.')[0] || 'Archivo Visual';
+        return { src: img.default, name: name.replace('-', ' ') };
+    })
 );
-// Tomamos solo las dos primeras gráficas para previsualizarlas en el inicio
 const featuredGraphics = graphics.slice(0, 2);
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 2em 1em;
-			}
-			
-			/* Encabezados de sección con rigor constructivista */
-			.section-header {
-				border-bottom: 4px solid #111;
-				margin-bottom: 2rem;
-				padding-bottom: 0.5rem;
-				display: flex;
-				justify-content: space-between;
-				align-items: flex-end;
-			}
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2em 1em;
+            }
+            
+            .section-header {
+                border-bottom: 4px solid #111;
+                margin-bottom: 2rem;
+                padding-bottom: 0.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
 
-			.section-header h2 {
-				font-size: 2.5rem;
-				text-transform: uppercase;
-				margin: 0;
-				letter-spacing: -0.02em;
-			}
+            .section-header h2 {
+                font-size: 2.5rem;
+                text-transform: uppercase;
+                margin: 0;
+                letter-spacing: -0.02em;
+            }
 
-			.ver-mas {
-				color: #111;
-				font-weight: bold;
-				text-decoration: none;
-				text-transform: uppercase;
-				font-size: 0.9rem;
-				border-bottom: 2px solid transparent;
-				transition: border-color 0.2s;
-			}
-			.ver-mas:hover { border-color: #111; }
+            .ver-mas {
+                color: #111;
+                font-weight: bold;
+                text-decoration: none;
+                text-transform: uppercase;
+                font-size: 0.9rem;
+                transition: border-color 0.2s;
+            }
 
-			/* Texto de introducción */
-			.intro-box {
-				margin-bottom: 5rem;
-				max-width: 900px;
-			}
+            .intro-box {
+                margin-bottom: 5rem;
+                max-width: 900px;
+            }
 
-			.intro-box p {
-				font-size: 1.75rem;
-				line-height: 1.3;
-				color: #111;
-			}
+            .intro-box p {
+                font-size: 1.75rem;
+                line-height: 1.3;
+                color: #111;
+            }
 
-			.intro-box a {
-				color: #111;
-				text-decoration: underline;
-				text-decoration-thickness: 3px;
-				font-weight: bold;
-			}
+            .columns-grid {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 2px;
+                background-color: #111;
+                border: 2px solid #111;
+                margin-bottom: 6rem;
+            }
 
-			/* Grilla Cohesiva de Columnas (Blog) */
-			.columns-grid {
-				display: grid;
-				grid-template-columns: repeat(12, 1fr);
-				gap: 2px;
-				background-color: #111;
-				border: 2px solid #111;
-				margin-bottom: 6rem;
-			}
+            .column-card {
+                background-color: #fff;
+                padding: 3rem 2rem;
+                grid-column: span 6;
+                display: flex;
+                flex-direction: column;
+                transition: background-color 0.2s ease;
+            }
 
-			.column-card {
-				background-color: #fff;
-				padding: 3rem 2rem;
-				grid-column: span 6; /* 2 columnas en pantallas grandes */
-				display: flex;
-				flex-direction: column;
-				transition: background-color 0.2s ease;
-			}
+            .column-card.featured {
+                grid-column: span 12;
+                border-bottom: 2px solid #111;
+            }
 
-			.column-card.featured {
-				grid-column: span 12; /* Destacado ocupa todo el ancho */
-				border-bottom: 2px solid #111;
-			}
+            .column-card:hover {
+                background-color: #f4f4f4;
+            }
 
-			.column-card:hover {
-				background-color: #f4f4f4;
-			}
+            .column-card a {
+                text-decoration: none;
+                color: inherit;
+                height: 100%;
+            }
 
-			.column-card a {
-				text-decoration: none;
-				color: inherit;
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-			}
+            .column-card h3 {
+                font-size: 2.5rem; /* Ajustado para base */
+                text-transform: uppercase;
+                line-height: 1;
+                margin: 1rem 0;
+                letter-spacing: -0.04em;
+            }
+            
+            .column-card.featured h3 {
+                font-size: 4rem;
+            }
 
-			.column-card h3 {
-				font-size: 3rem;
-				text-transform: uppercase;
-				line-height: 1;
-				margin: 1rem 0;
-				letter-spacing: -0.04em;
-			}
-			
-			.column-card.featured h3 {
-				font-size: 4rem; /* Impacto masivo para el artículo principal */
-			}
+            .column-card p {
+                font-size: 1.2rem;
+                color: #333;
+                margin-bottom: 2rem;
+            }
 
-			.column-card p {
-				font-size: 1.2rem;
-				color: #333;
-				margin-bottom: 2rem;
-				flex-grow: 1;
-			}
+            .label {
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                background: #111;
+                color: #fff;
+                padding: 0.2rem 0.6rem;
+                display: inline-block;
+            }
 
-			.label {
-				font-weight: bold;
-				text-transform: uppercase;
-				font-size: 0.85rem;
-				background: #111;
-				color: #fff;
-				padding: 0.2rem 0.6rem;
-				display: inline-block;
-				align-self: flex-start;
-			}
+            .meta-date {
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                color: #666;
+                border-top: 1px solid #ccc;
+                padding-top: 1rem;
+                margin-top: auto;
+            }
 
-			.meta-date {
-				font-size: 0.9rem;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
-				color: #666;
-				border-top: 1px solid #ccc;
-				padding-top: 1rem;
-				margin-top: auto;
-			}
+            .graphics-preview {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2.5rem;
+                margin-bottom: 5rem;
+            }
 
-			/* Gráficas Destacadas */
-			.graphics-preview {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 2.5rem;
-				margin-bottom: 5rem;
-			}
+            .graphic-card {
+                border: 1px solid #111;
+                padding: 1.5rem;
+                background: #fff;
+            }
 
-			.graphic-card {
-				border: 1px solid #111;
-				padding: 1.5rem;
-				background: #fff;
-				transition: transform 0.2s ease;
-			}
-			
-			.graphic-card:hover {
-				transform: translateY(-5px);
-			}
+            .graphic-card img {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                border: 1px solid #111;
+                margin-bottom: 1.5rem;
+                filter: grayscale(100%);
+                transition: filter 0.3s ease;
+            }
 
-			.graphic-card a {
-				text-decoration: none;
-				color: inherit;
-				display: block;
-			}
+            .graphic-card:hover img {
+                filter: grayscale(0%);
+            }
 
-			.graphic-card img {
-				width: 100%;
-				height: auto;
-				aspect-ratio: 4 / 5;
-				object-fit: cover;
-				border: 1px solid #111;
-				margin-bottom: 1.5rem;
-				filter: grayscale(100%); /* Base gris estructurada en la portada */
-				transition: filter 0.3s ease;
-			}
+            /* --- AJUSTES PARA TELÉFONO --- */
+            @media (max-width: 768px) {
+                .intro-box p {
+                    font-size: 1.3rem; /* Texto más legible en móvil */
+                }
 
-			.graphic-card:hover img {
-				filter: grayscale(0%);
-			}
+                .section-header h2 {
+                    font-size: 1.8rem;
+                }
 
-			.graphic-info h4 {
-				text-transform: uppercase;
-				margin: 0;
-				font-size: 1.2rem;
-			}
+                .column-card, .column-card.featured {
+                    grid-column: span 12; /* Todos ocupan ancho completo */
+                    padding: 2rem 1.5rem;
+                }
 
-			@media (max-width: 900px) {
-				.column-card {
-					grid-column: span 12;
-				}
-				.graphics-preview {
-					grid-template-columns: 1fr;
-				}
-				.column-card.featured h3 { font-size: 3rem; }
-				.column-card h3 { font-size: 2.5rem; }
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section class="intro-box">
-				<p>
-					Chelén es una publicación dedicada al análisis de la teoría social materialista, la marginalidad y los procesos de organización comunitaria. Puedes leer más sobre nuestra visión editorial y equipo en la sección <a href="/about">Acerca de</a>.
-				</p>
-			</section>
+                .column-card h3 {
+                    font-size: 1.8rem; /* Evita que el texto se rompa */
+                }
 
-			<div class="section-header">
-				<h2>Columnas Recientes</h2>
-				<a href="/blog" class="ver-mas">Archivo Textual →</a>
-			</div>
-			
-			<div class="columns-grid">
-				{featuredPost && (
-					<article class="column-card featured">
-						<a href={`/blog/${featuredPost.slug}/`}>
-							<span class="label">Última Publicación</span>
-							<h3>{featuredPost.data.title}</h3>
-							<p>{featuredPost.data.description}</p>
-							<div class="meta-date">
-								<FormattedDate date={featuredPost.data.pubDate} />
-							</div>
-						</a>
-					</article>
-				)}
+                .column-card.featured h3 {
+                    font-size: 2.2rem; /* Tamaño destacado pero contenido */
+                }
 
-				{secondaryPosts.map((post) => (
-					<article class="column-card">
-						<a href={`/blog/${post.slug}/`}>
-							<span class="label">Lectura</span>
-							<h3>{post.data.title}</h3>
-							<p>{post.data.description}</p>
-							<div class="meta-date">
-								<FormattedDate date={post.data.pubDate} />
-							</div>
-						</a>
-					</article>
-				))}
-			</div>
+                .graphics-preview {
+                    grid-template-columns: 1fr; /* Una columna de imágenes */
+                    gap: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <section class="intro-box">
+                <p>
+                    Chelén es una publicación dedicada al análisis de la teoría social materialista, la marginalidad y los procesos de organización comunitaria. <a href="/about">Acerca de</a>.
+                </p>
+            </section>
 
-			<div class="section-header">
-				<h2>Gráficas Destacadas</h2>
-				<a href="/grafica" class="ver-mas">Ver Archivo Gráfico →</a>
-			</div>
+            <div class="section-header">
+                <h2>Columnas Recientes</h2>
+                <a href="/blog" class="ver-mas">Archivo Textual →</a>
+            </div>
+            
+            <div class="columns-grid">
+                {featuredPost && (
+                    <article class="column-card featured">
+                        <a href={`/blog/${featuredPost.id}/`}>
+                            <span class="label">Última Publicación</span>
+                            <h3>{featuredPost.data.title}</h3>
+                            <p>{featuredPost.data.description}</p>
+                            <div class="meta-date">
+                                <FormattedDate date={featuredPost.data.pubDate} />
+                            </div>
+                        </a>
+                    </article>
+                )}
 
-			<div class="graphics-preview">
-				{/* Iteramos dinámicamente sobre las gráficas encontradas en assets/ */}
-				{featuredGraphics.map((graphic, index) => (
-					<div class="graphic-card">
-						<a href="/grafica">
-							<Image src={graphic.src} alt={`Previsualización gráfica ${index + 1}`} width={800} />
-							<div class="graphic-info">
-								<span class="label">Composición 0{index + 1}</span>
-								<h4>{graphic.name.toUpperCase()}</h4>
-							</div>
-						</a>
-					</div>
-				))}
-			</div>
-		</main>
-		<Footer />
-	</body>
+                {secondaryPosts.map((post) => (
+                    <article class="column-card">
+                        <a href={`/blog/${post.id}/`}>
+                            <span class="label">Lectura</span>
+                            <h3>{post.data.title}</h3>
+                            <p>{post.data.description}</p>
+                            <div class="meta-date">
+                                <FormattedDate date={post.data.pubDate} />
+                            </div>
+                        </a>
+                    </article>
+                ))}
+            </div>
+
+            <div class="section-header">
+                <h2>Gráficas Destacadas</h2>
+                <a href="/grafica" class="ver-mas">Ver Archivo Gráfico →</a>
+            </div>
+
+            <div class="graphics-preview">
+                {featuredGraphics.map((graphic, index) => (
+                    <div class="graphic-card">
+                        <a href="/grafica">
+                            <Image src={graphic.src} alt={graphic.name} width={800} />
+                            <div class="graphic-info">
+                                <span class="label">Composición 0{index + 1}</span>
+                                <h4>{graphic.name.toUpperCase()}</h4>
+                            </div>
+                        </a>
+                    </div>
+                ))}
+            </div>
+        </main>
+        <Footer />
+    </body>
 </html>

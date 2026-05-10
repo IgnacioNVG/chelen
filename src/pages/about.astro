@@ -3,167 +3,202 @@ import Layout from '../layouts/BlogPost.astro';
 ---
 
 <Layout
-	title="Acerca de Chelén"
-	description="Manifiesto y origen de la revista"
-	pubDate={new Date('August 08 2021')}
-	heroImage="/blog-placeholder-about.png"
+    title="Acerca de Chelén"
+    description="Manifiesto y origen de la revista"
+    pubDate={new Date('August 08 2021')}
+    heroImage="/blog-placeholder-about.png"
 >
-	<style>
-		.about-grid-container {
-			display: grid;
-			grid-template-columns: repeat(12, 1fr);
-			gap: 3rem 2rem;
-			width: 100%;
-			max-width: 1400px;
-			margin: 2rem auto;
-			padding: 0 4%;
-			align-items: start;
-		}
+    <style>
+        .about-grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 3rem 2rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 4%;
+            align-items: start;
+        }
 
-		/* Encabezados con impacto */
-		h2 {
-			font-family: 'Sifonn', sans-serif;
-			font-size: clamp(2.5rem, 4vw, 4rem);
-			text-transform: uppercase;
-			line-height: 0.9;
-			margin-bottom: 1.5rem;
-			color: #000;
-		}
+        /* Encabezados con impacto responsivo */
+        h2 {
+            font-family: 'Sifonn', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            text-transform: uppercase;
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+            color: #000;
+        }
 
-		p {
-			font-size: 1.15rem;
-			line-height: 1.4;
-			margin-bottom: 1.2rem;
-			color: #1a1a1a;
-		}
+        p {
+            font-size: 1.15rem;
+            line-height: 1.4;
+            margin-bottom: 1.2rem;
+            color: #1a1a1a;
+        }
 
-		/* FILA 1: EL ORIGEN (Lado izquierdo y centro) */
-		.section-origin {
-			grid-column: 1 / 9; /* Ocupa 8 columnas */
-			border-top: 8px solid #000;
-			padding-top: 2rem;
-		}
+        /* SECCIÓN ORIGEN */
+        .section-origin {
+            grid-column: 1 / 9;
+            border-top: 8px solid #000;
+            padding-top: 2rem;
+        }
 
-		.meta-info {
-			grid-column: 10 / 13; /* Ocupa las últimas 3 columnas */
-			grid-row: 1;
-			font-family: monospace;
-			font-weight: bold;
-			border: 3px solid #000;
-			padding: 1.5rem;
-			background: #f4f4f4;
-			align-self: start;
-			margin-top: 2rem;
-		}
+        /* CUADRO META INFO */
+        .meta-info {
+            grid-column: 10 / 13;
+            grid-row: 1;
+            font-family: monospace;
+            font-weight: bold;
+            border: 3px solid #000;
+            padding: 1.5rem;
+            background: #f4f4f4;
+            align-self: start;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
 
-		/* FILA 2: CONVICCIÓN Y TEORÍA (Lado a lado) */
-		.section-conviction {
-			grid-column: 1 / 7; /* Mitad izquierda */
-			background: var(--accent);
-			color: white;
-			padding: 3rem;
-			border: 5px solid #000;
-			box-shadow: 15px 15px 0px 0px #000;
-		}
+        /* SECCIÓN CONVICCIÓN (El bloque destacado) */
+        .section-conviction {
+            grid-column: 1 / 7;
+            background: var(--accent);
+            color: white;
+            padding: 3rem;
+            border: 5px solid #000;
+            box-shadow: 15px 15px 0px 0px #000;
+        }
 
-		.section-conviction h2, .section-conviction p { color: white; }
-		.section-conviction p { font-size: 1.4rem; font-weight: bold; line-height: 1.2; }
+        .section-conviction h2, .section-conviction p { color: white; }
+        .section-conviction p { 
+            font-size: clamp(1.2rem, 2vw, 1.4rem); 
+            font-weight: bold; 
+            line-height: 1.2; 
+        }
 
-		.section-theory {
-			grid-column: 7 / 13; /* Mitad derecha */
-			padding: 2rem;
-			background: #fff;
-			align-self: center;
-		}
+        .section-theory {
+            grid-column: 7 / 13;
+            padding: 2rem;
+            background: #fff;
+            align-self: center;
+        }
 
-		/* FILA 3: TERRITORIO (Ancho completo pero dividido) */
-		.section-territory {
-			grid-column: 1 / 13;
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 4rem;
-			border-top: 4px solid #000;
-			padding-top: 3rem;
-			margin-top: 2rem;
-		}
+        /* SECCIÓN TERRITORIO */
+        .section-territory {
+            grid-column: 1 / 13;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            border-top: 4px solid #000;
+            padding-top: 3rem;
+            margin-top: 2rem;
+        }
 
-		.territory-title {
-			grid-column: 1 / 2;
-		}
+        /* Decoración Bauhaus */
+        .bauhaus-decoration {
+            grid-column: 1 / 13;
+            height: 50px;
+            background: repeating-linear-gradient(90deg, #000, #000 20px, transparent 20px, transparent 40px);
+            opacity: 0.2;
+            margin: 1rem 0;
+        }
 
-		.territory-content {
-			grid-column: 2 / 3;
-		}
+        /* --- ADAPTACIÓN PARA MÓVIL Y TABLET --- */
+        @media (max-width: 1024px) {
+            .about-grid-container {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
 
-		/* Acento Bauhaus */
-		.bauhaus-decoration {
-			grid-column: 1 / 13;
-			height: 50px;
-			background: repeating-linear-gradient(90deg, #000, #000 20px, transparent 20px, transparent 40px);
-			opacity: 0.2;
-		}
+            .section-origin, .meta-info, .section-conviction, .section-theory, .section-territory {
+                width: 100%;
+                grid-column: auto;
+                grid-row: auto;
+            }
 
-		@media (max-width: 1024px) {
-			.about-grid-container { display: flex; flex-direction: column; }
-			.section-origin, .meta-info, .section-conviction, .section-theory, .section-territory {
-				width: 100%;
-				margin-bottom: 2rem;
-			}
-			.section-territory { display: block; }
-		}
-	</style>
+            .meta-info {
+                order: -1; /* Mueve la info técnica arriba en móvil */
+                margin-top: 0;
+            }
 
-	<div class="about-grid-container">
-		
-		<section class="section-origin">
-			<h2>El Origen</h2>
-			<p>
-				Revista Chelén nace en 2026 al alero del Núcleo de la Juventud Socialista de Chile. Este proyecto surge como una plataforma de articulación para el contenido social y cultural, buscando ser un espacio donde la reflexión teórica y la acción política se encuentren.
-			</p>
-			<p>
-				No somos una publicación estática, sino un registro vivo de las pulsiones que recorren nuestra época. Creemos en la necesidad de documentar y difundir las voces que cuestionan el orden establecido desde una perspectiva crítica y situada.
-			</p>
-		</section>
+            .section-conviction {
+                padding: 2rem;
+                box-shadow: 10px 10px 0px 0px #000; /* Sombra un poco más pequeña */
+                margin-right: 10px; /* Espacio para que la sombra no se corte */
+            }
 
-		<aside class="meta-info">
-			// VOL_01<br/>
-			// EDICIÓN_2026<br/>
-			// SANTIAGO_CHILE<br/>
-			// ARCHIVO_ACTIVO
-		</aside>
+            .section-territory {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
 
-		<section class="section-conviction">
-			<h2>Nuestra Convicción</h2>
-			<p>
-				Sostenemos la convicción de que el socialismo trasciende las fronteras de un partido; es una pulsión histórica que late en la juventud chilena y su deseo profundo de transformar la realidad material.
-			</p>
-		</section>
+            .section-theory {
+                padding: 1rem 0;
+            }
+        }
 
-		<section class="section-theory">
-			<h2>Teoría y Crítica</h2>
-			<p>
-				Buscamos levantar una propuesta que logre distanciarse críticamente del Consenso de Washington y de las lógicas neoliberales que han permeado incluso los espacios de pensamiento progresista. 
-			</p>
-			<p>
-				Nuestra línea editorial se nutre del materialismo social y del estudio de los movimientos populares, analizando la historia para proyectar el futuro desde la identidad de los pueblos.
-			</p>
-		</section>
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 2.2rem;
+            }
+            .section-conviction {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 
-		<div class="bauhaus-decoration"></div>
+    <div class="about-grid-container">
+        
+        <aside class="meta-info">
+            // VOL_01<br/>
+            // EDICIÓN_2026<br/>
+            // SANTIAGO_CHILE<br/>
+            // ARCHIVO_ACTIVO
+        </aside>
 
-		<section class="section-territory">
-			<div class="territory-title">
-				<h2>Territorio y Articulación</h2>
-			</div>
-			<div class="territory-content">
-				<p>
-					Gran parte de nuestra identidad se forja en el estudio de las Prácticas de Organización Territorial y Articulación Comunitaria, con especial énfasis en experiencias como las de la Población Lo Hermida.
-				</p>
-				<p>
-					La teoría sin territorio es letra muerta. Chelén se propone como un puente entre la academia popular y la realidad de los barrios que resisten y se organizan día a día en la construcción de poder popular.
-				</p>
-			</div>
-		</section>
+        <section class="section-origin">
+            <h2>El Origen</h2>
+            <p>
+                Revista Chelén nace en 2026 al alero del Núcleo de la Juventud Socialista de Chile. Este proyecto surge como una plataforma de articulación para el contenido social y cultural, buscando ser un espacio donde la reflexión teórica y la acción política se encuentren.
+            </p>
+            <p>
+                No somos una publicación estática, sino un registro vivo de las pulsiones que recorren nuestra época. Creemos en la necesidad de documentar y difundir las voces que cuestionan el orden establecido desde una perspectiva crítica y situada.
+            </p>
+        </section>
 
-	</div>
+        <section class="section-conviction">
+            <h2>Nuestra Convicción</h2>
+            <p>
+                Sostenemos la convicción de que el socialismo trasciende las fronteras de un partido; es una pulsión histórica que late en la juventud chilena y su deseo profundo de transformar la realidad material.
+            </p>
+        </section>
+
+        <section class="section-theory">
+            <h2>Teoría y Crítica</h2>
+            <p>
+                Buscamos levantar una propuesta que logre distanciarse críticamente del Consenso de Washington y de las lógicas neoliberales que han permeado incluso los espacios de pensamiento progresista. 
+            </p>
+            <p>
+                Nuestra línea editorial se nutre del materialismo social y del estudio de los movimientos populares, analizando la historia para proyectar el futuro desde la identidad de los pueblos.
+            </p>
+        </section>
+
+        <div class="bauhaus-decoration"></div>
+
+        <section class="section-territory">
+            <div class="territory-title">
+                <h2>Territorio y Articulación</h2>
+            </div>
+            <div class="territory-content">
+                <p>
+                    Gran parte de nuestra identidad se forja en el estudio de las Prácticas de Organización Territorial y Articulación Comunitaria, con especial énfasis en experiencias como las de la Población Lo Hermida.
+                </p>
+                <p>
+                    La teoría sin territorio es letra muerta. Chelén se propone como un puente entre la academia popular y la realidad de los barrios que resisten y se organizan día a día en la construcción de poder popular.
+                </p>
+            </div>
+        </section>
+
+    </div>
 </Layout>
