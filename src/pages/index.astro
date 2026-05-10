@@ -2,12 +2,33 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { Image } from 'astro:assets';
 
-// Importamos un par de gráficas destacadas desde tus assets
-import destacada1 from '../assets/grafica-01.webp';
-import destacada2 from '../assets/grafica-02.webp';
+// 1. LLAMADA DINÁMICA AL BLOG (Colecciones de contenido)
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+// Tomamos el último post para destacarlo, y los siguientes 2 para la grilla secundaria
+const featuredPost = posts[0];
+const secondaryPosts = posts.slice(1, 3);
+
+// 2. LLAMADA DINÁMICA A LAS GRÁFICAS
+import { Image } from 'astro:assets';
+// import.meta.glob escanea automáticamente la carpeta assets buscando imágenes
+const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/*.{webp,png,jpg,jpeg}');
+// Extraemos las imágenes para poder usarlas
+const graphics = await Promise.all(
+	Object.keys(graphicFiles).map(async (path) => {
+		const img = await graphicFiles[path]();
+		// Usamos el nombre del archivo (ej: grafica-01) para limpiarlo y usarlo como título
+		const name = path.split('/').pop()?.split('.')[0] || 'Archivo Visual';
+		return { src: img.default, name: name.replace('-', ' ') };
+	})
+);
+// Tomamos solo las dos primeras gráficas para previsualizarlas en el inicio
+const featuredGraphics = graphics.slice(0, 2);
 ---
 
 <!doctype html>
@@ -38,7 +59,18 @@ import destacada2 from '../assets/grafica-02.webp';
 				letter-spacing: -0.02em;
 			}
 
-			/* Texto de introducción con link al Acerca de */
+			.ver-mas {
+				color: #111;
+				font-weight: bold;
+				text-decoration: none;
+				text-transform: uppercase;
+				font-size: 0.9rem;
+				border-bottom: 2px solid transparent;
+				transition: border-color 0.2s;
+			}
+			.ver-mas:hover { border-color: #111; }
+
+			/* Texto de introducción */
 			.intro-box {
 				margin-bottom: 5rem;
 				max-width: 900px;
@@ -57,7 +89,7 @@ import destacada2 from '../assets/grafica-02.webp';
 				font-weight: bold;
 			}
 
-			/* Grilla de Columnas Destacadas */
+			/* Grilla Cohesiva de Columnas (Blog) */
 			.columns-grid {
 				display: grid;
 				grid-template-columns: repeat(12, 1fr);
@@ -70,31 +102,46 @@ import destacada2 from '../assets/grafica-02.webp';
 			.column-card {
 				background-color: #fff;
 				padding: 3rem 2rem;
-				grid-column: span 6;
+				grid-column: span 6; /* 2 columnas en pantallas grandes */
 				display: flex;
 				flex-direction: column;
 				transition: background-color 0.2s ease;
 			}
 
 			.column-card.featured {
-				grid-column: span 12;
+				grid-column: span 12; /* Destacado ocupa todo el ancho */
 				border-bottom: 2px solid #111;
 			}
 
 			.column-card:hover {
-				background-color: #f9f9f9;
+				background-color: #f4f4f4;
+			}
+
+			.column-card a {
+				text-decoration: none;
+				color: inherit;
+				display: flex;
+				flex-direction: column;
+				height: 100%;
 			}
 
 			.column-card h3 {
-				font-size: 3.5rem;
+				font-size: 3rem;
 				text-transform: uppercase;
-				line-height: 0.95;
+				line-height: 1;
 				margin: 1rem 0;
 				letter-spacing: -0.04em;
 			}
+			
+			.column-card.featured h3 {
+				font-size: 4rem; /* Impacto masivo para el artículo principal */
+			}
 
-			.column-card.small h3 {
-				font-size: 2rem;
+			.column-card p {
+				font-size: 1.2rem;
+				color: #333;
+				margin-bottom: 2rem;
+				flex-grow: 1;
 			}
 
 			.label {
@@ -108,7 +155,17 @@ import destacada2 from '../assets/grafica-02.webp';
 				align-self: flex-start;
 			}
 
-			/* Gráficas Destacadas (Preview) */
+			.meta-date {
+				font-size: 0.9rem;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: #666;
+				border-top: 1px solid #ccc;
+				padding-top: 1rem;
+				margin-top: auto;
+			}
+
+			/* Gráficas Destacadas */
 			.graphics-preview {
 				display: grid;
 				grid-template-columns: 1fr 1fr;
@@ -120,14 +177,28 @@ import destacada2 from '../assets/grafica-02.webp';
 				border: 1px solid #111;
 				padding: 1.5rem;
 				background: #fff;
+				transition: transform 0.2s ease;
+			}
+			
+			.graphic-card:hover {
+				transform: translateY(-5px);
+			}
+
+			.graphic-card a {
+				text-decoration: none;
+				color: inherit;
+				display: block;
 			}
 
 			.graphic-card img {
 				width: 100%;
 				height: auto;
-				filter: grayscale(100%);
+				aspect-ratio: 4 / 5;
+				object-fit: cover;
 				border: 1px solid #111;
 				margin-bottom: 1.5rem;
+				filter: grayscale(100%); /* Base gris estructurada en la portada */
+				transition: filter 0.3s ease;
 			}
 
 			.graphic-card:hover img {
@@ -141,15 +212,14 @@ import destacada2 from '../assets/grafica-02.webp';
 			}
 
 			@media (max-width: 900px) {
-				.column-card, .column-card.featured {
+				.column-card {
 					grid-column: span 12;
 				}
 				.graphics-preview {
 					grid-template-columns: 1fr;
 				}
-				.column-card h3 {
-					font-size: 2.5rem;
-				}
+				.column-card.featured h3 { font-size: 3rem; }
+				.column-card h3 { font-size: 2.5rem; }
 			}
 		</style>
 	</head>
@@ -163,50 +233,56 @@ import destacada2 from '../assets/grafica-02.webp';
 			</section>
 
 			<div class="section-header">
-				<h2>Columnas Destacadas</h2>
-				<span>Crítica y Teoría</span>
+				<h2>Columnas Recientes</h2>
+				<a href="/blog" class="ver-mas">Archivo Textual →</a>
 			</div>
 			
 			<div class="columns-grid">
-				<article class="column-card featured">
-					<span class="label">Análisis Económico</span>
-					<h3>Pague sus créditos, pague el plusvalor</h3>
-					<p style="font-size: 1.2rem;">Una revisión sobre las dinámicas de endeudamiento y el papel del funcionario público Jorge Quiroz en la estructura institucional actual.</p>
-				</article>
+				{featuredPost && (
+					<article class="column-card featured">
+						<a href={`/blog/${featuredPost.slug}/`}>
+							<span class="label">Última Publicación</span>
+							<h3>{featuredPost.data.title}</h3>
+							<p>{featuredPost.data.description}</p>
+							<div class="meta-date">
+								<FormattedDate date={featuredPost.data.pubDate} />
+							</div>
+						</a>
+					</article>
+				)}
 
-				<article class="column-card">
-					<span class="label">Sociología</span>
-					<h3 style="font-size: 2rem;">Producir la marginalidad</h3>
-					<p>Apuntes sobre el simposio respecto a las condiciones del sistema penitenciario y la construcción de sujetos marginales.</p>
-				</article>
-
-				<article class="column-card">
-					<span class="label">Territorio</span>
-					<h3 style="font-size: 2rem;">Organización en Lo Hermida</h3>
-					<p>Investigación cualitativa sobre las prácticas de articulación territorial y comunitaria entre 2020 y 2026.</p>
-				</article>
+				{secondaryPosts.map((post) => (
+					<article class="column-card">
+						<a href={`/blog/${post.slug}/`}>
+							<span class="label">Lectura</span>
+							<h3>{post.data.title}</h3>
+							<p>{post.data.description}</p>
+							<div class="meta-date">
+								<FormattedDate date={post.data.pubDate} />
+							</div>
+						</a>
+					</article>
+				))}
 			</div>
 
 			<div class="section-header">
 				<h2>Gráficas Destacadas</h2>
-				<a href="/grafica" style="color: #111; font-weight: bold; text-decoration: none;">Ver archivo completo →</a>
+				<a href="/grafica" class="ver-mas">Ver Archivo Gráfico →</a>
 			</div>
 
 			<div class="graphics-preview">
-				<div class="graphic-card">
-					<Image src={destacada1} alt="Gráfica destacada 01" />
-					<div class="graphic-info">
-						<span class="label">Composición</span>
-						<h4>Archivo Visual #01</h4>
+				{/* Iteramos dinámicamente sobre las gráficas encontradas en assets/ */}
+				{featuredGraphics.map((graphic, index) => (
+					<div class="graphic-card">
+						<a href="/grafica">
+							<Image src={graphic.src} alt={`Previsualización gráfica ${index + 1}`} width={800} />
+							<div class="graphic-info">
+								<span class="label">Composición 0{index + 1}</span>
+								<h4>{graphic.name.toUpperCase()}</h4>
+							</div>
+						</a>
 					</div>
-				</div>
-				<div class="graphic-card">
-					<Image src={destacada2} alt="Gráfica destacada 02" />
-					<div class="graphic-info">
-						<span class="label">Cartelería</span>
-						<h4>Archivo Visual #02</h4>
-					</div>
-				</div>
+				))}
 			</div>
 		</main>
 		<Footer />
