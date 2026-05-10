@@ -1,0 +1,147 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+// 1. Importamos la herramienta de optimización de Astro
+import { Image } from 'astro:assets';
+
+// 2. Importamos tus imágenes (cambia los nombres por los tuyos reales)
+import img1 from '../assets/grafica-01.webp';
+import img2 from '../assets/grafica-02.webp';
+import img3 from '../assets/grafica-03.webp';
+import img4 from '../assets/grafica-04.webp';
+import img5 from '../assets/grafica-05.webp';
+import img6 from '../assets/grafica-06.webp';
+import img7 from '../assets/grafica-07.webp';
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2em 1em;
+			}
+
+			.intro {
+				margin-bottom: 3rem;
+				border-bottom: 2px solid #333;
+				padding-bottom: 1rem;
+			}
+
+			.intro h1 {
+				font-size: 3rem;
+				margin: 0;
+				line-height: 1;
+				text-transform: uppercase;
+				letter-spacing: -0.02em;
+			}
+
+			/* Layout tipo Pinterest (Masonry con CSS Columns) */
+			.masonry-grid {
+				column-count: 3; /* 3 columnas en pantallas grandes */
+				column-gap: 2rem; /* Espaciado entre columnas */
+			}
+
+			.grid-item {
+				background-color: #d1d1d1;
+				position: relative;
+				overflow: hidden;
+				border: 1px solid #999;
+				
+				/* Fundamental para que las imágenes no se corten entre columnas */
+				break-inside: avoid; 
+				margin-bottom: 2rem; /* Espaciado vertical entre elementos */
+				
+				display: block;
+			}
+
+			.grid-item img {
+				width: 100%;
+				height: auto; /* Permite que la imagen fluya según su propia proporción 4:5 u otra */
+				display: block;
+				filter: grayscale(100%); /* Mantiene el rigor y la cohesión visual del archivo */
+				transition: filter 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			}
+
+			.grid-item:hover img {
+				filter: grayscale(0%);
+				transform: scale(1.03);
+			}
+
+			.caption {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				background: rgba(230, 230, 230, 0.95);
+				padding: 0.75rem 1rem;
+				font-size: 0.8rem;
+				font-weight: bold;
+				border-top: 1px solid #333;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: #111;
+			}
+
+			/* Adaptabilidad a diferentes pantallas */
+			@media (max-width: 1024px) {
+				.masonry-grid {
+					column-count: 2; /* 2 columnas en tablets */
+				}
+			}
+
+			@media (max-width: 768px) {
+				.masonry-grid {
+					column-count: 1; /* 1 columna en móviles */
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="intro">
+				<h1>Material Gráfico</h1>
+				<p>Archivo visual, carteles y composiciones editoriales.</p>
+			</div>
+			
+			<section class="masonry-grid">
+				<div class="grid-item">
+					<Image src={img1} alt="Composición gráfica 1" />
+					<div class="caption">Archivo 01</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img2} alt="Composición gráfica 2" />
+					<div class="caption">Archivo 02</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img3} alt="Composición gráfica 3" />
+					<div class="caption">Archivo 03</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img4} alt="Composición gráfica 4" />
+					<div class="caption">Archivo 04</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img5} alt="Composición gráfica 5" />
+					<div class="caption">Archivo 05</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img6} alt="Composición gráfica 6" />
+					<div class="caption">Archivo 06</div>
+				</div>
+				<div class="grid-item">
+					<Image src={img7} alt="Composición gráfica 7" />
+					<div class="caption">Archivo 07</div>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

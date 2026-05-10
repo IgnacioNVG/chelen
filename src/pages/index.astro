@@ -2,143 +2,149 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+// Obtenemos los artículos y los ordenamos por fecha
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Separamos el contenido para la jerarquía visual
+const featuredPost = posts[0];
+const secondaryPosts = posts.slice(1, 4);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2em 1em;
+				font-family: 'Atkinson', sans-serif;
+			}
+			
+			/* Grilla editorial principal */
+			.editorial-grid {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 2rem;
+				margin-bottom: 4rem;
+			}
+
+			/* Artículo destacado (ocupa más espacio) */
+			.featured-article {
+				grid-column: span 8;
+				border-bottom: 2px solid #333; /* Líneas duras para separar contenido */
+				padding-bottom: 2rem;
+			}
+
+			.featured-article img {
+				width: 100%;
+				height: auto;
+				aspect-ratio: 16/9;
+				object-fit: cover;
+				margin-bottom: 1.5rem;
+				filter: grayscale(100%); /* Opcional: un toque más sobrio/monocromático */
+			}
+
+			.featured-article h2 {
+				font-size: 3rem;
+				line-height: 1.1;
+				margin: 0 0 1rem 0;
+				letter-spacing: -0.02em;
+			}
+
+			/* Artículos secundarios (columna lateral) */
+			.secondary-articles {
+				grid-column: span 4;
+				display: flex;
+				flex-direction: column;
+				gap: 2rem;
+				border-left: 1px solid #ccc;
+				padding-left: 2rem;
+			}
+
+			.secondary-item {
+				border-bottom: 1px solid #eee;
+				padding-bottom: 1.5rem;
+			}
+
+			.secondary-item:last-child {
+				border-bottom: none;
+			}
+
+			.secondary-item h3 {
+				font-size: 1.5rem;
+				margin: 0.5rem 0;
+				line-height: 1.2;
+			}
+
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			a:hover {
+				color: #555;
+			}
+
+			.meta {
+				font-size: 0.85rem;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				color: #666;
+			}
+
+			@media (max-width: 768px) {
+				.editorial-grid {
+					display: flex;
+					flex-direction: column;
+				}
+				.secondary-articles {
+					border-left: none;
+					padding-left: 0;
+					border-top: 2px solid #333;
+					padding-top: 2rem;
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
-				<main class="home">
-			<section class="hero">
-				<div class="hero-left">
-					<h1>
-						PENSAMIENTO,<br />
-						ESTÉTICA Y<br />
-						ORGANIZACIÓN.
-					</h1>
-				</div>
+		<main>
+			<section class="editorial-grid">
+				{featuredPost && (
+					<article class="featured-article">
+						<a href={`/blog/${featuredPost.slug}/`}>
+							<img src={featuredPost.data.heroImage} alt="" />
+							<div class="meta">
+								<FormattedDate date={featuredPost.data.pubDate} />
+							</div>
+							<h2>{featuredPost.data.title}</h2>
+							<p>{featuredPost.data.description}</p>
+						</a>
+					</article>
+				)}
 
-				<div class="hero-right">
-					<p>
-						Chelén es un proyecto editorial independiente
-						que cruza política, cultura y gráfica
-						para construir imaginario colectivo.
-					</p>
-
-					<a href="/about">Sobre nosotros →</a>
-				</div>
-			</section>
-
-			<section class="archive">
-				<div class="archive-header">
-					<h2>ÚLTIMAS PIEZAS</h2>
-					<a href="/blog">Ver todo →</a>
-				</div>
-
-				<div class="grid">
-					<div class="card">
-						<img src="/poster1.jpg" alt="" />
-					</div>
-
-					<div class="card">
-						<img src="/poster2.jpg" alt="" />
-					</div>
-
-					<div class="card">
-						<img src="/poster3.jpg" alt="" />
-					</div>
-
-					<div class="card">
-						<img src="/poster4.jpg" alt="" />
-					</div>
-				</div>
+				<aside class="secondary-articles">
+					{secondaryPosts.map((post) => (
+						<article class="secondary-item">
+							<a href={`/blog/${post.slug}/`}>
+								<div class="meta">
+									<FormattedDate date={post.data.pubDate} />
+								</div>
+								<h3>{post.data.title}</h3>
+							</a>
+						</article>
+					))}
+				</aside>
 			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
-
-<style>
-	body {
-		background: #f3f0ea;
-		color: #111;
-		font-family: sans-serif;
-		margin: 0;
-	}
-
-	main {
-		padding: 2rem;
-	}
-
-	.hero {
-		display: grid;
-		grid-template-columns: 1.5fr 1fr;
-		gap: 4rem;
-		padding: 6rem 0;
-		border-bottom: 1px solid #111;
-	}
-
-	.hero h1 {
-		font-size: clamp(4rem, 10vw, 8rem);
-		line-height: 0.9;
-		margin: 0;
-		font-weight: 900;
-	}
-
-	.hero-right {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		gap: 2rem;
-		font-size: 1.1rem;
-		max-width: 400px;
-	}
-
-	.hero-right a {
-		color: black;
-		text-decoration: none;
-		font-weight: bold;
-	}
-
-	.archive {
-		padding-top: 2rem;
-	}
-
-	.archive-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 2rem;
-	}
-
-	.archive-header a {
-		text-decoration: none;
-		color: black;
-		font-weight: bold;
-	}
-
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 1rem;
-	}
-
-	.card img {
-		width: 100%;
-		display: block;
-	}
-
-	@media (max-width: 900px) {
-		.hero {
-			grid-template-columns: 1fr;
-		}
-
-		.grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-</style>
