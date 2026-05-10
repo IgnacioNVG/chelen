@@ -8,39 +8,6 @@ affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
 ---
 
-<div class="author-header">
-    <span class="author-name">Por Mora</span>
-    <span class="author-affiliation">Estudiante de la Facultad de Gobierno</span>
-</div>
-
-<style>
-    .author-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        border-bottom: 3px solid #000;
-        padding-bottom: 0.5rem;
-        margin-bottom: 2.5rem;
-        font-family: monospace;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    .author-name {
-        font-size: 1.1rem;
-    }
-    .author-affiliation {
-        font-size: 0.9rem;
-        color: #444;
-    }
-    @media (max-width: 600px) {
-        .author-header {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: flex-start;
-        }
-    }
-</style>
-
 Chile está atravesando un momento que exige organización, claridad y una izquierda capaz de ofrecer algo más que indignación. El gobierno actual avanza con una agenda que afecta directamente las condiciones de vida de los sectores más vulnerables del país, y la respuesta que estamos siendo capaces de construir —al menos desde el movimiento estudiantil universitario— es la de una guerra de afiches, lienzos y post en instagram. La pregunta es: ¿qué estamos pretendiendo ofrecer al país si no somos capaces de organizarnos y respetarnos entre nosotros?
 
 Vivimos en una época que ha tendido a convertir todo en imagen. La política, la rebeldía, la identidad, el compromiso. No se trata solo de una cuestión de redes sociales, sino de adoptar una lógica que no valora lo que se hace, sino cómo se ve. No es lo que se construye, sino quién figura en la foto. No es respetado quien tiene la razón, sino quien acumula mas likes. Y lo más difícil de reconocer es que esa lógica no se detiene en la puerta de los partidos y las militancias. Los atraviesa también, y lo estamos demostrando.
