@@ -66,7 +66,7 @@ const randomGraphics = allGraphics
                 display: flex;
                 flex-wrap: wrap;
                 background-color: #111;
-                gap: 1px; /* Espacio para las líneas divisorias */
+                gap: 1px;
                 border: 1px solid #111;
             }
 
@@ -77,11 +77,9 @@ const randomGraphics = allGraphics
                 color: inherit;
                 display: flex;
                 flex-direction: column;
-                /* Por defecto 3 columnas en desktop */
                 flex: 1 1 calc(33.333% - 1px);
             }
 
-            /* Destacados (Primeros 2) al 50% */
             .column-card:nth-child(1), 
             .column-card:nth-child(2) {
                 flex: 1 1 calc(50% - 1px);
@@ -98,6 +96,7 @@ const randomGraphics = allGraphics
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                border-radius: 0 !important; /* Esquinas cuadradas */
             }
 
             .card-inner {
@@ -107,7 +106,7 @@ const randomGraphics = allGraphics
                 flex-grow: 1;
             }
 
-            /* --- SECCIÓN GRÁFICA (Ajuste solicitado) --- */
+            /* --- SECCIÓN GRÁFICA --- */
             .graphic-item {
                 background: #fff;
                 padding: 2.5vw;
@@ -115,21 +114,20 @@ const randomGraphics = allGraphics
                 color: inherit;
                 display: flex;
                 flex-direction: column;
-                /* Forzamos 3 columnas fijas en desktop */
                 flex: 1 1 calc(33.333% - 1px);
             }
 
             .graphic-item img {
                 width: 100%;
-                aspect-ratio: 4 / 5; /* Formato respetado */
+                aspect-ratio: 4 / 5;
                 object-fit: contain;
                 background-color: #f5f5f5;
                 border: 1px solid #111;
-                border-radius: 1px;
+                border-radius: 0 !important; /* Esquinas cuadradas */
                 margin-bottom: 1.5rem;
             }
 
-            /* --- TIPOGRAFÍA Y OTROS --- */
+            /* --- TIPOGRAFÍA Y TAGS --- */
             h3 { 
                 text-transform: uppercase; 
                 font-family: 'Sifonn', sans-serif; 
@@ -138,35 +136,39 @@ const randomGraphics = allGraphics
                 font-size: clamp(1.2rem, 2vw, 2rem);
             }
 
+            .meta-row {
+                margin-top: auto;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
             .author-tag { 
                 font-weight: 900; 
                 text-transform: uppercase; 
                 font-size: 0.7rem; 
-                margin-top: 1rem; 
                 border-left: 4px solid #ff4d00; 
                 padding-left: 0.6rem; 
             }
 
-            /* --- RESPONSIVE --- */
+            .category-tag {
+                font-family: monospace;
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                color: #888;
+                font-weight: bold;
+            }
 
-            /* Tablets: Pasamos a 2 columnas */
+            /* --- RESPONSIVE --- */
             @media (max-width: 1024px) {
-                .column-card, 
-                .column-card:nth-child(1), 
-                .column-card:nth-child(2),
-                .graphic-item {
+                .column-card, .graphic-item {
                     flex: 1 1 calc(50% - 1px);
                 }
             }
 
-            /* Teléfonos: 1 columna total */
             @media (max-width: 650px) {
-                .column-card, 
-                .graphic-item {
+                .column-card, .graphic-item {
                     flex: 1 1 100%;
-                }
-                .featured-cover {
-                    aspect-ratio: 4 / 3;
                 }
             }
         </style>
@@ -189,7 +191,13 @@ const randomGraphics = allGraphics
                         <div class="card-inner">
                             <h3>{post.data.title}</h3>
                             <p style="font-size: 0.9rem; line-height: 1.4; color: #444; margin-bottom: 1.5rem;">{post.data.description}</p>
-                            <span class="author-tag">{post.data.author}</span>
+                            
+                            <div class="meta-row">
+                                <span class="author-tag">{post.data.author}</span>
+                                {index > 1 && post.data.category && (
+                                    <span class="category-tag">| {post.data.category}</span>
+                                )}
+                            </div>
                         </div>
                     </a>
                 ))}
