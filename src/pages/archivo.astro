@@ -19,20 +19,21 @@ const recursos = [
             :global(body) {
                 margin: 0;
                 padding: 0;
-                /* Evita desbordamiento horizontal */
                 overflow-x: hidden; 
             }
 
             main {
+                width: 100%;
                 max-width: 1200px;
                 margin: 0 auto;
-                padding: 2rem 1rem;
+                padding: 2rem 5%;
+                box-sizing: border-box;
             }
 
             .archive-container {
                 border: 3px solid #000;
                 background: #fafafa;
-                padding: 2rem;
+                padding: clamp(1rem, 5vw, 2.5rem);
                 box-shadow: 8px 8px 0px #000;
             }
 
@@ -44,7 +45,7 @@ const recursos = [
 
             .archive-header h1 {
                 font-family: 'Sifonn', sans-serif;
-                font-size: clamp(2.5rem, 8vw, 4rem); /* Tamaño fluido */
+                font-size: clamp(2rem, 7vw, 4rem); 
                 text-transform: uppercase;
                 line-height: 0.9;
                 margin: 0 0 1rem 0;
@@ -57,20 +58,23 @@ const recursos = [
                 margin: 0;
                 text-transform: uppercase;
                 font-size: 0.9rem;
+                color: #333;
             }
 
             .file-list {
                 display: flex;
                 flex-direction: column;
+                gap: 0; /* Las líneas divisorias las da el borde inferior */
             }
 
-            /* --- ESTRUCTURA DE FILA (Desktop) --- */
+            /* --- ESTRUCTURA DE FILA DINÁMICA --- */
             .file-row {
-                display: grid;
-                grid-template-columns: 80px 1fr 100px 160px;
-                border-bottom: 2px solid #000;
-                padding: 1.2rem 0;
+                display: flex;
+                flex-wrap: wrap; /* Permite que los elementos bajen si no caben */
                 align-items: center;
+                gap: 1rem;
+                border-bottom: 2px solid #000;
+                padding: 1.5rem 0;
                 font-family: monospace;
                 transition: background 0.2s;
             }
@@ -79,36 +83,48 @@ const recursos = [
                 background: #f0f0f0;
             }
 
+            /* Celdas específicas */
+            .file-type-cell {
+                flex: 0 0 70px;
+            }
+
             .file-type {
                 font-weight: bold;
                 background: #000;
                 color: #fff;
                 text-align: center;
                 padding: 4px 8px;
-                font-size: 0.8rem;
-                width: fit-content;
+                font-size: 0.75rem;
+                display: block;
             }
 
             .file-title {
+                flex: 1 1 300px; /* Crece para ocupar espacio, mínimo 300px */
                 font-weight: bold;
                 text-transform: uppercase;
-                padding-left: 1.5rem;
                 font-size: 1.1rem;
+                line-height: 1.2;
             }
 
             .file-year {
+                flex: 0 0 80px;
                 color: #666;
                 text-align: center;
                 font-weight: bold;
             }
 
+            .btn-access-cell {
+                flex: 0 1 200px;
+                margin-left: auto; /* Empuja el botón a la derecha en desktop */
+            }
+
             .btn-access {
                 border: 2px solid #000;
-                padding: 0.6rem;
+                padding: 0.7rem 1rem;
                 text-align: center;
                 text-decoration: none;
                 color: #000;
-                font-weight: bold;
+                font-weight: 900;
                 font-size: 0.75rem;
                 text-transform: uppercase;
                 display: block;
@@ -118,53 +134,44 @@ const recursos = [
             .btn-access:hover {
                 background: #000;
                 color: #fff;
+                transform: translate(-2px, -2px);
+                box-shadow: 4px 4px 0px #ff0000;
             }
 
             .row-dir { background: #fff4f4; }
 
-            /* --- RESPONSIVO (Mobile) --- */
+            /* --- AJUSTES PARA MÓVIL --- */
             @media (max-width: 768px) {
-                main { padding: 1rem 0.5rem; }
-
-                .archive-container {
-                    padding: 1.5rem;
-                    box-shadow: 5px 5px 0px #000;
-                }
-
                 .file-row {
-                    /* Cambiamos a bloque para que los elementos fluyan hacia abajo */
-                    display: flex;
                     flex-direction: column;
                     align-items: flex-start;
-                    gap: 1rem;
-                    padding: 1.5rem 0;
+                    gap: 0.8rem;
                 }
 
                 .file-title {
-                    padding-left: 0;
-                    font-size: 1rem;
-                    line-height: 1.2;
-                }
-
-                .file-year {
-                    text-align: left;
-                    font-size: 0.8rem;
-                }
-
-                .file-year::before {
-                    content: "AÑO: ";
-                    color: #000;
+                    flex: 1 1 auto;
+                    width: 100%;
                 }
 
                 .btn-access-cell {
                     width: 100%;
+                    margin-left: 0;
                 }
 
-                .btn-access {
-                    width: 100%;
-                    box-sizing: border-box;
-                    background: #000;
-                    color: #fff; /* Más fácil de clickear en móvil */
+                .file-year {
+                    text-align: left;
+                    font-size: 0.85rem;
+                }
+
+                .file-year::before {
+                    content: "[AÑO: ";
+                }
+                .file-year::after {
+                    content: "]";
+                }
+
+                .archive-container {
+                    box-shadow: 4px 4px 0px #000;
                 }
             }
         </style>
@@ -184,8 +191,11 @@ const recursos = [
                             <div class="file-type-cell">
                                 <span class="file-type">{item.type}</span>
                             </div>
+                            
                             <div class="file-title">{item.title}</div>
+                            
                             <div class="file-year">{item.year}</div>
+                            
                             <div class="btn-access-cell">
                                 <a href={item.link} target="_blank" class="btn-access">
                                     {item.type === 'DIR' ? 'Abrir Carpeta' : 'Descargar Archivo'}
