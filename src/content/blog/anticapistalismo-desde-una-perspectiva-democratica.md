@@ -2,7 +2,7 @@
 title: 'La izquierda sueca: Anticapitalismo desde una perspectiva democrática'
 description: 'Entrevista a Jacob Eklind sobre los nuevos lineamientos del SAP y el retorno al materialismo en el modelo nórdico.'
 pubDate: 'April 28 2026'
-heroImage: '/blog-placeholder-spectacle.png'
+heroImage: '/anticapitalismo-desde-una-perspectiva-democratica.webp'
 author: 'Vicente Espinoza'
 affiliation: 'Instituto Nacional'
 category: 'Entrevista'

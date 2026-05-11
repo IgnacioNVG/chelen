@@ -2,7 +2,7 @@
 title: 'Lo izquierdizado no te quita lo tarado'
 description: 'Ni clase obrera primero, ni mujer después. La urgencia de la doble militancia y la crítica a las jerarquías de opresión.'
 pubDate: 'April 28 2026'
-heroImage: '/blog-placeholder-spectacle.png'
+heroImage: '/lo-izquierdizado-no-te-quita-lo-tarado.webp'
 author: 'Celeste Leiva'
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
