@@ -4,40 +4,43 @@ import type { HTMLAttributes } from 'astro:types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-
 const { pathname } = Astro.url;
 
-// Normalizamos las rutas para comparar sin preocuparnos por la barra final "/"
-const normalizedPathname = pathname.replace(/\/$/, "");
-const normalizedHref = typeof href === 'string' ? href.replace(/\/$/, "") : href;
-
-// Es activo si:
-// 1. La ruta es idéntica
-// 2. Es la página de inicio (exacta)
-// 3. Es una sub-ruta de la sección (evitando que "/" active todo)
-const isActive = normalizedHref === normalizedPathname || 
-                 (normalizedHref !== "" && normalizedPathname.startsWith(normalizedHref as string));
+// Lógica de detección limpia
+const normalizedPath = pathname.replace(/\/$/, "") || "/";
+const normalizedHref = (href as string).replace(/\/$/, "") || "/";
+const isActive = normalizedPath === normalizedHref || (normalizedHref !== '/' && normalizedPath.startsWith(normalizedHref));
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>
-	<slot />
+    <slot />
 </a>
 
 <style>
-	a {
-		display: inline-block;
-		text-decoration: none;
-		transition: color 0.2s ease;
-	}
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: #000;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+        /* ELIMINAMOS bordes, afters y paddings que puedan romper el layout */
+        border: none !important;
+        position: relative;
+    }
 
-	/* El estilo visual de "activo" para el texto */
-	a.active {
-		font-weight: 900; /* Un poco más de peso para el estilo brutalista */
-		color: #000;
-	}
+    a::after {
+        display: none !important; /* Matamos cualquier línea estática */
+        content: none !important;
+    }
 
-	/* Opcional: un ligero cambio de color en hover si no está activo */
-	a:not(.active):hover {
-		color: #ff0000;
-	}
+    a.active {
+        color: #ff0000;
+    }
+
+    a:hover {
+        color: #ff0000;
+    }
 </style>

@@ -23,219 +23,232 @@ const leadership = [
 
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<BaseHead title={`Organización | ${SITE_TITLE}`} description="Estructura operativa y política de Revista Chelén" />
-		<style>
-			main {
-				width: 100%;
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 4rem 1.5rem;
-			}
+    <head>
+        <BaseHead title={`Organización | ${SITE_TITLE}`} description="Estructura operativa y política de Revista Chelén" />
+        <style>
+            :global(body) {
+                overflow-x: hidden;
+            }
 
-			/* Títulos */
-			h2 {
-				font-family: 'Sifonn', sans-serif;
-				font-size: clamp(2.5rem, 6vw, 4rem);
-				text-transform: uppercase;
-				line-height: 0.85;
-				margin-bottom: 3rem;
-				color: #000;
-			}
+            main {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: clamp(2rem, 8vw, 4rem) 5%;
+                box-sizing: border-box;
+            }
 
-			h3 {
-				font-family: 'Sifonn', sans-serif;
-				font-size: 1.8rem;
-				text-transform: uppercase;
-				color: #ff0000;
-				margin-bottom: 0.5rem;
-			}
+            /* Títulos */
+            h2 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.2rem, 7vw, 4rem);
+                text-transform: uppercase;
+                line-height: 0.85;
+                margin-bottom: 3rem;
+                color: #000;
+            }
 
-			.manifesto-box {
-				border-left: 10px solid #000;
-				padding: 2rem;
-				background: #f4f4f4;
-				margin-bottom: 4rem;
-				font-family: monospace;
-				font-size: 1.1rem;
-			}
+            h3 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 1.8rem;
+                text-transform: uppercase;
+                color: #ff0000;
+                margin-bottom: 0.5rem;
+            }
 
-			/* Sección de Dirección */
-			.leadership-grid {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 2rem;
-				margin-bottom: 5rem;
-			}
+            .manifesto-box {
+                border-left: 10px solid #000;
+                padding: clamp(1.5rem, 4vw, 2rem);
+                background: #f4f4f4;
+                margin-bottom: 4rem;
+                font-family: monospace;
+                font-size: 1.1rem;
+            }
 
-			.leadership-box {
-				padding: 3rem;
-				color: #fff;
-			}
+            /* Sección de Dirección */
+            .leadership-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-bottom: 5rem;
+            }
 
-			.leadership-box .role {
-				font-family: 'Sifonn', sans-serif;
-				font-size: 1.2rem;
-				border-bottom: 2px solid #ff0000;
-				display: inline-block;
-				margin-bottom: 1rem;
-			}
+            .leadership-box {
+                padding: clamp(2rem, 5vw, 3rem);
+                color: #fff;
+                min-width: 0; /* Evita que el texto rompa el contenedor */
+            }
 
-			.leadership-box .name {
-				font-size: 1.8rem;
-				font-weight: bold;
-				display: block;
-				margin-bottom: 1rem;
-				text-transform: uppercase;
-			}
+            .leadership-box .role {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 1.1rem;
+                border-bottom: 2px solid #ff0000;
+                display: inline-block;
+                margin-bottom: 1rem;
+            }
 
-			/* Comisiones */
-			.commissions-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-				gap: 3rem;
-				margin-top: 4rem;
-			}
+            .leadership-box .name {
+                font-size: 1.8rem;
+                font-weight: bold;
+                display: block;
+                margin-bottom: 1rem;
+                text-transform: uppercase;
+                line-height: 1.1;
+            }
 
-			.commission-card {
-				border-top: 4px solid #000;
-				padding-top: 1.5rem;
-			}
+            /* Comisiones */
+            .commissions-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 3rem;
+                margin-top: 4rem;
+            }
 
-			.commission-card ul {
-				list-style: none;
-				padding: 0;
-				margin-top: 1rem;
-			}
+            .commission-card {
+                border-top: 4px solid #000;
+                padding-top: 1.5rem;
+            }
 
-			.commission-card li {
-				font-size: 0.95rem;
-				line-height: 1.4;
-				margin-bottom: 0.5rem;
-				padding-left: 1.2rem;
-				position: relative;
-			}
+            .commission-card ul {
+                list-style: none;
+                padding: 0;
+                margin-top: 1rem;
+            }
 
-			.commission-card li::before {
-				content: "//";
-				position: absolute;
-				left: 0;
-				color: #ff0000;
-				font-weight: bold;
-			}
+            .commission-card li {
+                font-size: 0.95rem;
+                line-height: 1.4;
+                margin-bottom: 0.5rem;
+                padding-left: 1.2rem;
+                position: relative;
+            }
 
-			/* Espacios Transversales */
-			.transversal-section {
-				margin-top: 6rem;
-				padding: 4rem;
-				background: #ff0000;
-				color: #fff;
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 4rem;
-			}
+            .commission-card li::before {
+                content: "//";
+                position: absolute;
+                left: 0;
+                color: #ff0000;
+                font-weight: bold;
+            }
 
-			.transversal-section h2, .transversal-section h3 { color: #fff; }
-			.transversal-section h2 { border-bottom: 8px solid #000; margin-bottom: 2rem; }
+            /* Espacios Transversales */
+            .transversal-section {
+                margin-top: 6rem;
+                padding: clamp(1.5rem, 6vw, 4rem);
+                background: #ff0000;
+                color: #fff;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: clamp(2rem, 5vw, 4rem);
+            }
 
-			@media (max-width: 900px) {
-				.leadership-grid, .transversal-section {
-					grid-template-columns: 1fr;
-				}
-				.leadership-box { padding: 2rem; }
-			}
-		</style>
-	</head>
+            .transversal-section h2, .transversal-section h3 { color: #fff; }
+            .transversal-section h2 { border-bottom: 8px solid #000; margin-bottom: 2rem; }
 
-	<body>
-		<Header />
-		<main>
-			<header>
-				<h2>Estructura Operativa</h2>
-				<div class="manifesto-box">
-					<p>CONTRA EL HIPERCENTRALISMO: Una organización basada en la autonomía de áreas, el relevo generacional y la agitación cultural.</p>
-				</div>
-			</header>
+            /* Ajustes Mobile específicos */
+            @media (max-width: 600px) {
+                .leadership-grid {
+                    grid-template-columns: 1fr;
+                }
+                .leadership-box .name {
+                    font-size: 1.5rem;
+                }
+                .transversal-section {
+                    padding: 2.5rem 1.5rem;
+                }
+            }
+        </style>
+    </head>
 
-			<section class="leadership-grid">
-				{leadership.map((item) => (
-					<div class="leadership-box" style={`background: ${item.color};`}>
-						<span class="role">{item.area}</span>
-						<span class="name">{item.director}</span>
-						<p style="opacity: 0.8; font-size: 0.9rem;">{item.desc}</p>
-					</div>
-				))}
-			</section>
+    <body>
+        <Header />
+        <main>
+            <header>
+                <h2>Estructura Operativa</h2>
+                <div class="manifesto-box">
+                    <p>CONTRA EL HIPERCENTRALISMO: Una organización basada en la autonomía de áreas, el relevo generacional y la agitación cultural.</p>
+                </div>
+            </header>
 
-			<h2>Comisiones de Trabajo</h2>
-			<div class="commissions-grid">
-				<div class="commission-card">
-					<h3>Contenido Escrito</h3>
-					<p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
-					<p>Gestión de ensayos, columnas, entrevistas y la rigurosidad de la corrección de estilo.</p>
-					<ul>
-						<li>Edición de textos</li>
-						<li>Propuestas temáticas</li>
-						<li>Redacción crítica</li>
-					</ul>
-				</div>
+            <section class="leadership-grid">
+                {leadership.map((item) => (
+                    <div class="leadership-box" style={`background: ${item.color};`}>
+                        <span class="role">{item.area}</span>
+                        <span class="name">{item.director}</span>
+                        <p style="opacity: 0.8; font-size: 0.9rem;">{item.desc}</p>
+                    </div>
+                ))}
+            </section>
 
-				<div class="commission-card">
-					<h3>Gráfica e Identidad</h3>
-					<p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
-					<p>Construcción visual de la revista. La materialización estética del proyecto.</p>
-					<ul>
-						<li>Diagramación editorial</li>
-						<li>Línea estética</li>
-						<li>Material impreso</li>
-					</ul>
-				</div>
+            <h2>Comisiones de Trabajo</h2>
+            <div class="commissions-grid">
+                <div class="commission-card">
+                    <h3>Contenido Escrito</h3>
+                    <p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
+                    <p>Gestión de ensayos, columnas, entrevistas y la rigurosidad de la corrección de estilo.</p>
+                    <ul>
+                        <li>Edición de textos</li>
+                        <li>Propuestas temáticas</li>
+                        <li>Redacción crítica</li>
+                    </ul>
+                </div>
 
-				<div class="commission-card">
-					<h3>Audiovisual</h3>
-					<p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
-					<p>Expansión del alcance mediante nuevos lenguajes y producción de video.</p>
-					<ul>
-						<li>Podcast y Clips</li>
-						<li>Registro de eventos</li>
-						<li>Nuevas narrativas</li>
-					</ul>
-				</div>
+                <div class="commission-card">
+                    <h3>Gráfica e Identidad</h3>
+                    <p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
+                    <p>Construcción visual de la revista. La materialización estética del proyecto.</p>
+                    <ul>
+                        <li>Diagramación editorial</li>
+                        <li>Línea estética</li>
+                        <li>Material impreso</li>
+                    </ul>
+                </div>
 
-				<div class="commission-card">
-					<h3>Difusión y Redes</h3>
-					<p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
-					<p>Estrategia de circulación para romper el algoritmo y expandir el alcance.</p>
-					<ul>
-						<li>Estrategia de alcance</li>
-						<li>Crecimiento orgánico</li>
-						<li>Gestión de comunidades</li>
-					</ul>
-				</div>
+                <div class="commission-card">
+                    <h3>Audiovisual</h3>
+                    <p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
+                    <p>Expansión del alcance mediante nuevos lenguajes y producción de video.</p>
+                    <ul>
+                        <li>Podcast y Clips</li>
+                        <li>Registro de eventos</li>
+                        <li>Nuevas narrativas</li>
+                    </ul>
+                </div>
 
-				<div class="commission-card">
-					<h3>Física y Territorial</h3>
-					<p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
-					<p>Sacar la revista de internet para llevarla a las facultades y las calles.</p>
-					<ul>
-						<li>Distribución y Mesas</li>
-						<li>Lanzamientos en barrios</li>
-						<li>Intervenciones físicas</li>
-					</ul>
-				</div>
-			</div>
+                <div class="commission-card">
+                    <h3>Difusión y Redes</h3>
+                    <p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
+                    <p>Estrategia de circulación para romper el algoritmo y expandir el alcance.</p>
+                    <ul>
+                        <li>Estrategia de alcance</li>
+                        <li>Crecimiento orgánico</li>
+                        <li>Gestión de comunidades</li>
+                    </ul>
+                </div>
 
-			<section class="transversal-section">
-				<div>
-					<h2>Consejo Editorial</h2>
-					<p>Espacio de debate político y estratégico. Evalúa el contenido y propone dossiers temáticos para mantener la revista conectada con la realidad nacional.</p>
-				</div>
-				<div>
-					<h2>Equipo de Formación</h2>
-					<p>Talleres de edición, diseño y formación política para integrar a nuevos colaboradores y democratizar el conocimiento técnico.</p>
-				</div>
-			</section>
-		</main>
-		<Footer />
-	</body>
+                <div class="commission-card">
+                    <h3>Física y Territorial</h3>
+                    <p style="font-weight: bold; color: #555; margin-bottom: 1rem;">Encargado/a: [Por definir]</p>
+                    <p>Sacar la revista de internet para llevarla a las facultades y las calles.</p>
+                    <ul>
+                        <li>Distribución y Mesas</li>
+                        <li>Lanzamientos en barrios</li>
+                        <li>Intervenciones físicas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <section class="transversal-section">
+                <div>
+                    <h2>Consejo Editorial</h2>
+                    <p>Espacio de debate político y estratégico. Evalúa el contenido y propone dossiers temáticos para mantener la revista conectada con la realidad nacional.</p>
+                </div>
+                <div>
+                    <h2>Equipo de Formación</h2>
+                    <p>Talleres de edición, diseño y formación política para integrar a nuevos colaboradores y democratizar el conocimiento técnico.</p>
+                </div>
+            </section>
+        </main>
+        <Footer />
+    </body>
 </html>

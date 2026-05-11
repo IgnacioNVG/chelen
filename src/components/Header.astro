@@ -4,164 +4,213 @@ import { SITE_TITLE } from '../consts';
 ---
 
 <header>
-	<nav>
-		<div class="logo nav-item">
-			<a href="/" class="logo-link">
-				<img src="/favicon.svg" alt="Logo Chel&#233;n" width="24" height="24" />
-				<span class="sifonn">REVISTA CHEL&#201;N</span>
-			</a>
-		</div>
+    <nav>
+        <div class="logo nav-item">
+            <a href="/" class="logo-link">
+                <img src="/favicon.svg" alt="Logo Chelén" width="20" height="20" />
+                <span class="sifonn">REVISTA CHELÉN</span>
+            </a>
+        </div>
 
-		<div class="internal-links-container">
-			<div class="internal-links">
-				<HeaderLink href="/grafica" class="nav-item">Grafica</HeaderLink>
-				<HeaderLink href="/blog" class="nav-item">Blog</HeaderLink>
-				<HeaderLink href="/archivo" class="nav-item">Archivo</HeaderLink>
-				<HeaderLink href="/about" class="nav-item">Nosotros</HeaderLink>
-			</div>
-			<div class="nav-indicator"></div>
-		</div>
+        <div class="internal-links-container">
+            <div class="internal-links">
+                <HeaderLink href="/grafica" class="nav-item">Grafica</HeaderLink>
+                <HeaderLink href="/blog" class="nav-item">Blog</HeaderLink>
+                <HeaderLink href="/archivo" class="nav-item">Archivo</HeaderLink>
+                <HeaderLink href="/about" class="nav-item">Nosotros</HeaderLink>
+            </div>
+            <div class="nav-indicator"></div>
+        </div>
 
-		<div class="contact-links">
-			<a href="https://instagram.com/revista.chelen" target="_blank" aria-label="Instagram">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-					<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-					<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-				</svg>
-			</a>
-			<a href="mailto:contacto@chelen.cl" aria-label="Enviar Mail">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1 0.9-2 2-2z"></path>
-					<polyline points="22,6 12,13 2,6"></polyline>
-				</svg>
-			</a>
-		</div>
-	</nav>
+        <div class="contact-links">
+            <a href="https://instagram.com/revista.chelen" target="_blank" aria-label="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            <a href="mailto:contacto@chelen.cl" aria-label="Enviar Mail">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1 0.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+            </a>
+        </div>
+    </nav>
 </header>
 
 <style>
-	header {
-		margin: 0;
-		padding: 0 2rem;
-		background: #E5E5E5;
-		border-bottom: 2px solid #000;
-	}
+    header {
+        margin: 0;
+        padding: 0 2rem;
+        background: #E5E5E5;
+        border-bottom: 2px solid #000;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		min-height: 70px;
-		max-width: 1400px;
-		margin: 0 auto;
-		position: relative;
-	}
+    nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 60px; /* Reducido de 70px */
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
 
-	.logo a {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		text-decoration: none;
-		color: #000;
-		padding: 0.5rem 0;
-	}
+    .logo-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #000;
+        transition: color 0.3s ease;
+    }
 
-	.sifonn {
-		font-family: 'Sifonn', sans-serif;
-		font-size: 1.8rem;
-		text-transform: uppercase;
-		line-height: 1;
-	}
+    /* El logo se pone rojo cuando está activo (index) */
+    .logo-link.active .sifonn {
+        color: #ff0000;
+    }
 
-	.internal-links-container {
-		display: flex;
-		align-items: center;
-	}
+    .sifonn {
+        font-family: 'Sifonn', sans-serif;
+        font-size: 1.5rem; /* Reducido de 1.8rem */
+        text-transform: uppercase;
+        line-height: 1;
+    }
 
-	.internal-links {
-		display: flex;
-		gap: 0.5rem;
-	}
+    .internal-links-container {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
 
-	header :global(a) {
-		padding: 0.5rem 1rem;
-		color: #000;
-		text-decoration: none;
-		text-transform: uppercase;
-		font-family: monospace;
-		font-weight: bold;
-		font-size: 0.9rem;
-		transition: color 0.3s ease;
-	}
+    .internal-links {
+        display: flex;
+        gap: 0.2rem;
+    }
 
-	.nav-indicator {
-		position: absolute;
-		bottom: -2px;
-		height: 4px;
-		background: #ff0000;
-		transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-		pointer-events: none;
-		opacity: 0;
-	}
+    header :global(a) {
+        padding: 0.5rem 0.8rem;
+        color: #000;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.85rem;
+        transition: color 0.3s ease;
+    }
 
-	.contact-links {
-		display: flex;
-		gap: 0.5rem;
-	}
+    header :global(a.active) {
+        color: #ff0000;
+    }
 
-	@media (max-width: 720px) {
-		.nav-indicator { display: none; }
-		nav { flex-direction: column; padding-bottom: 1rem; }
-		.internal-links {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			width: 100%;
-			gap: 0;
-		}
-	}
+    .nav-indicator {
+        position: absolute;
+        bottom: -2px;
+        height: 4px;
+        background: #ff0000;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        pointer-events: none;
+        opacity: 0;
+        z-index: 10;
+    }
+
+    .contact-links {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+    }
+
+    /* MOBILE ADJUSTMENTS */
+    @media (max-width: 720px) {
+        header {
+            padding: 0 1rem;
+        }
+
+        nav {
+            flex-direction: column;
+            padding: 0.8rem 0;
+            gap: 0.8rem;
+            min-height: auto;
+        }
+
+        .sifonn {
+            font-size: 1.2rem; /* Tamaño optimizado para móvil */
+        }
+
+        .internal-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            text-align: center;
+        }
+
+        header :global(a) {
+            padding: 0.4rem;
+            font-size: 0.75rem;
+        }
+
+        .nav-indicator {
+            display: none; /* Quitamos la línea animada en móvil para limpiar el layout */
+        }
+
+        .contact-links {
+            margin-top: 0.5rem;
+        }
+    }
 </style>
 
 <script>
-	function initNav() {
-		const nav = document.querySelector('nav');
-		const indicator = document.querySelector('.nav-indicator') as HTMLElement;
-		const links = document.querySelectorAll('nav a');
-		
-		function move(el: HTMLElement) {
-			if (!el || !indicator || !nav) return;
-			const navRect = nav.getBoundingClientRect();
-			const elRect = el.getBoundingClientRect();
-			
-			indicator.style.width = `${elRect.width}px`;
-			indicator.style.left = `${elRect.left - navRect.left}px`;
-			indicator.style.opacity = '1';
-		}
+    function initNav() {
+        const nav = document.querySelector('nav');
+        const indicator = document.querySelector('.nav-indicator') as HTMLElement;
+        const links = document.querySelectorAll('nav a');
+        
+        function move(el: HTMLElement) {
+            if (!el || !indicator || !nav || window.innerWidth <= 720) return;
+            const navRect = nav.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            
+            indicator.style.width = `${elRect.width}px`;
+            indicator.style.left = `${elRect.left - navRect.left}px`;
+            indicator.style.opacity = '1';
+        }
 
-		const currentPath = window.location.pathname;
-		links.forEach(link => {
-			const href = link.getAttribute('href');
-			link.classList.remove('active');
-			if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
-				link.classList.add('active');
-				move(link as HTMLElement);
-			}
-		});
+        const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+        
+        links.forEach(link => {
+            const href = link.getAttribute('href')?.replace(/\/$/, "") || "/";
+            link.classList.remove('active');
+            
+            // Lógica para marcar activo (exacta para home, startsWith para el resto)
+            const isHome = href === "/" && currentPath === "/";
+            const isSubPage = href !== "/" && currentPath.startsWith(href);
 
-		links.forEach(link => {
-			link.addEventListener('mouseenter', () => move(link as HTMLElement));
-		});
+            if (isHome || isSubPage) {
+                link.classList.add('active');
+                if (window.innerWidth > 720) move(link as HTMLElement);
+            }
+        });
 
-		nav?.addEventListener('mouseleave', () => {
-			const active = document.querySelector('nav a.active') as HTMLElement;
-			if (active) {
-				move(active);
-			} else {
-				indicator.style.opacity = '0';
-			}
-		});
-	}
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => move(link as HTMLElement));
+        });
 
-	initNav();
-	document.addEventListener('astro:after-swap', initNav);
+        nav?.addEventListener('mouseleave', () => {
+            const active = document.querySelector('nav a.active') as HTMLElement;
+            if (active && window.innerWidth > 720) {
+                move(active);
+            } else if (indicator) {
+                indicator.style.opacity = '0';
+            }
+        });
+    }
+
+    // Ejecutar al cargar y tras la navegación de Astro
+    initNav();
+    document.addEventListener('astro:after-swap', initNav);
+    window.addEventListener('resize', initNav);
 </script>

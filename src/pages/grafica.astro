@@ -5,16 +5,17 @@ import Footer from '../components/Footer.astro';
 import { Image } from 'astro:assets';
 import { SITE_TITLE } from '../consts';
 
-// Imports de imágenes
-import img1 from '../assets/grafica-01.webp';
-import img2 from '../assets/grafica-02.webp';
-import img3 from '../assets/grafica-03.webp';
-import img4 from '../assets/grafica-04.webp';
-import img5 from '../assets/grafica-05.webp';
-import img6 from '../assets/grafica-06.webp';
-import img7 from '../assets/grafica-07.webp';
+// CARGA DINÁMICA: Busca todos los archivos webp, png, jpg o jpeg en la carpeta assets
+const imageFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/grafica-*.{webp,png,jpg,jpeg}');
 
-const graphics = [img1, img2, img3, img4, img5, img6, img7];
+// Resolvemos las promesas de los imports para obtener los metadatos de las imágenes
+const graphics = await Promise.all(
+    Object.values(imageFiles).map((img) => img().then((res) => res.default))
+);
+
+// Ordenamos las imágenes (opcional, para mantener el orden por nombre de archivo)
+graphics.sort((a, b) => a.src.localeCompare(b.src));
+
 const description = "Registro Visual / Revista Chelén";
 ---
 
@@ -55,7 +56,6 @@ const description = "Registro Visual / Revista Chelén";
 
             .grid-item {
                 position: relative;
-                /* Fondo del mismo color que el borde para sellar fugas de luz */
                 background-color: #111; 
                 cursor: zoom-in;
                 height: fit-content;
@@ -63,7 +63,6 @@ const description = "Registro Visual / Revista Chelén";
                 box-shadow: 8px 8px 0px 0px #111;
                 border-radius: 12px; 
                 overflow: hidden; 
-                /* Fix para asegurar que el recorte siga el radio perfectamente en Webkit */
                 -webkit-mask-image: -webkit-radial-gradient(white, black);
                 transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
@@ -74,7 +73,6 @@ const description = "Registro Visual / Revista Chelén";
                 display: block;
                 filter: saturate(1.1);
                 border-radius: inherit;
-                /* Escalamos un 1% para que la imagen pise el borde y no deje aire transparente */
                 transform: scale(1.01);
                 transition: transform 0.3s ease;
             }
@@ -86,7 +84,6 @@ const description = "Registro Visual / Revista Chelén";
             }
 
             .grid-item:hover img {
-                /* Mantenemos el escalado base más el efecto de zoom en hover */
                 transform: scale(1.06);
             }
 
