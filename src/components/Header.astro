@@ -1,22 +1,35 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const normalizedPathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isHome = normalizedPathname === '/';
+
+// Leer el SVG del logotipo dinámicamente en tiempo de construcción para inlinearlo y evitar parpadeos
+const faviconPath = path.resolve('public/favicon.svg');
+const rawSvg = fs.readFileSync(faviconPath, 'utf-8');
+const svgContent = rawSvg
+    .replace(/<\?xml.*?\?>/i, '')
+    .replace(/<!DOCTYPE.*?>/i, '')
+    .trim();
 ---
 
-<header>
+<header class={isHome ? "is-home" : ""}>
     <nav>
         <div class="logo nav-item">
             <a href="/" class="logo-link">
-                <img src="/favicon.svg" alt="Logo Chelén" width="20" height="20" />
+                <Fragment set:html={svgContent} />
                 <span class="sifonn">REVISTA CHELÉN</span>
             </a>
         </div>
 
         <div class="internal-links-container">
             <div class="internal-links">
+                <HeaderLink href="/" class="nav-item home-link-btn" data-home-btn>Inicio</HeaderLink>
                 <HeaderLink href="/grafica" class="nav-item">Grafica</HeaderLink>
                 <HeaderLink href="/blog" class="nav-item">Blog</HeaderLink>
-                <HeaderLink href="/archivo" class="nav-item">Archivo</HeaderLink>
                 <HeaderLink href="/about" class="nav-item">Nosotros</HeaderLink>
             </div>
             <div class="nav-indicator"></div>
@@ -67,6 +80,12 @@ import { SITE_TITLE } from '../consts';
         text-decoration: none;
         color: #000;
         transition: color 0.3s ease;
+    }
+
+    .logo-link :global(svg) {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
     }
 
     /* El logo se pone rojo cuando está activo (index) */
@@ -131,43 +150,158 @@ import { SITE_TITLE } from '../consts';
         }
 
         nav {
-            flex-direction: column;
-            padding: 0.8rem 0;
-            gap: 0.8rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
+            align-items: center;
+            row-gap: 0.5rem;
+            padding: 0.6rem 0;
             min-height: auto;
         }
 
+        .logo {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: start;
+        }
+
         .sifonn {
-            font-size: 1.2rem; /* Tamaño optimizado para móvil */
-        }
-
-        .internal-links {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            width: 100%;
-            text-align: center;
-        }
-
-        header :global(a) {
-            padding: 0.4rem;
-            font-size: 0.75rem;
-        }
-
-        .nav-indicator {
-            display: none; /* Quitamos la línea animada en móvil para limpiar el layout */
+            font-size: 1.1rem; /* Compacto y muy legible */
+            letter-spacing: 0.02em;
         }
 
         .contact-links {
-            margin-top: 0.5rem;
+            grid-column: 2;
+            grid-row: 1;
+            justify-self: end;
+            margin-top: 0;
+            gap: 0.6rem;
+        }
+
+        .contact-links a {
+            padding: 0.2rem !important;
+        }
+
+        .internal-links-container {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            width: 100%;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding-top: 0.5rem;
+            justify-content: center;
+        }
+
+        .internal-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            width: 100%;
+        }
+
+        header :global(a) {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-indicator {
+            display: none; /* Desactivada en móvil */
+        }
+    }
+
+    /* Ocultar botón Inicio en móvil por defecto */
+    .home-link-btn {
+        display: none !important;
+    }
+
+    @media (min-width: 721px) {
+        .home-link-btn {
+            display: inline-block !important;
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            max-width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .home-link-btn.expanded {
+            opacity: 1;
+            max-width: 150px;
+            padding-left: 0.8rem !important;
+            padding-right: 0.8rem !important;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        header.is-home .home-link-btn {
+            opacity: 0;
+            max-width: 0px;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin: 0 !important;
+            transform: translateX(-15px);
+            pointer-events: none;
+        }
+    }
+
+    /* Floating Capsule Clone for Fusion Animation */
+    .home-btn-clone {
+        position: fixed;
+        color: #ff0000;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        transform-origin: center;
+        background: rgba(255, 0, 0, 0.1);
+        border: 2px solid #ff0000;
+        border-radius: 4px;
+        padding: 0.3rem 0.6rem;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    /* Logo pulse/glow animation when receiving the fusion energy */
+    .sifonn.fusing {
+        animation: logoGlowPulse 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    @keyframes logoGlowPulse {
+        0% {
+            color: #000;
+            transform: scale(1);
+            text-shadow: none;
+        }
+        30% {
+            color: #ff0000;
+            transform: scale(1.1);
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4);
+        }
+        100% {
+            color: #ff0000;
+            transform: scale(1);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
     }
 </style>
 
 <script>
+    let isTransitioning = false;
+
     function initNav() {
+        isTransitioning = false; // Reset lock on init
+
         const nav = document.querySelector('nav');
         const indicator = document.querySelector('.nav-indicator') as HTMLElement;
-        const links = document.querySelectorAll('nav a');
+        const logoLink = document.querySelector('.logo-link') as HTMLElement;
+        const internalLinks = document.querySelectorAll('.internal-links a');
         
         function move(el: HTMLElement) {
             if (!el || !indicator || !nav || window.innerWidth <= 720) return;
@@ -181,32 +315,144 @@ import { SITE_TITLE } from '../consts';
 
         const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
         
-        links.forEach(link => {
-            const href = link.getAttribute('href')?.replace(/\/$/, "") || "/";
-            link.classList.remove('active');
-            
-            // Lógica para marcar activo (exacta para home, startsWith para el resto)
-            const isHome = href === "/" && currentPath === "/";
-            const isSubPage = href !== "/" && currentPath.startsWith(href);
+        // Restore previous page line position to make a continuous transition across pages
+        const prevLeft = sessionStorage.getItem('prevNavIndicatorLeft');
+        const prevWidth = sessionStorage.getItem('prevNavIndicatorWidth');
+        const prevOpacity = sessionStorage.getItem('prevNavIndicatorOpacity');
 
-            if (isHome || isSubPage) {
-                link.classList.add('active');
-                if (window.innerWidth > 720) move(link as HTMLElement);
-            }
+        sessionStorage.removeItem('prevNavIndicatorLeft');
+        sessionStorage.removeItem('prevNavIndicatorWidth');
+        sessionStorage.removeItem('prevNavIndicatorOpacity');
+
+        if (indicator && prevLeft && prevWidth && prevOpacity === '1') {
+            indicator.style.transition = 'none';
+            indicator.style.left = prevLeft;
+            indicator.style.width = prevWidth;
+            indicator.style.opacity = '1';
+            
+            // Force repaint
+            indicator.getBoundingClientRect();
+            
+            // Restore transitions smoothly
+            indicator.style.transition = 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+        }
+
+        logoLink?.classList.remove('active');
+        internalLinks.forEach(link => link.classList.remove('active'));
+
+        let activeEl: HTMLElement | null = null;
+
+        if (currentPath === "/") {
+            logoLink?.classList.add('active');
+            activeEl = logoLink;
+        } else {
+            internalLinks.forEach(link => {
+                const href = link.getAttribute('href')?.replace(/\/$/, "") || "/";
+                const isHomeLink = link.classList.contains('home-link-btn');
+
+                if (!isHomeLink && currentPath.startsWith(href)) {
+                    link.classList.add('active');
+                    activeEl = link as HTMLElement;
+                }
+            });
+        }
+
+        if (activeEl && window.innerWidth > 720) {
+            move(activeEl);
+        }
+
+        // Save position on click for all nav links for seamless transitions
+        const allNavLinks = document.querySelectorAll('.internal-links a, .logo-link');
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const isHomeLink = link.classList.contains('home-link-btn');
+                if (isHomeLink && currentPath === "/") return;
+                
+                if (indicator) {
+                    sessionStorage.setItem('prevNavIndicatorLeft', indicator.style.left || '0px');
+                    sessionStorage.setItem('prevNavIndicatorWidth', indicator.style.width || '0px');
+                    sessionStorage.setItem('prevNavIndicatorOpacity', indicator.style.opacity || '0');
+                }
+            });
         });
 
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => move(link as HTMLElement));
+        const hoverableLinks = document.querySelectorAll('.internal-links a, .logo-link');
+        hoverableLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                if (isTransitioning) return;
+                const isHomeLink = link.classList.contains('home-link-btn');
+                if (isHomeLink && currentPath === "/") return;
+                move(link as HTMLElement);
+            });
         });
 
         nav?.addEventListener('mouseleave', () => {
-            const active = document.querySelector('nav a.active') as HTMLElement;
+            if (isTransitioning) return;
+            const active = document.querySelector('.internal-links a.active, .logo-link.active') as HTMLElement;
             if (active && window.innerWidth > 720) {
                 move(active);
             } else if (indicator) {
                 indicator.style.opacity = '0';
             }
         });
+
+        const homeBtn = document.querySelector('[data-home-btn]') as HTMLElement;
+        const logoText = document.querySelector('.logo-link .sifonn') as HTMLElement;
+
+        function runFusion(e: Event) {
+            const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+            if (currentPath === "/") return;
+
+            e.preventDefault();
+            if (isTransitioning) return;
+            isTransitioning = true; // Lock mouse events during transition
+
+            if (indicator && logoLink) {
+                move(logoLink);
+                // Persist target position (the logo) for the home page load
+                sessionStorage.setItem('prevNavIndicatorLeft', indicator.style.left || '0px');
+                sessionStorage.setItem('prevNavIndicatorWidth', indicator.style.width || '0px');
+                sessionStorage.setItem('prevNavIndicatorOpacity', '1');
+            }
+
+            if (homeBtn && logoText) {
+                const btnRect = homeBtn.getBoundingClientRect();
+                const logoRect = logoText.getBoundingClientRect();
+
+                const clone = document.createElement('div');
+                clone.className = 'home-btn-clone';
+                clone.innerText = 'INICIO';
+                clone.style.top = `${btnRect.top}px`;
+                clone.style.left = `${btnRect.left}px`;
+                clone.style.width = `${btnRect.width}px`;
+                clone.style.height = `${btnRect.height}px`;
+                
+                document.body.appendChild(clone);
+
+                homeBtn.style.opacity = '0';
+                homeBtn.style.pointerEvents = 'none';
+
+                clone.getBoundingClientRect();
+
+                clone.style.transform = `translate(${logoRect.left - btnRect.left}px, ${logoRect.top - btnRect.top}px) scale(0.8)`;
+                clone.style.opacity = '0.2';
+                clone.style.background = 'rgba(255, 0, 0, 0.4)';
+                clone.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.6)';
+
+                setTimeout(() => {
+                    logoText.classList.add('fusing');
+                }, 200);
+            }
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 500);
+        }
+
+        if (window.innerWidth > 720) {
+            homeBtn?.addEventListener('click', runFusion);
+            logoLink?.addEventListener('click', runFusion);
+        }
     }
 
     // Ejecutar al cargar y tras la navegación de Astro
