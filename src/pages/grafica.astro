@@ -40,6 +40,10 @@ const description = "Registro Visual / Revista Chelén";
 <html lang="es">
     <head>
         <BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={description} />
+        <!-- PRECARGA: link preload para todas las imágenes full-size -->
+        {graphics.map((img) => (
+            <link rel="preload" as="image" href={img.src.src} />
+        ))}
         <style>
             main {
                 width: 100%; max-width: 1440px; margin: 0 auto; padding: 2rem 2.5%; box-sizing: border-box;
@@ -48,7 +52,7 @@ const description = "Registro Visual / Revista Chelén";
             .page-header { border-bottom: 4px solid #111; margin-bottom: 3rem; padding-bottom: 1rem; margin-left: 2.5%; margin-right: 2.5%; }
             .page-header h1 { font-family: 'Sifonn', sans-serif; font-size: clamp(2rem, 8vw, 4.5rem); text-transform: uppercase; margin: 0; letter-spacing: -0.02em; line-height: 0.9; }
 
-            /* MASONRY GRID - PINTEREST STYLE */
+            /* MASONRY GRID */
             .masonry-grid { 
                 display: grid; 
                 grid-template-columns: repeat(4, 1fr); 
@@ -70,37 +74,133 @@ const description = "Registro Visual / Revista Chelén";
             .caption { position: absolute; bottom: 0; left: 0; background: #111; padding: 0.3rem 0.6rem; font-family: monospace; font-size: 0.6rem; color: #fff; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; z-index: 2; border-radius: 0 6px 0 0; }
             .grid-item:hover .caption { opacity: 1; transform: translateY(0); background: #ff0000; }
 
-            /* LIGHTBOX */
+            /* ===== LIGHTBOX - SCALE FROM ORIGIN ===== */
             .lightbox {
-                display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(8px);
-                justify-content: center; align-items: center;
+                position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%;
+                pointer-events: none; opacity: 0;
+                background: rgba(0, 0, 0, 0);
+                display: flex; justify-content: center; align-items: center;
+                transition: background 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0s linear 0.45s;
             }
 
-            .lightbox.active { display: flex; }
+            .lightbox.active {
+                pointer-events: auto; opacity: 1;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                transition: background 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0s linear 0s;
+            }
 
             .lightbox-container {
                 display: flex; width: 90%; max-width: 1200px; height: 85vh;
                 background: #fff; border: 4px solid #000; box-shadow: 15px 15px 0px #ff0000;
                 overflow: hidden; position: relative;
+                /* Animación: escalar desde el origen del click */
+                transform: scale(0.3);
+                opacity: 0;
+                transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+                transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                            opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             }
 
-            .lightbox-main { flex: 1; background: #f0f0f0; display: flex; align-items: center; justify-content: center; padding: 2rem; position: relative; overflow: hidden; }
-            .lightbox-main img { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
-            .lightbox-main img.loading { opacity: 0; transform: scale(0.6); }
+            .lightbox.active .lightbox-container {
+                transform: scale(1);
+                opacity: 1;
+            }
 
-            .lightbox-sidebar { width: 320px; background: #fff; border-left: 4px solid #000; display: flex; flex-direction: column; padding: 1.5rem; box-sizing: border-box; overflow-y: auto; }
-            .sidebar-info h2 { font-family: 'Sifonn', sans-serif; text-transform: uppercase; margin: 0 0 1rem 0; font-size: 1.6rem; line-height: 1; border-bottom: 3px solid #ff0000; padding-bottom: 0.5rem; }
-            .sidebar-info p { font-family: monospace; font-size: 0.85rem; color: #333; line-height: 1.4; margin-bottom: 1.5rem; }
+            /* Cierre: colapsar de vuelta */
+            .lightbox.closing {
+                pointer-events: none;
+                background: rgba(0, 0, 0, 0);
+                transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0s linear 0.4s;
+            }
+            .lightbox.closing .lightbox-container {
+                transform: scale(0.15);
+                opacity: 0;
+                transition: transform 0.35s cubic-bezier(0.55, 0, 0.67, 0.52),
+                            opacity 0.25s ease 0.1s;
+            }
 
-            .similar-title { font-family: 'Sifonn', sans-serif; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem; color: #999; }
-            .similar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+            .lightbox-main { 
+                flex: 1; background: #f0f0f0; display: flex; align-items: center; 
+                justify-content: center; padding: 2rem; position: relative; overflow: hidden; 
+            }
+            .lightbox-main img { 
+                max-width: 100%; max-height: 100%; object-fit: contain; 
+                /* La imagen ya está precargada, transición solo para cambios internos */
+                transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); 
+            }
+            .lightbox-main img.swapping { 
+                opacity: 0; 
+                transform: scale(0.92); 
+            }
+
+            /* ===== SIDEBAR MEJORADO ===== */
+            .lightbox-sidebar { 
+                width: 320px; background: #fff; border-left: 4px solid #000; 
+                display: flex; flex-direction: column; padding: 0; box-sizing: border-box; 
+                overflow: hidden;
+            }
+
+            .sidebar-info { 
+                padding: 1.5rem 1.5rem 1rem; 
+                flex-shrink: 0;
+            }
+            .sidebar-info h2 { 
+                font-family: 'Sifonn', sans-serif; text-transform: uppercase; 
+                margin: 0 0 0.8rem 0; font-size: 1.5rem; line-height: 1; 
+                border-bottom: 3px solid #ff0000; padding-bottom: 0.5rem; 
+                transition: opacity 0.2s ease;
+            }
+            .sidebar-info p { 
+                font-family: monospace; font-size: 0.82rem; color: #444; 
+                line-height: 1.5; margin-bottom: 0;
+                transition: opacity 0.2s ease;
+            }
+
+            .sidebar-similar { 
+                flex: 1; display: flex; flex-direction: column; 
+                border-top: 2px solid #eee; overflow: hidden;
+            }
+            .similar-title { 
+                font-family: 'Sifonn', sans-serif; font-size: 0.75rem; 
+                text-transform: uppercase; padding: 1rem 1.5rem 0.6rem; 
+                color: #999; margin: 0; flex-shrink: 0; letter-spacing: 0.05em;
+            }
+
+            .similar-grid { 
+                display: grid; 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 6px; 
+                padding: 0 1.5rem 1.5rem;
+                overflow-y: auto;
+                flex: 1;
+                align-content: start;
+            }
+
             .similar-thumb-wrapper { display: block; width: 100%; }
             .similar-thumb-wrapper.hidden { display: none; }
-            .similar-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 2px solid #000; cursor: pointer; transition: all 0.2s; }
-            .similar-grid img:hover { transform: scale(1.05); border-color: #ff0000; }
 
-            .close-x { position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; background: #000; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+            .similar-grid img { 
+                width: 100%; aspect-ratio: 1; object-fit: cover; 
+                border: 2px solid #111; cursor: pointer; 
+                border-radius: 4px;
+                transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+                filter: grayscale(0.3);
+            }
+            .similar-grid img:hover { 
+                transform: scale(1.08); 
+                border-color: #ff0000; 
+                box-shadow: 3px 3px 0px #ff0000;
+                filter: grayscale(0);
+            }
+
+            .close-x { 
+                position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; 
+                background: #000; color: #fff; border: none; cursor: pointer; 
+                display: flex; align-items: center; justify-content: center; z-index: 100; 
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            }
             .close-x:hover { background: #ff0000; transform: rotate(90deg) scale(1.1); }
             .close-x svg { width: 20px; height: 20px; stroke: currentColor; }
 
@@ -115,7 +215,7 @@ const description = "Registro Visual / Revista Chelén";
                 .masonry-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
                 .grid-item { border-radius: 6px; box-shadow: 2px 2px 0px 0px #111; }
                 
-                /* LIGHTBOX MOBILE OPTIMIZATION */
+                /* LIGHTBOX MOBILE */
                 .lightbox-container { 
                     flex-direction: column; 
                     height: 100%; 
@@ -125,19 +225,25 @@ const description = "Registro Visual / Revista Chelén";
                     box-shadow: none;
                 }
                 .lightbox-main { 
-                    height: 55%; 
+                    height: 50%; 
                     padding: 1rem; 
-                    background: #111; /* Fondo oscuro para resaltar la imagen */
+                    background: #111;
                 }
                 .lightbox-sidebar { 
                     width: 100%; 
-                    height: 45%; 
+                    height: 50%; 
                     border-left: none; 
                     border-top: 4px solid #000; 
-                    padding: 1.5rem; 
-                    border-radius: 20px 20px 0 0; /* Aspecto de bottom sheet */
-                    margin-top: -20px; /* Sobreposición sutil */
+                    border-radius: 20px 20px 0 0;
+                    margin-top: -20px;
                     z-index: 2;
+                }
+                .sidebar-info { padding: 1.2rem 1.2rem 0.8rem; }
+                .sidebar-info h2 { font-size: 1.2rem; }
+                .sidebar-info p { font-size: 0.78rem; }
+                .similar-grid { 
+                    grid-template-columns: repeat(4, 1fr); 
+                    padding: 0 1.2rem 1.2rem;
                 }
                 .close-x { 
                     top: 1rem; 
@@ -146,7 +252,6 @@ const description = "Registro Visual / Revista Chelén";
                     backdrop-filter: blur(4px);
                     border-radius: 50%;
                 }
-                .sidebar-info h2 { font-size: 1.3rem; }
             }
         </style>
     </head>
@@ -170,7 +275,7 @@ const description = "Registro Visual / Revista Chelén";
             </section>
 
             <div id="lightbox" class="lightbox">
-                <div class="lightbox-container">
+                <div class="lightbox-container" id="lightbox-container">
                     <button class="close-x" id="close-btn" aria-label="Cerrar">
                         <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="square"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
@@ -206,58 +311,117 @@ const description = "Registro Visual / Revista Chelén";
         <Footer />
 
         <script>
-            const lightbox = document.getElementById('lightbox');
+            const lightbox = document.getElementById('lightbox')!;
+            const lightboxContainer = document.getElementById('lightbox-container')!;
             const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-            const sidebarTitle = document.getElementById('sidebar-title');
-            const sidebarDesc = document.getElementById('sidebar-desc');
-            const closeBtn = document.getElementById('close-btn');
+            const sidebarTitle = document.getElementById('sidebar-title')!;
+            const sidebarDesc = document.getElementById('sidebar-desc')!;
+            const closeBtn = document.getElementById('close-btn')!;
             const thumbWrappers = document.querySelectorAll('.similar-thumb-wrapper');
 
-            function updateContent(src: string, title: string, desc: string) {
-                if (!lightboxImg || !sidebarTitle || !sidebarDesc) return;
+            // ===== PRECARGA DE IMÁGENES =====
+            // Creamos un cache de Image objects para que el browser las tenga en memoria
+            const imageCache = new Map<string, HTMLImageElement>();
+            
+            document.querySelectorAll('.grid-item').forEach(item => {
+                const src = (item as HTMLElement).dataset.full!;
+                if (!imageCache.has(src)) {
+                    const img = new Image();
+                    img.src = src;
+                    imageCache.set(src, img);
+                }
+            });
 
+            // Variable para guardar el rect del elemento que abrió el lightbox
+            let originRect: DOMRect | null = null;
+
+            function setTransformOrigin(rect: DOMRect) {
+                // Calcular el centro del elemento relativo al viewport como porcentaje
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const percX = (centerX / window.innerWidth) * 100;
+                const percY = (centerY / window.innerHeight) * 100;
+                lightboxContainer.style.setProperty('--origin-x', `${percX}%`);
+                lightboxContainer.style.setProperty('--origin-y', `${percY}%`);
+            }
+
+            function updateContent(src: string, title: string, desc: string, animate = true) {
+                // Actualizar thumbs: ocultar la actual
                 thumbWrappers.forEach(wrapper => {
                     const w = wrapper as HTMLElement;
                     w.classList.toggle('hidden', w.dataset.thumbSrc === src);
                 });
 
-                lightboxImg.classList.add('loading');
-
-                setTimeout(() => {
+                if (animate && lightboxImg.src && lightboxImg.src !== src) {
+                    // Transición suave al cambiar entre piezas dentro del lightbox
+                    lightboxImg.classList.add('swapping');
+                    setTimeout(() => {
+                        lightboxImg.src = src;
+                        lightboxImg.alt = title;
+                        sidebarTitle.innerText = title;
+                        sidebarDesc.innerText = desc;
+                        // Forzar reflow y quitar la clase
+                        requestAnimationFrame(() => {
+                            lightboxImg.classList.remove('swapping');
+                        });
+                    }, 180);
+                } else {
+                    // Sin animación (apertura inicial o imagen ya cacheada)
                     lightboxImg.src = src;
+                    lightboxImg.alt = title;
                     sidebarTitle.innerText = title;
                     sidebarDesc.innerText = desc;
-                    
-                    lightboxImg.onload = () => lightboxImg.classList.remove('loading');
-                    setTimeout(() => lightboxImg.classList.remove('loading'), 100);
-                }, 200);
+                }
             }
 
+            // ===== ABRIR LIGHTBOX DESDE EL GRID =====
             document.querySelectorAll('.grid-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const t = item as HTMLElement;
-                    updateContent(t.dataset.full!, t.dataset.title!, t.dataset.desc!);
-                    lightbox?.classList.add('active');
+                    originRect = t.getBoundingClientRect();
+                    setTransformOrigin(originRect);
+
+                    // La imagen ya está precargada, carga instantánea
+                    updateContent(t.dataset.full!, t.dataset.title!, t.dataset.desc!, false);
+                    
+                    // Forzar un reflow antes de activar para que CSS aplique el origen
+                    lightboxContainer.offsetHeight;
+
+                    lightbox.classList.remove('closing');
+                    lightbox.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
             });
 
+            // ===== NAVEGAR ENTRE PIEZAS DENTRO DEL LIGHTBOX =====
             document.querySelectorAll('.similar-thumb').forEach(thumb => {
                 thumb.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const t = thumb as HTMLElement;
-                    updateContent(t.dataset.full!, t.dataset.title!, t.dataset.desc!);
+                    updateContent(t.dataset.full!, t.dataset.title!, t.dataset.desc!, true);
                 });
             });
 
-            const close = () => {
-                lightbox?.classList.remove('active');
+            // ===== CERRAR LIGHTBOX CON ANIMACIÓN DE COLAPSO =====
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                lightbox.classList.add('closing');
                 document.body.style.overflow = '';
-            };
 
-            closeBtn?.addEventListener('click', close);
-            lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+                // Esperar a que termine la animación de cierre
+                const onEnd = () => {
+                    lightbox.classList.remove('closing');
+                    lightboxContainer.removeEventListener('transitionend', onEnd);
+                };
+                lightboxContainer.addEventListener('transitionend', onEnd);
+
+                // Fallback por si transitionend no dispara
+                setTimeout(() => lightbox.classList.remove('closing'), 450);
+            }
+
+            closeBtn.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox(); });
         </script>
     </body>
 </html>
