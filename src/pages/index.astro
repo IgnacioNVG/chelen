@@ -7,11 +7,18 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
-const posts = (await getCollection('blog')).sort(
+// Consultas independientes ordenadas cronológicamente
+const articulos = (await getCollection('articulos')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+).slice(0, 6);
 
-const gridPosts = posts.slice(0, 8);
+const cartas = (await getCollection('cartas')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+).slice(0, 3);
+
+const poemas = (await getCollection('poemas')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+).slice(0, 3);
 
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/*.{webp,png,jpg,jpeg}');
 const allGraphics = await Promise.all(
@@ -61,13 +68,23 @@ const randomGraphics = allGraphics
                 color: #fff !important;
             }
 
-            /* --- CONTENEDORES --- */
+            /* --- CONTENEDORES Y REJILLAS --- */
             .flex-grid {
                 display: flex;
                 flex-wrap: wrap;
                 background-color: #111;
                 gap: 1px;
                 border: 1px solid #111;
+                margin-bottom: 2rem;
+            }
+
+            .three-col-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                background-color: #111;
+                gap: 1px;
+                border: 1px solid #111;
+                margin-bottom: 2rem;
             }
 
             .graphics-grid {
@@ -78,11 +95,11 @@ const randomGraphics = allGraphics
                 border: 1px solid #111;
             }
 
-            /* --- BLOG CARDS --- */
+            /* --- TARJETAS EDITORIALES --- */
             .column-card {
                 background-color: #fff;
                 text-decoration: none;
-                color: inherit;
+                color: #111;
                 display: flex;
                 flex-direction: column;
                 flex: 1 1 calc(33.333% - 1px);
@@ -93,18 +110,33 @@ const randomGraphics = allGraphics
                 flex: 1 1 calc(50% - 1px);
             }
 
+            .editorial-card {
+                background-color: #fff !important;
+                text-decoration: none !important;
+                color: #111 !important;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .editorial-card:hover {
+                background-color: #fcfcfc !important;
+            }
+
             .featured-cover {
                 width: 100%;
                 aspect-ratio: 16 / 9;
                 overflow: hidden;
                 border-bottom: 1px solid #111;
+                background-color: #f5f5f5;
             }
 
             .featured-cover img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                /* RECTO: Al estar pegado al borde del contenedor oscuro */
                 border-radius: 0 !important;
             }
 
@@ -131,7 +163,6 @@ const randomGraphics = allGraphics
                 object-fit: contain;
                 background-color: #f5f5f5;
                 border: 1px solid #111;
-                /* REDONDEADO: Al tener padding y no tocar los bordes del grid */
                 border-radius: 8px !important;
                 margin-bottom: 1.5rem;
                 transition: transform 0.3s ease;
@@ -141,20 +172,23 @@ const randomGraphics = allGraphics
                 transform: scale(1.02);
             }
 
-            /* --- TIPOGRAFÍA Y TAGS --- */
-            h3 { 
-                text-transform: uppercase; 
-                font-family: 'Sifonn', sans-serif; 
+            /* --- TIPOGRAFÍA CONTROLADA --- */
+            h3, .editorial-title { 
+                text-transform: uppercase !important; 
+                font-family: 'Sifonn', sans-serif !important; 
                 margin: 0.5rem 0; 
                 line-height: 1.1; 
-                font-size: clamp(1.2rem, 2vw, 2rem);
+                color: #111 !important;
+                text-decoration: none !important;
+                font-size: clamp(1.2rem, 1.8vw, 2rem);
             }
 
             .meta-row {
                 margin-top: auto;
                 display: flex;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.8rem;
+                padding-top: 1rem;
             }
 
             .author-tag { 
@@ -163,9 +197,10 @@ const randomGraphics = allGraphics
                 font-size: 0.7rem; 
                 border-left: 4px solid #ff4d00; 
                 padding-left: 0.6rem; 
+                color: #111;
             }
 
-            .category-tag {
+            .affiliation-tag {
                 font-family: monospace;
                 font-size: 0.65rem;
                 text-transform: uppercase;
@@ -178,7 +213,7 @@ const randomGraphics = allGraphics
                 .column-card {
                     flex: 1 1 calc(50% - 1px);
                 }
-                .graphics-grid {
+                .three-col-grid, .graphics-grid {
                     grid-template-columns: repeat(2, 1fr);
                 }
             }
@@ -187,10 +222,10 @@ const randomGraphics = allGraphics
                 .column-card {
                     flex: 1 1 100%;
                 }
-                .graphics-grid {
+                .three-col-grid, .graphics-grid {
                     grid-template-columns: 1fr;
                 }
-                .graphic-item {
+                .graphic-item, .card-inner {
                     padding: 5vw;
                 }
             }
@@ -200,12 +235,12 @@ const randomGraphics = allGraphics
         <Header />
         <main>
             <section class="section-header">
-                <h2>Publicaciones</h2>
+                <h2>Artículos</h2>
             </section>
             
             <div class="flex-grid">
-                {gridPosts.map((post, index) => (
-                    <a href={`/blog/${post.id}/`} class="column-card">
+                {articulos.map((post, index) => (
+                    <a href={`/${post.collection}/${post.slug || post.id}/`} class="column-card">
                         {(index === 0 || index === 1) && post.data.heroImage && (
                             <div class="featured-cover">
                                 <img src={post.data.heroImage} alt="" />
@@ -213,18 +248,73 @@ const randomGraphics = allGraphics
                         )}
                         <div class="card-inner">
                             <h3>{post.data.title}</h3>
-                            <p style="font-size: 0.9rem; line-height: 1.4; color: #444; margin-bottom: 1.5rem;">{post.data.description}</p>
+                            {post.data.description && (
+                                <p style="font-size: 0.9rem; line-height: 1.4; color: #444; margin-bottom: 1.5rem;">{post.data.description}</p>
+                            )}
                             
                             <div class="meta-row">
                                 <span class="author-tag">{post.data.author}</span>
-                                {index > 1 && post.data.category && (
-                                    <span class="category-tag">| {post.data.category}</span>
+                                {post.data.affiliation && (
+                                    <span class="affiliation-tag">| {post.data.affiliation}</span>
                                 )}
                             </div>
                         </div>
                     </a>
                 ))}
             </div>
+
+            {cartas.length > 0 && (
+                <>
+                    <section class="section-header">
+                        <h2>Cartas al Director</h2>
+                    </section>
+                    <div class="three-col-grid">
+                        {cartas.map((carta) => (
+                            <a href={`/${carta.collection}/${carta.slug || carta.id}/`} class="editorial-card">
+                                {carta.data.heroImage && (
+                                    <div class="featured-cover">
+                                        <img src={carta.data.heroImage} alt="" />
+                                    </div>
+                                )}
+                                <div class="card-inner">
+                                    <h3 class="editorial-title">{carta.data.title}</h3>
+                                    <div class="meta-row">
+                                        <span class="author-tag">{carta.data.author}</span>
+                                        {carta.data.affiliation && (
+                                            <span class="affiliation-tag">| {carta.data.affiliation}</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {poemas.length > 0 && (
+                <>
+                    <section class="section-header">
+                        <h2>Poesía</h2>
+                    </section>
+                    <div class="three-col-grid">
+                        {poemas.map((poema) => (
+                            <a href={`/${poema.collection}/${poema.slug || poema.id}/`} class="editorial-card">
+                                {poema.data.heroImage && (
+                                    <div class="featured-cover">
+                                        <img src={poema.data.heroImage} alt="" />
+                                    </div>
+                                )}
+                                <div class="card-inner">
+                                    <h3 class="editorial-title">{poema.data.title}</h3>
+                                    <div class="meta-row">
+                                        <span class="author-tag">{poema.data.author}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </>
+            )}
 
             <section class="section-header" style="background: #111; color: #111; border-top: 1vw solid #111;">
                 <h2>Archivo Gráfico</h2>
