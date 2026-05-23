@@ -2,7 +2,7 @@
   The CSS in this style tag is based off of Bear Blog's default CSS.
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
+*/
 
 :root {
 	--accent: #FF1321;
@@ -16,6 +16,7 @@
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
 }
+
 @font-face {
 	font-family: "Raleway";
 	src: url("/fonts/raleway-regular.woff") format("woff");
@@ -23,6 +24,7 @@
 	font-style: normal;
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "Sifonn";
 	src: url("/fonts/sifonn.woff2") format("woff2");
@@ -30,26 +32,27 @@
 	font-style: normal;
 	font-display: block;
 }
+
 body {
 	font-family: "Raleway", sans-serif;
 	margin: 0;
 	padding: 0;
 	text-align: left;
-	background-color: #E5E5E5; /* <-- Cambiamos todo a un color sólido */
-	/* Borramos la línea de "linear-gradient" y la de "background-size" */
+	background-color: #E5E5E5;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
 	font-size: 20px;
 	line-height: 1.7;
 }
-/* Elimina el width: 720px y cámbialo por esto: */
+
 main {
 	width: 100%;
 	max-width: none;
 	margin: 0;
 	padding: 0;
 }
+
 h1,
 h2,
 h3,
@@ -61,80 +64,118 @@ h6 {
 	color: rgb(var(--black));
 	line-height: 1.2;
 }
+
 h1 {
 	font-size: 3.052em;
 }
+
 h2 {
 	font-size: 2.441em;
 }
+
 h3 {
 	font-size: 1.953em;
 }
+
 h4 {
 	font-size: 1.563em;
 }
+
 h5 {
 	font-size: 1.25em;
 }
+
 strong,
 b {
 	font-weight: 700;
 }
+
 a {
 	color: var(--accent);
 }
+
 a:hover {
 	color: var(--accent);
 }
+
 p {
 	margin-bottom: 1em;
 }
+
 .prose p {
 	margin-bottom: 2em;
 }
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
+
+textarea,
 input {
 	font-size: 16px;
 }
+
 table {
 	width: 100%;
 }
+
 img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 8px;
 }
+
 code {
 	padding: 2px 5px;
 	background-color: rgb(var(--gray-light));
 	border-radius: 2px;
 }
+
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
 }
-pre > code {
+
+pre>code {
 	all: unset;
 }
+
 blockquote {
 	border-left: 4px solid var(--accent);
 	padding: 0 0 0 20px;
 	margin: 0px;
 	font-size: 1.333em;
 }
+
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
+
+@media (min-width: 721px) {
+
+	/* 1. Definimos un contenedor estático para los links */
+	.internal-links {
+		display: flex;
+		gap: 0.2rem;
+		justify-content: flex-start;
+		align-items: center;
+		/* Aseguramos que el contenedor no se contraiga cuando el contenido cambia */
+		flex-wrap: nowrap;
 	}
-	main {
-		padding: 1em;
+
+	/* 2. El botón siempre ocupa su lugar, solo cambia su visibilidad */
+	.home-link-btn {
+		display: inline-block !important;
+		width: 70px;
+		text-align: center;
+		transition: opacity 0.4s ease;
+		flex-shrink: 0;
+	}
+
+	/* 3. Cuando estamos en HOME, lo hacemos invisible pero NO le quitamos el ancho */
+	header.is-home .home-link-btn {
+		opacity: 0;
+		pointer-events: none;
+		/* Al quitarle el display: none o el width: 0, 
+           el elemento sigue ocupando sus 70px de espacio, 
+           pero no se ve. Los demás elementos no se mueven. */
 	}
 }
 
@@ -146,12 +187,7 @@ hr {
 	height: 1px;
 	width: 1px;
 	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
 	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
 	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }

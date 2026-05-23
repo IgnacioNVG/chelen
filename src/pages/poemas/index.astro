@@ -17,13 +17,13 @@ const poemas = (await getCollection('poemas')).sort(
         <BaseHead title={`Poemas | ${SITE_TITLE}`} description="Espacio de debate y opinión" />
         <style>
             main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
-            .poema-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; margin-bottom: 5rem; }
+            .poemas-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; margin-bottom: 5rem; }
             .portada-wrapper { width: 40%; flex-shrink: 0; }
             .portada-wrapper img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: 6px solid #000; }
             .contenido-wrapper { width: 60%; }
-            .titulo-poema { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
+            .titulo-Poemas { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
             .meta-info { font-family: monospace; font-size: 0.9rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #000; }
-            @media (max-width: 720px) { .poema-container { flex-direction: column; } .portada-wrapper, .contenido-wrapper { width: 100%; } }
+            @media (max-width: 720px) { .poemas-container { flex-direction: column; } .portada-wrapper, .contenido-wrapper { width: 100%; } }
         </style>
     </head>
     <body>
@@ -31,26 +31,26 @@ const poemas = (await getCollection('poemas')).sort(
         <main>
             <h2 style="font-family: monospace;">// POEMAS</h2>
             
-            {poemas.map((poema) => (
-                <section class="poema-container">
+            {poemas.map((poemas) => (
+                <section class="poemas-container">
                     <div class="portada-wrapper">
-                        <a href={`/poemas/${poema.id}`}>
-                            <img src={poema.data.heroImage || '/poemas-portada.webp'} alt={poema.data.title} />
+                        <a href={`/poemas/${poemas.id}`}>
+                            <img src={poemas.data.heroImage || '/poemas-portada.webp'} alt={poemas.data.title} />
                         </a>
                     </div>
                     
                     <article class="contenido-wrapper">
-                        <h1 class="titulo-poema">
-                            <a href={`/poemas/${poema.id}`} style="text-decoration: none; color: inherit;">
-                                {poema.data.title}
+                        <h1 class="titulo-poemas">
+                            <a href={`/poemas/${poemas.id}`} style="text-decoration: none; color: inherit;">
+                                {poemas.data.title}
                             </a>
                         </h1>
                         <div class="meta-info">
-                            Por: {poema.data.author} | <FormattedDate date={poema.data.pubDate} />
+                            Por: {poemas.data.author} | <FormattedDate date={poemas.data.pubDate} />
                         </div>
-                        <div class="cuerpo-poema">
-                            <p>{poema.data.affiliation}</p>
-                            <a href={`/poemas/${poema.id}`}>Leer poema completo →</a>
+                        <div class="cuerpo-poemas">
+                            <p>{poemas.data.affiliation}</p>
+                            <a href={`/poemas/${poemas.id}`}>Leer poema completo →</a>
                         </div>
                     </article>
                 </section>

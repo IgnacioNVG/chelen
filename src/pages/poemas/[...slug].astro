@@ -4,16 +4,16 @@ import PoemaLayout from '../../layouts/PoemaLayout.astro'; // O directamente aqu
 
 export async function getStaticPaths() {
     const poemas = await getCollection('poemas');
-    return poemas.map((poema) => ({
+    return poemas.map((poemas) => ({
         params: { slug: poema.id },
-        props: poema,
+        props: poemas,
     }));
 }
 
-const poema = Astro.props;
+const poemas = Astro.props;
 const { Content } = await poem.render();
 ---
 
-<PoemaLayout {...poema.data}>
+<PoemaLayout {...poemas.data}>
     <Content />
 </PoemaLayout>

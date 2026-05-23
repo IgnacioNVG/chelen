@@ -239,28 +239,36 @@ const randomGraphics = allGraphics
             </section>
             
             <div class="flex-grid">
-                {articulos.map((post, index) => (
-                    <a href={`/${post.collection}/${post.slug || post.id}/`} class="column-card">
-                        {(index === 0 || index === 1) && post.data.heroImage && (
-                            <div class="featured-cover">
-                                <img src={post.data.heroImage} alt="" />
-                            </div>
-                        )}
-                        <div class="card-inner">
-                            <h3>{post.data.title}</h3>
-                            {post.data.description && (
-                                <p style="font-size: 0.9rem; line-height: 1.4; color: #444; margin-bottom: 1.5rem;">{post.data.description}</p>
+                {articulos.map((post, index) => {
+                    const isFeatured = index === 0 || index === 1;
+                    const hasImage = !!post.data.heroImage;
+                    const showImage = isFeatured && hasImage;
+
+                    return (
+                        <a href={`/articulos/${post.id}`} class="column-card">
+                            {showImage && (
+                                <div class="featured-cover">
+                                    <img src={post.data.heroImage} alt="" />
+                                </div>
                             )}
-                            
-                            <div class="meta-row">
-                                <span class="author-tag">{post.data.author}</span>
-                                {post.data.affiliation && (
-                                    <span class="affiliation-tag">| {post.data.affiliation}</span>
+                            <div class="card-inner">
+                                {!showImage && (
+                                    <h3>{post.data.title}</h3>
                                 )}
+                                {post.data.description && (
+                                    <p style="font-size: 0.9rem; line-height: 1.4; color: #444; margin-bottom: 1.5rem;">{post.data.description}</p>
+                                )}
+                                
+                                <div class="meta-row">
+                                    <span class="author-tag">{post.data.author}</span>
+                                    {post.data.affiliation && (
+                                        <span class="affiliation-tag">| {post.data.affiliation}</span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                ))}
+                        </a>
+                    );
+                })}
             </div>
 
             {cartas.length > 0 && (
@@ -269,24 +277,30 @@ const randomGraphics = allGraphics
                         <h2>Cartas al Director</h2>
                     </section>
                     <div class="three-col-grid">
-                        {cartas.map((carta) => (
-                            <a href={`/${carta.collection}/${carta.slug || carta.id}/`} class="editorial-card">
-                                {carta.data.heroImage && (
-                                    <div class="featured-cover">
-                                        <img src={carta.data.heroImage} alt="" />
-                                    </div>
-                                )}
-                                <div class="card-inner">
-                                    <h3 class="editorial-title">{carta.data.title}</h3>
-                                    <div class="meta-row">
-                                        <span class="author-tag">{carta.data.author}</span>
-                                        {carta.data.affiliation && (
-                                            <span class="affiliation-tag">| {carta.data.affiliation}</span>
+                        {cartas.map((carta) => {
+                            const showImage = !!carta.data.heroImage;
+
+                            return (
+                                <a href={`/cartas/${carta.id}`} class="editorial-card">
+                                    {showImage && (
+                                        <div class="featured-cover">
+                                            <img src={carta.data.heroImage} alt="" />
+                                        </div>
+                                    )}
+                                    <div class="card-inner">
+                                        {!showImage && (
+                                            <h3 class="editorial-title">{carta.data.title}</h3>
                                         )}
+                                        <div class="meta-row">
+                                            <span class="author-tag">{carta.data.author}</span>
+                                            {carta.data.affiliation && (
+                                                <span class="affiliation-tag">| {carta.data.affiliation}</span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        ))}
+                                </a>
+                            );
+                        })}
                     </div>
                 </>
             )}
@@ -297,21 +311,27 @@ const randomGraphics = allGraphics
                         <h2>Poesía</h2>
                     </section>
                     <div class="three-col-grid">
-                        {poemas.map((poema) => (
-                            <a href={`/${poema.collection}/${poema.slug || poema.id}/`} class="editorial-card">
-                                {poema.data.heroImage && (
-                                    <div class="featured-cover">
-                                        <img src={poema.data.heroImage} alt="" />
+                        {poemas.map((poema) => {
+                            const showImage = !!poema.data.heroImage;
+
+                            return (
+                                <a href={`/poemas/${poema.id}`} class="editorial-card">
+                                    {showImage && (
+                                        <div class="featured-cover">
+                                            <img src={poema.data.heroImage} alt="" />
+                                        </div>
+                                    )}
+                                    <div class="card-inner">
+                                        {!showImage && (
+                                            <h3 class="editorial-title">{poema.data.title}</h3>
+                                        )}
+                                        <div class="meta-row">
+                                            <span class="author-tag">{poema.data.author}</span>
+                                        </div>
                                     </div>
-                                )}
-                                <div class="card-inner">
-                                    <h3 class="editorial-title">{poema.data.title}</h3>
-                                    <div class="meta-row">
-                                        <span class="author-tag">{poema.data.author}</span>
-                                    </div>
-                                </div>
-                            </a>
-                        ))}
+                                </a>
+                            );
+                        })}
                     </div>
                 </>
             )}
