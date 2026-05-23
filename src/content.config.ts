@@ -6,11 +6,31 @@ const blog = defineCollection({
 		description: z.string(),
 		pubDate: z.coerce.date(),
 		heroImage: z.string().optional(),
-		// Añadimos estos campos obligatorios
-		author: z.string(),
-		affiliation: z.string(),
-		category: z.string().default('Columna de opinión'),
+		author: z.string().default('Redacción'),
+		affiliation: z.string().default('UCh'),
+		category: z.string().default('Artículo'),
 	}),
 });
 
-export const collections = { blog };
+const cartas = defineCollection({
+	schema: z.object({
+		title: z.string(),
+		pubDate: z.coerce.date(),
+		heroImage: z.string().optional(),
+		author: z.string(),
+		affiliation: z.string(),
+		category: z.literal('Cartas al Director').default('Cartas al Director'),
+	}),
+});
+
+const poemas = defineCollection({
+	schema: z.object({
+		title: z.string(),
+		pubDate: z.coerce.date(),
+		heroImage: z.string().optional(),
+		author: z.string().default('Anónimo'),
+		category: z.literal('Poesía').default('Poesía'),
+	}),
+});
+
+export const collections = { blog, cartas, poemas };

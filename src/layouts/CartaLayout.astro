@@ -1,0 +1,46 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE } from '../consts';
+
+const { title, pubDate, heroImage, author, affiliation } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`${title} | ${SITE_TITLE}`} description={title} />
+        <style>
+            main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
+            .carta-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; }
+            .portada-wrapper { width: 40%; flex-shrink: 0; }
+            .portada-wrapper img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: 6px solid #000; }
+            .contenido-wrapper { width: 60%; }
+            .titulo-carta { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
+            .meta-info { font-family: monospace; font-size: 0.9rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #000; }
+            .cuerpo-carta { font-family: 'Raleway', sans-serif; font-size: 1.1rem; line-height: 1.5; text-align: justify; }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <article class="carta-container">
+                <div class="portada-wrapper">
+                    <img src={heroImage} alt={title} />
+                </div>
+                <div class="contenido-wrapper">
+                    <h1 class="titulo-carta">{title}</h1>
+                    <div class="meta-info">
+                        Por: {author} | <FormattedDate date={pubDate} />
+                    </div>
+                    <div class="cuerpo-carta">
+                        <p><strong>{affiliation}</strong></p>
+                        <slot /> </div>
+                </div>
+            </article>
+        </main>
+        <Footer />
+    </body>
+</html>

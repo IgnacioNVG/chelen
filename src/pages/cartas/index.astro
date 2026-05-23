@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { SITE_TITLE } from '../../consts';
+
+const cartas = (await getCollection('cartas')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Cartas al Director | ${SITE_TITLE}`} description="Espacio de debate y opinión" />
+        <style>
+            main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
+            .carta-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; margin-bottom: 5rem; }
+            .portada-wrapper { width: 40%; flex-shrink: 0; }
+            .portada-wrapper img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: 6px solid #000; }
+            .contenido-wrapper { width: 60%; }
+            .titulo-carta { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
+            .meta-info { font-family: monospace; font-size: 0.9rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #000; }
+            @media (max-width: 720px) { .carta-container { flex-direction: column; } .portada-wrapper, .contenido-wrapper { width: 100%; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <h2 style="font-family: monospace;">// CARTAS AL DIRECTOR</h2>
+            
+            {cartas.map((carta) => (
+                <section class="carta-container">
+                    <div class="portada-wrapper">
+                        <a href={`/cartas/${carta.id}`}>
+                            <img src={carta.data.heroImage || '/cartas-portada.webp'} alt={carta.data.title} />
+                        </a>
+                    </div>
+                    
+                    <article class="contenido-wrapper">
+                        <h1 class="titulo-carta">
+                            <a href={`/cartas/${carta.id}`} style="text-decoration: none; color: inherit;">
+                                {carta.data.title}
+                            </a>
+                        </h1>
+                        <div class="meta-info">
+                            Por: {carta.data.author} | <FormattedDate date={carta.data.pubDate} />
+                        </div>
+                        <div class="cuerpo-carta">
+                            <p>{carta.data.affiliation}</p>
+                            <a href={`/cartas/${carta.id}`}>Leer carta completa →</a>
+                        </div>
+                    </article>
+                </section>
+            ))}
+        </main>
+        <Footer />
+    </body>
+</html>

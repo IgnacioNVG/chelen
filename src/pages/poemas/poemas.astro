@@ -1,0 +1,84 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Poemas | ${SITE_TITLE}`} description="Espacio de poesía" />
+        <style>
+            main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
+            
+            .poema-container {
+                display: flex;
+                gap: 3rem;
+                align-items: flex-start;
+                margin-top: 2rem;
+            }
+
+            .portada-wrapper {
+                width: 40%;
+                flex-shrink: 0;
+            }
+
+            .portada-wrapper img {
+                width: 100%;
+                aspect-ratio: 4/5;
+                object-fit: cover;
+                border: 3px solid #000;
+                filter: saturate(1);
+            }
+
+            .contenido-wrapper {
+                width: 60%;
+            }
+
+            .titulo-poema {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 3rem;
+                text-transform: uppercase;
+                line-height: 1;
+                margin-bottom: 2rem;
+                border-bottom: 4px solid #000;
+                padding-bottom: 1rem;
+            }
+
+            .texto-poema {
+                font-family: 'Raleway', sans-serif;
+                font-size: 1.2rem;
+                line-height: 1.6;
+                white-space: pre-line;
+            }
+
+            @media (max-width: 720px) {
+                .poema-container { flex-direction: column; }
+                .portada-wrapper, .contenido-wrapper { width: 100%; }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <h2 style="font-family: monospace;">// POEMAS</h2>
+            
+            <section class="poema-container">
+                <div class="portada-wrapper">
+                    <img src="/poema-portada.webp" alt="Portada de poema" />
+                </div>
+                
+                <article class="contenido-wrapper">
+                    <h1 class="titulo-poema">Título del Poema</h1>
+                    <div class="texto-poema">
+                        Aquí va el cuerpo del poema...
+                        Cada línea se respetará
+                        gracias al white-space: pre-line.
+                    </div>
+                </article>
+            </section>
+        </main>
+        <Footer />
+    </body>
+</html>
