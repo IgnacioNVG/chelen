@@ -1,17 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
-import CartaLayout from '../../layouts/CartaLayout.astro'; // O directamente aquí
+import { getCollection, render } from 'astro:content';
+import CartaLayout from '../../layouts/CartaLayout.astro';
 
 export async function getStaticPaths() {
     const cartas = await getCollection('cartas');
     return cartas.map((carta) => ({
         params: { slug: carta.id },
-        props: carta,
+        props: { carta },
     }));
 }
 
-const carta = Astro.props;
-const { Content } = await carta.render();
+const { carta } = Astro.props;
+const { Content } = await render(carta);
 ---
 
 <CartaLayout {...carta.data}>

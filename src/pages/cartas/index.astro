@@ -14,46 +14,198 @@ const cartas = (await getCollection('cartas')).sort(
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={`Cartas al Director | ${SITE_TITLE}`} description="Espacio de debate y opinión" />
+        <BaseHead title={`Cartas al Director | ${SITE_TITLE}`} description="Espacio de debate y opinión ciudadana" />
         <style>
-            main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
-            .carta-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; margin-bottom: 5rem; }
-            .portada-wrapper { width: 40%; flex-shrink: 0; }
-            .portada-wrapper img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: 6px solid #000; }
-            .contenido-wrapper { width: 60%; }
-            .titulo-carta { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
-            .meta-info { font-family: monospace; font-size: 0.9rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #000; }
-            @media (max-width: 720px) { .carta-container { flex-direction: column; } .portada-wrapper, .contenido-wrapper { width: 100%; } }
+            /* ===== BASE ===== */
+            main {
+                width: min(960px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: 2.5rem 0 4rem;
+            }
+
+            /* ===== ENCABEZADO ===== */
+            .seccion-header {
+                font-family: monospace;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: #888;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 0.6rem;
+                margin-bottom: 2.5rem;
+            }
+
+            /* ===== CARTA CARD ===== */
+            .carta-card {
+                display: grid;
+                grid-template-columns: 260px 1fr;
+                border: 3px solid #111;
+                margin-bottom: 2.5rem;
+                text-decoration: none;
+                color: inherit;
+                transition: box-shadow 0.2s ease;
+            }
+            .carta-card:hover {
+                box-shadow: 6px 6px 0 #111;
+            }
+
+            /* Portada 4:5 */
+            .carta-portada {
+                overflow: hidden;
+                background: #111;
+            }
+            .carta-portada img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                aspect-ratio: 4/5;
+                display: block;
+                transition: transform 0.4s ease;
+            }
+            .carta-card:hover .carta-portada img { transform: scale(1.04); }
+
+            .carta-portada-fallback {
+                width: 100%;
+                aspect-ratio: 4/5;
+                background: #111;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Sifonn', sans-serif;
+                font-size: 4rem;
+                color: rgba(255,255,255,0.1);
+            }
+
+            /* Contenido */
+            .carta-info {
+                padding: 2rem 2.5rem;
+                border-left: 3px solid #111;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .carta-titulo {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.3rem, 2.5vw, 2rem);
+                text-transform: uppercase;
+                line-height: 1.05;
+                margin: 0 0 0.8rem;
+                color: #111;
+            }
+
+            .carta-meta {
+                font-family: monospace;
+                font-size: 0.76rem;
+                color: #888;
+                margin-bottom: 1rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.6rem;
+            }
+
+            .affiliation-tag {
+                font-family: monospace;
+                font-size: 0.74rem;
+                font-weight: bold;
+                color: #444;
+                border-left: 4px solid #FF1321;
+                padding-left: 0.6rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .carta-extracto {
+                font-family: 'Raleway', sans-serif;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: #555;
+                flex-grow: 1;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .leer-link {
+                display: inline-block;
+                margin-top: 1.2rem;
+                font-family: monospace;
+                font-size: 0.76rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #111;
+                border-bottom: 2px solid #111;
+                text-decoration: none;
+                padding-bottom: 1px;
+                align-self: flex-start;
+                transition: color 0.15s, border-color 0.15s;
+            }
+            .leer-link:hover { color: #FF1321; border-color: #FF1321; }
+
+            .estado-vacio {
+                text-align: center;
+                padding: 3rem 0;
+                font-family: monospace;
+                color: #aaa;
+                font-size: 0.9rem;
+            }
+
+            /* ===== RESPONSIVE ===== */
+            @media (max-width: 900px) {
+                .carta-card { grid-template-columns: 200px 1fr; }
+                .carta-info { padding: 1.5rem 1.8rem; }
+            }
+
+            @media (max-width: 720px) {
+                main { padding: 1.5rem 0 3rem; }
+
+                .carta-card { grid-template-columns: 1fr; }
+
+                .carta-portada img {
+                    aspect-ratio: 16/9;
+                    height: auto;
+                }
+                .carta-portada-fallback { aspect-ratio: 16/9; }
+
+                .carta-info {
+                    border-left: none;
+                    border-top: 3px solid #111;
+                    padding: 1.2rem 1.2rem;
+                }
+
+                .carta-titulo { font-size: 1.3rem; }
+            }
         </style>
     </head>
     <body>
         <Header />
         <main>
-            <h2 style="font-family: monospace;">// CARTAS AL DIRECTOR</h2>
-            
+            <p class="seccion-header">// Cartas al Director</p>
+
+            {cartas.length === 0 && (
+                <p class="estado-vacio">No hay cartas publicadas aún.</p>
+            )}
+
             {cartas.map((carta) => (
-                <section class="carta-container">
-                    <div class="portada-wrapper">
-                        <a href={`/cartas/${carta.id}`}>
-                            <img src={carta.data.heroImage || '/cartas-portada.webp'} alt={carta.data.title} />
-                        </a>
+                <a class="carta-card" href={`/cartas/${carta.id}`}>
+                    <div class="carta-portada">
+                        {carta.data.heroImage
+                            ? <img src={carta.data.heroImage} alt={carta.data.title} />
+                            : <div class="carta-portada-fallback">C</div>
+                        }
                     </div>
-                    
-                    <article class="contenido-wrapper">
-                        <h1 class="titulo-carta">
-                            <a href={`/cartas/${carta.id}`} style="text-decoration: none; color: inherit;">
-                                {carta.data.title}
-                            </a>
-                        </h1>
-                        <div class="meta-info">
-                            Por: {carta.data.author} | <FormattedDate date={carta.data.pubDate} />
+                    <div class="carta-info">
+                        <h2 class="carta-titulo">{carta.data.title}</h2>
+                        <div class="carta-meta">
+                            <span>{carta.data.author}</span>
+                            <span>·</span>
+                            <span><FormattedDate date={carta.data.pubDate} /></span>
                         </div>
-                        <div class="cuerpo-carta">
-                            <p>{carta.data.affiliation}</p>
-                            <a href={`/cartas/${carta.id}`}>Leer carta completa →</a>
-                        </div>
-                    </article>
-                </section>
+                        {carta.data.affiliation && (
+                            <div class="affiliation-tag">{carta.data.affiliation}</div>
+                        )}
+                        <span class="leer-link">Leer carta completa →</span>
+                    </div>
+                </a>
             ))}
         </main>
         <Footer />

@@ -1,0 +1,343 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import { SITE_TITLE } from '../../../consts';
+
+export async function getStaticPaths() {
+    const antologias = await getCollection('antologias');
+    return antologias.map((antologia) => ({
+        params: { slug: antologia.id },
+        props: { antologia },
+    }));
+}
+
+const { antologia } = Astro.props;
+const { Content } = await antologia.render();
+
+// Poemas que pertenecen a esta antología
+const poemas = (await getCollection('poemas'))
+    .filter((p) => p.data.antologia === antologia.id)
+    .sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead
+            title={`${antologia.data.title} | Antología | ${SITE_TITLE}`}
+            description={antologia.data.description}
+        />
+        <style>
+            /* ===== BASE ===== */
+            main {
+                width: min(960px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: 2.5rem 0 4rem;
+            }
+
+            /* ===== CABECERA DE ANTOLOGÍA ===== */
+            .antologia-hero {
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                border: 3px solid #111;
+                margin-bottom: 3rem;
+            }
+
+            .hero-portada {
+                overflow: hidden;
+                background: #111;
+            }
+            .hero-portada img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                aspect-ratio: 4/5;
+                display: block;
+            }
+
+            .hero-contenido {
+                padding: 2.5rem 3rem;
+                border-left: 3px solid #111;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .breadcrumb {
+                font-family: monospace;
+                font-size: 0.75rem;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 1.5rem;
+            }
+            .breadcrumb a {
+                color: #888;
+                text-decoration: none;
+            }
+            .breadcrumb a:hover { color: #111; }
+
+            .antologia-badge {
+                display: inline-block;
+                background: #111;
+                color: #fff;
+                font-family: monospace;
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                padding: 0.3rem 0.7rem;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
+
+            .antologia-titulo {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.8rem, 4vw, 3rem);
+                text-transform: uppercase;
+                line-height: 1;
+                margin: 0 0 1.5rem;
+                color: #111;
+            }
+
+            .antologia-descripcion {
+                font-family: 'Raleway', sans-serif;
+                font-size: 1rem;
+                line-height: 1.7;
+                color: #444;
+                flex-grow: 1;
+                margin-bottom: 1.5rem;
+            }
+
+            .antologia-meta {
+                font-family: monospace;
+                font-size: 0.75rem;
+                color: #888;
+                border-top: 1px solid #ddd;
+                padding-top: 1rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-top: auto;
+            }
+
+            /* ===== CUERPO DE LA ANTOLOGÍA (descripción larga en MD) ===== */
+            .antologia-body {
+                font-family: 'Raleway', sans-serif;
+                font-size: 1rem;
+                line-height: 1.7;
+                color: #333;
+                border-left: 4px solid #111;
+                padding-left: 1.5rem;
+                margin-bottom: 3rem;
+            }
+            .antologia-body p { margin-bottom: 1em; }
+
+            /* ===== DIVIDER ===== */
+            .seccion-header {
+                font-family: monospace;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: #888;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 0.6rem;
+                margin-bottom: 2rem;
+            }
+
+            /* ===== LISTA DE POEMAS ===== */
+            .poemas-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .poema-card {
+                display: grid;
+                grid-template-columns: 180px 1fr;
+                border: 3px solid #111;
+                text-decoration: none;
+                color: inherit;
+                transition: box-shadow 0.2s ease;
+            }
+            .poema-card:hover {
+                box-shadow: 5px 5px 0 #111;
+            }
+
+            .poema-portada {
+                overflow: hidden;
+                background: #111;
+            }
+            .poema-portada img {
+                width: 100%;
+                height: 100%;
+                aspect-ratio: 4/5;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.4s ease;
+            }
+            .poema-card:hover .poema-portada img { transform: scale(1.04); }
+
+            .poema-sin-imagen {
+                width: 100%;
+                aspect-ratio: 4/5;
+                background: #111;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Sifonn', sans-serif;
+                font-size: 2.5rem;
+                color: rgba(255,255,255,0.15);
+                letter-spacing: 0.1em;
+            }
+
+            .poema-info {
+                padding: 1.5rem 2rem;
+                border-left: 3px solid #111;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .poema-titulo {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+                text-transform: uppercase;
+                line-height: 1.05;
+                margin: 0 0 0.8rem;
+                color: #111;
+            }
+
+            .poema-extracto {
+                font-family: 'Raleway', sans-serif;
+                font-size: 0.92rem;
+                line-height: 1.5;
+                color: #555;
+                font-style: italic;
+                white-space: pre-line; /* respeta saltos de línea del verso */
+                flex-grow: 1;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .poema-meta {
+                font-family: monospace;
+                font-size: 0.72rem;
+                color: #888;
+                margin-top: 1rem;
+                padding-top: 0.8rem;
+                border-top: 1px solid #eee;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+
+            .leer-link {
+                display: inline-block;
+                margin-top: 0.8rem;
+                font-family: monospace;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #111;
+                border-bottom: 2px solid #111;
+                text-decoration: none;
+                padding-bottom: 1px;
+                align-self: flex-start;
+                transition: color 0.15s, border-color 0.15s;
+            }
+            .leer-link:hover { color: #FF1321; border-color: #FF1321; }
+
+            /* ===== RESPONSIVE ===== */
+            @media (max-width: 900px) {
+                .antologia-hero { grid-template-columns: 220px 1fr; }
+                .hero-contenido { padding: 1.8rem 2rem; }
+                .poema-card { grid-template-columns: 150px 1fr; }
+            }
+
+            @media (max-width: 720px) {
+                /* Hero */
+                .antologia-hero {
+                    grid-template-columns: 1fr;
+                }
+                .hero-portada img { aspect-ratio: 16/9; height: auto; }
+                .hero-contenido {
+                    border-left: none;
+                    border-top: 3px solid #111;
+                    padding: 1.2rem 1.2rem;
+                }
+
+                /* Poemas */
+                .poema-card { grid-template-columns: 1fr; }
+                .poema-portada img { aspect-ratio: 16/9; height: auto; }
+                .poema-sin-imagen { aspect-ratio: 16/9; }
+                .poema-info {
+                    border-left: none;
+                    border-top: 3px solid #111;
+                    padding: 1.2rem 1.2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <!-- Cabecera de la antología -->
+            <div class="antologia-hero">
+                <div class="hero-portada">
+                    {antologia.data.heroImage
+                        ? <img src={antologia.data.heroImage} alt={antologia.data.title} />
+                        : <div class="poema-sin-imagen">A</div>
+                    }
+                </div>
+                <div class="hero-contenido">
+                    <p class="breadcrumb">
+                        <a href="/poemas">Poemas</a> / Antología
+                    </p>
+                    <span class="antologia-badge">Antología</span>
+                    <h1 class="antologia-titulo">{antologia.data.title}</h1>
+                    <p class="antologia-descripcion">{antologia.data.description}</p>
+                    <div class="antologia-meta">
+                        {antologia.data.editor && (
+                            <span>Curada por: {antologia.data.editor}</span>
+                        )}
+                        <span><FormattedDate date={antologia.data.pubDate} /></span>
+                        <span>{poemas.length} poema{poemas.length !== 1 ? 's' : ''}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nota editorial (cuerpo del MD) si tiene contenido -->
+            <div class="antologia-body">
+                <Content />
+            </div>
+
+            <!-- Lista de poemas -->
+            <p class="seccion-header">// Poemas de esta antología</p>
+
+            <div class="poemas-grid">
+                {poemas.map((poema) => (
+                    <a class="poema-card" href={`/poemas/${poema.id}`}>
+                        <div class="poema-portada">
+                            {poema.data.heroImage
+                                ? <img src={poema.data.heroImage} alt={poema.data.title} />
+                                : <div class="poema-sin-imagen">✦</div>
+                            }
+                        </div>
+                        <div class="poema-info">
+                            <h2 class="poema-titulo">{poema.data.title}</h2>
+                            <div class="poema-meta">
+                                <span>{poema.data.author}</span>
+                                <span><FormattedDate date={poema.data.pubDate} /></span>
+                            </div>
+                            <span class="leer-link">Leer poema →</span>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </main>
+        <Footer />
+    </body>
+</html>

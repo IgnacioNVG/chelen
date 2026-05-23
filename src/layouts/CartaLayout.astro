@@ -11,33 +11,178 @@ const { title, pubDate, heroImage, author, affiliation } = Astro.props;
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={`${title} | ${SITE_TITLE}`} description={title} />
+        <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Carta al Director: ${title}, por ${author}`} />
         <style>
-            main { width: 960px; max-width: calc(100% - 3rem); margin: 0 auto; padding: 3rem 0; }
-            .carta-container { display: flex; gap: 4rem; align-items: flex-start; margin-top: 3rem; }
-            .portada-wrapper { width: 40%; flex-shrink: 0; }
-            .portada-wrapper img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border: 6px solid #000; }
-            .contenido-wrapper { width: 60%; }
-            .titulo-carta { font-family: 'Sifonn', sans-serif; font-size: 2.5rem; text-transform: uppercase; margin-bottom: 1.5rem; }
-            .meta-info { font-family: monospace; font-size: 0.9rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #000; }
-            .cuerpo-carta { font-family: 'Raleway', sans-serif; font-size: 1.1rem; line-height: 1.5; text-align: justify; }
+            /* ===== BASE ===== */
+            main {
+                width: min(960px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: 2.5rem 0 5rem;
+            }
+
+            /* ===== LAYOUT PORTADA + TEXTO ===== */
+            .carta-container {
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                gap: 0;
+                border: 3px solid #111;
+                min-height: 500px;
+            }
+
+            /* ===== COLUMNA IZQUIERDA: portada ===== */
+            .portada-wrapper {
+                position: relative;
+                overflow: hidden;
+                background: #111;
+            }
+
+            .portada-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                aspect-ratio: 4/5;
+                display: block;
+            }
+
+            /* Fallback sin imagen */
+            .portada-fallback {
+                width: 100%;
+                aspect-ratio: 4/5;
+                background: #111;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Sifonn', sans-serif;
+                font-size: 4rem;
+                color: rgba(255,255,255,0.1);
+                letter-spacing: 0.2em;
+            }
+
+            /* ===== COLUMNA DERECHA: contenido ===== */
+            .contenido-wrapper {
+                padding: 2.5rem 3rem;
+                border-left: 3px solid #111;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .breadcrumb {
+                font-family: monospace;
+                font-size: 0.72rem;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 1.5rem;
+            }
+            .breadcrumb a { color: #888; text-decoration: none; }
+            .breadcrumb a:hover { color: #111; }
+
+            .titulo-carta {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.5rem, 3vw, 2.4rem);
+                text-transform: uppercase;
+                line-height: 1.05;
+                margin: 0 0 0.5rem;
+                color: #111;
+            }
+
+            .meta-info {
+                font-family: monospace;
+                font-size: 0.8rem;
+                color: #888;
+                margin-bottom: 1.2rem;
+                padding-bottom: 1.2rem;
+                border-bottom: 2px solid #111;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+
+            .affiliation-line {
+                font-family: monospace;
+                font-size: 0.78rem;
+                font-weight: bold;
+                color: #555;
+                text-transform: uppercase;
+                border-left: 4px solid #FF1321;
+                padding-left: 0.7rem;
+                margin-bottom: 1.8rem;
+            }
+
+            /* ===== CUERPO DE LA CARTA ===== */
+            .cuerpo-carta {
+                font-family: 'Raleway', sans-serif;
+                font-size: 1.05rem;
+                line-height: 1.75;
+                color: #222;
+                text-align: justify;
+                hyphens: auto;
+                flex-grow: 1;
+            }
+
+            .cuerpo-carta p { margin-bottom: 1.2em; }
+            .cuerpo-carta p:first-child { font-style: italic; }
+
+            /* ===== RESPONSIVE ===== */
+            @media (max-width: 900px) {
+                .carta-container { grid-template-columns: 220px 1fr; }
+                .contenido-wrapper { padding: 2rem 2rem; }
+            }
+
+            @media (max-width: 720px) {
+                main { padding: 1.5rem 0 3rem; }
+
+                .carta-container {
+                    grid-template-columns: 1fr;
+                    border: 3px solid #111;
+                }
+
+                .portada-wrapper img {
+                    aspect-ratio: 4/3;
+                    height: auto;
+                    width: 100%;
+                }
+                .portada-fallback { aspect-ratio: 4/3; }
+
+                .contenido-wrapper {
+                    border-left: none;
+                    border-top: 3px solid #111;
+                    padding: 1.5rem 1.2rem;
+                }
+
+                .titulo-carta { font-size: 1.4rem; }
+                .cuerpo-carta { font-size: 0.97rem; text-align: left; }
+            }
         </style>
     </head>
     <body>
         <Header />
         <main>
             <article class="carta-container">
+                <!-- Portada 4:5 -->
                 <div class="portada-wrapper">
-                    <img src={heroImage} alt={title} />
+                    {heroImage
+                        ? <img src={heroImage} alt={title} />
+                        : <div class="portada-fallback">C</div>
+                    }
                 </div>
+
+                <!-- Carta -->
                 <div class="contenido-wrapper">
+                    <p class="breadcrumb">
+                        <a href="/cartas">Cartas al Director</a> / Carta
+                    </p>
                     <h1 class="titulo-carta">{title}</h1>
                     <div class="meta-info">
-                        Por: {author} | <FormattedDate date={pubDate} />
+                        <span>Por: {author}</span>
+                        <span><FormattedDate date={pubDate} /></span>
                     </div>
+                    {affiliation && (
+                        <div class="affiliation-line">{affiliation}</div>
+                    )}
                     <div class="cuerpo-carta">
-                        <p><strong>{affiliation}</strong></p>
-                        <slot /> </div>
+                        <slot />
+                    </div>
                 </div>
             </article>
         </main>

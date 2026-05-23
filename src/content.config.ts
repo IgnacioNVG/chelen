@@ -27,10 +27,23 @@ const poemas = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		pubDate: z.coerce.date(),
-		heroImage: z.string().optional(),
+		heroImage: z.string().optional().nullable(),
 		author: z.string().default('Anónimo'),
 		category: z.literal('Poesía').default('Poesía'),
+		// Slug de la antología a la que pertenece (opcional)
+		antologia: z.string().optional(),
 	}),
 });
 
-export const collections = { articulos, cartas, poemas };
+const antologias = defineCollection({
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		heroImage: z.string().optional().nullable(),
+		// Quién editó / curó la antología
+		editor: z.string().optional(),
+	}),
+});
+
+export const collections = { articulos, cartas, poemas, antologias };

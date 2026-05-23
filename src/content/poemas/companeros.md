@@ -2,8 +2,9 @@
 title: "Compañeros"
 pubDate: 2026-05-23
 author: "Aristóteles España"
-heroimage: ""
+heroImage: "aristoteles-espana.webp"
 category: "Poesía"
+antologia: "voces-del-sur"
 ---
 
 Compañeros, tenemos que buscar una razón 

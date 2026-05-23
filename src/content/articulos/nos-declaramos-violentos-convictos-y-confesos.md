@@ -9,7 +9,7 @@ category: 'Columna de opinión'
 tags: ['Violencia', 'Política', 'Manifestaciones', 'Tomas', 'Chile', 'Opinión']
 ---
 
-### [ ARCHIVO_DEBATE : LA FRAGMENTACIÓN ]
+### LA FRAGMENTACIÓN 
 
 La violencia es siempre un concept que sale a flote cuando hay que defenderse o apuntar a los demás para invalidar sus acciones.
 
@@ -21,7 +21,7 @@ Yo creo que podemos contar con ellos, pero no con sus overoles. El movimiento es
 
 ---
 
-### [ TESIS_01 : EL OBSTÁCULO DE LA LEGITIMIDAD ]
+### EL OBSTÁCULO DE LA LEGITIMIDAD 
 
 En la construcción de movimientos tenemos 2 tareas principales, establecer un programa mínimo a realizar y por otro lado, articular a un sujeto político capaz de llevar a cabo ese programa, pero el tercer factor es la legitimidad de nuestro movimiento, ese es nuestro principal obstáculo hoy. 
 
@@ -33,14 +33,14 @@ No debemos quitarle el piso a nuestros dirigentes, ese es otro error, tampoco de
 
 ---
 
-### [ CATEGORIZACIÓN : VIOLENCIA DE MASAS ]
+### VIOLENCIA DE MASAS 
 
 Somos violentos en tanto la violencia sea de masas:
-* Violentos al evadir un pasaje que golpea bolsillos.
-* Violentos al paralizar las clases cuando estas se desarrollan en situaciones precarias.
-* Violentos en tomarse espacios cuando estos son indignos.
-* Violentos en tener programas, pretensiones y horizontes que derrumben un sistema de lucro, segregación y educación con fecha de vencimiento.
-* Violentos al decir que no tenemos ninguna capacidad orgánica ni lógica para impedir que toda la rabia acumulada por años de abandono, no se agudice en agresiones físicas o verbales a Ministros o autoridades.
+* **Violentos** al evadir un pasaje que golpea bolsillos.
+* **Violentos** al paralizar las clases cuando estas se desarrollan en situaciones precarias.
+* **Violentos** en tomarse espacios cuando estos son indignos.
+* **Violentos** en tener programas, pretensiones y horizontes que derrumben un sistema de lucro, segregación y educación con fecha de vencimiento.
+* **Violentos** al decir que no tenemos ninguna capacidad orgánica ni lógica para impedir que toda la rabia acumulada por años de abandono, no se agudice en agresiones físicas o verbales a Ministros o autoridades.
 
 En definitiva violentos al establecer que ante nuestra violencia de masas, esa violencia puntual y particular de los overoles es simplemente minúscula.
 
@@ -48,7 +48,7 @@ No podemos contar con la violencia que promueven los overoles blancos, ya que no
 
 ---
 
-### [ COYUNTURA : EL HORIZONTE COMÚN ]
+### EL HORIZONTE COMÚN 
 
 El futuro del movimiento estudiantil parece no verse, no termina de cuajar, se está agrupando fuerza, aunando rabia, pero hace falta un empujón aglutinador. 
 
@@ -58,4 +58,4 @@ El espíritu común del movimiento estudiantil debe construirse, debatirse, arti
 
 Esa es una tarea del hoy, sin recurrir a las viejas formas del pasado, a las derrotas antiguas ni a los líderes antiguos. Cambiar las figuras, los métodos, las ideas, los paradigmas.
 
-Tomarse el futuro por asalto, un asalto con violencia.
+> Tomarse el futuro por asalto, un asalto con violencia.
