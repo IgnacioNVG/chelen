@@ -4,7 +4,7 @@ pubDate: 2026-05-23
 author: "Aristóteles España"
 heroImage: "aristoteles-espana.webp"
 category: "Poesía"
-antologia: "voces-del-sur"
+antologia: "el-poeta-dawson"
 ---
 
 Compañeros, tenemos que buscar una razón 
