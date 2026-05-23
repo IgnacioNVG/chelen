@@ -1,11 +1,11 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
+import ArticuloPost from '../../layouts/ArticuloPost.astro';
 import { render } from 'astro:content';
 
-// 1. Genera las rutas para cada archivo Markdown en src/content/blog/
+// 1. Genera las rutas para cada archivo Markdown en src/content/articulos/
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
+	const posts = await getCollection('articulos');
 	return posts.map((post) => ({
 		// El "slug" será el nombre del archivo (id)
 		// Astro se encarga de que sea una URL válida
@@ -14,13 +14,13 @@ export async function getStaticPaths() {
 	}));
 }
 
-type Props = CollectionEntry<'blog'>;
+type Props = CollectionEntry<'articulos'>;
 
 // 2. Obtiene la nota específica y procesa el contenido Markdown
 const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data}>
+<ArticuloPost {...post.data}>
 	<Content />
-</BlogPost>
+</ArticuloPost>
