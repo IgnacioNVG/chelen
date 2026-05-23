@@ -2,10 +2,11 @@
 title: 'Más de izquierda que tú'
 description: 'Una reflexión crítica sobre la lógica del espectáculo, el ego y la falta de disciplina en el movimiento estudiantil actual.'
 pubDate: 'May 10 2026'
-heroImage: '/mas-de-izquierda-que-tu.webp'
+heroImage: ./mas-de-izquierda-que-tu.webp
 author: 'Vicente Mora'
 affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
+tags: ['Movimiento estudiantil', 'Organización', 'Espectáculo']
 ---
 
 Chile está atravesando un momento que exige organización, claridad y una izquierda capaz de ofrecer algo más que indignación. El gobierno actual avanza con una agenda que afecta directamente las condiciones de vida de los sectores más vulnerables del país, y la respuesta que estamos siendo capaces de construir —al menos desde el movimiento estudiantil universitario— es la de una guerra de afiches, lienzos y post en Instagram. 

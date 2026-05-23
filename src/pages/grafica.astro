@@ -7,15 +7,20 @@ import { SITE_TITLE } from '../consts';
 
 // 1. CARGA DINÁMICA DE RECURSOS
 const imageFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/grafica-*.{webp,png,jpg,jpeg}');
-const textFiles = import.meta.glob('../assets/grafica-*.txt', { as: 'raw', eager: true });
+const textFiles = import.meta.glob('../assets/grafica-*.txt', {
+	query: '?raw',
+	import: 'default',
+	eager: true,
+});
 
 const graphics = await Promise.all(
     Object.keys(imageFiles).map(async (path) => {
         const img = await imageFiles[path]();
         const fileName = path.split('/').pop()?.split('.')[0] || '';
-        
+        const graficaNumber = Number.parseInt(fileName.replace('grafica-', ''), 10) || 0;
+
         const txtPath = path.replace(/\.(webp|png|jpg|jpeg)$/, '.txt');
-        const rawContent = textFiles[txtPath] || "";
+        const rawContent = (textFiles[txtPath] as string | undefined) ?? '';
         
         const parts = rawContent.split('\n').filter(p => p.trim() !== '');
         const title = parts[0] || fileName.replace('grafica-', 'Pieza ').replace('-', ' ');
@@ -26,12 +31,13 @@ const graphics = await Promise.all(
             id: fileName.toUpperCase().replace('-', '_'),
             title: title.trim(),
             description: desc.trim(),
-            fullPath: img.default.src
+            fullPath: img.default.src,
+            order: graficaNumber,
         };
     })
 );
 
-graphics.sort((a, b) => a.src.src.localeCompare(b.src.src));
+graphics.sort((a, b) => a.order - b.order);
 
 const description = "Registro Visual / Revista Chelén";
 ---

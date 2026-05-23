@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ContentImage from '../components/ContentImage.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE } from '../consts';
 
@@ -49,11 +50,14 @@ const posts = (await getCollection('articulos'))
 
             .hero-image img {
                 width: 100%;
+                max-width: 960px;
                 height: auto;
+                aspect-ratio: 2 / 1;
                 display: block;
                 border: 3px solid #000;
                 box-shadow: 10px 10px 0px #000;
-                object-fit: cover;
+                object-fit: contain;
+                object-position: center;
             }
 
             /* --- SIDEBAR --- */
@@ -163,7 +167,7 @@ const posts = (await getCollection('articulos'))
             <article>
                 {heroImage && (
                     <div class="hero-image">
-                        <img src={heroImage} alt="" />
+                        <ContentImage src={heroImage} alt="" width={960} priority />
                     </div>
                 )}
                 
@@ -192,7 +196,7 @@ const posts = (await getCollection('articulos'))
                                     <FormattedDate date={post.data.pubDate} />
                                 </div>
                                 {post.data.heroImage && (
-                                    <img src={post.data.heroImage} alt="" />
+                                    <ContentImage src={post.data.heroImage} alt="" width={200} />
                                 )}
                             </div>
                             <div class="sidebar-text">

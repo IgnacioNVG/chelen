@@ -2,10 +2,11 @@
 title: 'La izquierda sueca: Anticapitalismo desde una perspectiva democrática'
 description: 'Entrevista a Jacob Eklind sobre los nuevos lineamientos del SAP y el retorno al materialismo en el modelo nórdico.'
 pubDate: 'April 28 2026'
-heroImage: '/anticapitalismo-desde-una-perspectiva-democratica.webp'
+heroImage: ./anticapitalismo-desde-una-perspectiva-democratica.webp
 author: 'Vicente Espinoza'
 affiliation: 'Instituto Nacional'
 category: 'Entrevista'
+tags: ['Suecia', 'Socialdemocracia', 'Anticapitalismo']
 ---
 
 El SAP (Partido Socialdemócrata Obrero de Suecia) es uno de los ejemplos más influyentes de construcción de un proyecto socialista dentro del marco de una democracia liberal. Su trayectoria, marcada por el pragmatismo y el énfasis en la organización obrera, ofrece lecciones vitales para el movimiento socialista en Chile.

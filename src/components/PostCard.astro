@@ -1,4 +1,5 @@
 ---
+import ContentImage from './ContentImage.astro';
 import FormattedDate from './FormattedDate.astro';
 const { post, isFeatured = false } = Astro.props;
 ---
@@ -8,7 +9,7 @@ const { post, isFeatured = false } = Astro.props;
         <div class="content-wrapper">
             {isFeatured && post.data.heroImage && (
                 <div class="featured-image-container">
-                    <img src={post.data.heroImage} alt="" />
+                    <ContentImage src={post.data.heroImage} alt="" width={600} />
                 </div>
             )}
             <div class="text-content">

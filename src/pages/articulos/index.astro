@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
+import ContentImage from '../../components/ContentImage.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 const posts = (await getCollection('articulos')).sort(
@@ -171,12 +172,20 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
 
             <section>
                 <ul id="post-list">
-                    {posts.map((post) => (
+                    {posts.map((post, index) => (
                         <li class="post-item" 
                             data-category={post.data.category || 'Artículo'} 
                             data-date={post.data.pubDate.valueOf()}>
                             <a href={`/articulos/${post.id}/`}>
-                                <img src={post.data.heroImage} alt="" />
+                                {post.data.heroImage && (
+                                    <ContentImage
+                                        src={post.data.heroImage}
+                                        alt=""
+                                        width={400}
+                                        priority={index === 0}
+                                        loading={index === 0 ? 'eager' : 'lazy'}
+                                    />
+                                )}
                                 <div class="post-info-row">
                                     <span class="post-category">{post.data.category || 'Artículo'}</span>
                                     <p class="date">[ <FormattedDate date={post.data.pubDate} /> ]</p>

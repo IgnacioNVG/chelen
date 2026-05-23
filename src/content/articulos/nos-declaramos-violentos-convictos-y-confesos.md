@@ -2,11 +2,11 @@
 title: 'Nos declaramos: Violentos, Convictos y Confesos'
 description: 'Una tesis sobre la crisis del movimiento secundario, la esterilidad de los overoles blancos y la urgente legitimación de una violencia de masas frente al abandono institucional.'
 pubDate: 'May 22 2026'
-heroImage: '/nos-declaramos-violentos-convictos-y-confesos.webp'
+heroImage: ./nos-declaramos-violentos-convictos-y-confesos.webp
 author: 'Vicente Rojas.'
 affiliation: 'Externo'
 category: 'Columna de opinión'
-tags: ['Violencia', 'Política', 'Manifestaciones', 'Tomas', 'Chile', 'Opinión']
+tags: ['Movimiento secundario', 'Violencia política', 'Tomas', 'Educación']
 ---
 
 ### LA FRAGMENTACIÓN 

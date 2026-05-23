@@ -2,11 +2,11 @@
 title: 'Patada: Al balón y al Fascismo'
 description: 'Desde Lamine Yamal hasta Carlos Caszely y Eric Cantona, esta columna reflexiona sobre el carácter político del fútbol, la hipocresía frente a los deportistas migrantes y el rol del deporte como espacio de resistencia social.'
 pubDate: 'May 21 2026'
-heroImage: '/patada-al-balon-y-al-fascismo.webp'
+heroImage: ./patada-al-balon-y-al-fascismo.webp
 author: 'Franchesca Muñoz V.'
 affiliation: 'Universidad Alberto Hurtado'
 category: 'Columna de opinión'
-tags: ['Fútbol', 'Política', 'Lamine Yamal', 'Eric Cantona', 'Chile', 'Opinión']
+tags: ['Fútbol', 'Migración', 'Fascismo', 'Deporte']
 ---
 
 ## El mito del deporte neutral

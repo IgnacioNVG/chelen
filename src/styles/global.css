@@ -148,34 +148,97 @@ hr {
 	border-top: 1px solid rgb(var(--gray-light));
 }
 
-@media (min-width: 721px) {
+@media (max-width: 720px) {
+	/* ... otros estilos existentes ... */
 
-	/* 1. Definimos un contenedor estático para los links */
 	.internal-links {
 		display: flex;
-		gap: 0.2rem;
-		justify-content: flex-start;
-		align-items: center;
-		/* Aseguramos que el contenedor no se contraiga cuando el contenido cambia */
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
+		/* Permitir que los links bajen a la siguiente línea */
+		justify-content: center;
+		gap: 0.5rem 1rem;
+		/* Menor gap vertical y horizontal */
+		width: 100%;
+		padding: 0 0.5rem;
 	}
 
-	/* 2. El botón siempre ocupa su lugar, solo cambia su visibilidad */
-	.home-link-btn {
-		display: inline-block !important;
-		width: 70px;
-		text-align: center;
-		transition: opacity 0.4s ease;
-		flex-shrink: 0;
+	header :global(a) {
+		padding: 0.2rem 0.3rem !important;
+		/* Reducir aún más el padding */
+		font-size: 0.7rem;
+		/* Reducir ligeramente el texto para que quepan */
+		letter-spacing: 0em;
+		white-space: nowrap;
+		/* Evitar que las palabras se corten */
+	}
+}
+
+/* Layout editorial: imagen a tamaño natural + texto enmarcado */
+.editorial-split {
+	display: grid;
+	grid-template-columns: minmax(160px, 260px) 1fr;
+	gap: clamp(1.25rem, 3vw, 2.5rem);
+	align-items: start;
+}
+
+.editorial-figure {
+	margin: 0;
+	width: fit-content;
+	max-width: 100%;
+}
+
+.editorial-figure img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: min(68vh, 480px);
+	border: 3px solid #111;
+	box-shadow: 6px 6px 0 #111;
+}
+
+.editorial-sheet {
+	border: 3px solid #111;
+	background: #fff;
+	padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 3rem);
+	min-width: 0;
+}
+
+.editorial-sheet--compact {
+	padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+}
+
+.editorial-card-link {
+	display: grid;
+	grid-template-columns: minmax(140px, 200px) 1fr;
+	gap: clamp(1rem, 2.5vw, 2rem);
+	align-items: start;
+	text-decoration: none;
+	color: inherit;
+	margin-bottom: 2.5rem;
+	transition: opacity 0.15s ease;
+}
+
+.editorial-card-link:hover {
+	opacity: 0.92;
+}
+
+.editorial-card-link:hover .editorial-sheet {
+	box-shadow: 5px 5px 0 #111;
+}
+
+.editorial-card-link .editorial-figure img {
+	max-height: 360px;
+}
+
+@media (max-width: 720px) {
+	.editorial-split,
+	.editorial-card-link {
+		grid-template-columns: 1fr;
 	}
 
-	/* 3. Cuando estamos en HOME, lo hacemos invisible pero NO le quitamos el ancho */
-	header.is-home .home-link-btn {
-		opacity: 0;
-		pointer-events: none;
-		/* Al quitarle el display: none o el width: 0, 
-           el elemento sigue ocupando sus 70px de espacio, 
-           pero no se ve. Los demás elementos no se mueven. */
+	.editorial-figure {
+		margin: 0 auto;
 	}
 }
 

@@ -2,7 +2,7 @@
 title: "Engranajes"
 pubDate: 2026-05-23
 author: "Aristóteles España"
-heroImage: "aristoteles-espana.webp"
+heroImage: ./el-poeta-dawson.webp
 category: "Poesía"
 antologia: "el-poeta-dawson"
 ---

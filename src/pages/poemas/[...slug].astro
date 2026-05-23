@@ -14,6 +14,6 @@ const { poema } = Astro.props;
 const { Content } = await render(poema);
 ---
 
-<PoemaLayout {...poema.data}>
+<PoemaLayout {...poema.data} antologia={poema.data.antologia}>
     <Content />
 </PoemaLayout>

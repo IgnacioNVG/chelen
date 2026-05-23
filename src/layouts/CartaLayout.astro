@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ContentImage from '../components/ContentImage.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE } from '../consts';
 
@@ -13,57 +14,21 @@ const { title, pubDate, heroImage, author, affiliation } = Astro.props;
     <head>
         <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Carta al Director: ${title}, por ${author}`} />
         <style>
-            /* ===== BASE ===== */
             main {
                 width: min(960px, calc(100% - 2rem));
                 margin: 0 auto;
                 padding: 2.5rem 0 5rem;
             }
 
-            /* ===== LAYOUT PORTADA + TEXTO ===== */
-            .carta-container {
+            .carta-layout {
                 display: grid;
-                grid-template-columns: 300px 1fr;
-                gap: 0;
-                border: 3px solid #111;
-                min-height: 500px;
+                grid-template-columns: minmax(160px, 260px) 1fr;
+                gap: clamp(1.5rem, 3vw, 2.5rem);
+                align-items: start;
             }
 
-            /* ===== COLUMNA IZQUIERDA: portada ===== */
-            .portada-wrapper {
-                position: relative;
-                overflow: hidden;
-                background: #111;
-            }
-
-            .portada-wrapper img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                aspect-ratio: 4/5;
-                display: block;
-            }
-
-            /* Fallback sin imagen */
-            .portada-fallback {
-                width: 100%;
-                aspect-ratio: 4/5;
-                background: #111;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Sifonn', sans-serif;
-                font-size: 4rem;
-                color: rgba(255,255,255,0.1);
-                letter-spacing: 0.2em;
-            }
-
-            /* ===== COLUMNA DERECHA: contenido ===== */
-            .contenido-wrapper {
-                padding: 2.5rem 3rem;
-                border-left: 3px solid #111;
-                display: flex;
-                flex-direction: column;
+            .carta-layout--solo-texto {
+                grid-template-columns: 1fr;
             }
 
             .breadcrumb {
@@ -109,7 +74,6 @@ const { title, pubDate, heroImage, author, affiliation } = Astro.props;
                 margin-bottom: 1.8rem;
             }
 
-            /* ===== CUERPO DE LA CARTA ===== */
             .cuerpo-carta {
                 font-family: 'Raleway', sans-serif;
                 font-size: 1.05rem;
@@ -117,39 +81,14 @@ const { title, pubDate, heroImage, author, affiliation } = Astro.props;
                 color: #222;
                 text-align: justify;
                 hyphens: auto;
-                flex-grow: 1;
             }
 
             .cuerpo-carta p { margin-bottom: 1.2em; }
             .cuerpo-carta p:first-child { font-style: italic; }
 
-            /* ===== RESPONSIVE ===== */
-            @media (max-width: 900px) {
-                .carta-container { grid-template-columns: 220px 1fr; }
-                .contenido-wrapper { padding: 2rem 2rem; }
-            }
-
             @media (max-width: 720px) {
                 main { padding: 1.5rem 0 3rem; }
-
-                .carta-container {
-                    grid-template-columns: 1fr;
-                    border: 3px solid #111;
-                }
-
-                .portada-wrapper img {
-                    aspect-ratio: 4/3;
-                    height: auto;
-                    width: 100%;
-                }
-                .portada-fallback { aspect-ratio: 4/3; }
-
-                .contenido-wrapper {
-                    border-left: none;
-                    border-top: 3px solid #111;
-                    padding: 1.5rem 1.2rem;
-                }
-
+                .carta-layout { grid-template-columns: 1fr; }
                 .titulo-carta { font-size: 1.4rem; }
                 .cuerpo-carta { font-size: 0.97rem; text-align: left; }
             }
@@ -158,17 +97,14 @@ const { title, pubDate, heroImage, author, affiliation } = Astro.props;
     <body>
         <Header />
         <main>
-            <article class="carta-container">
-                <!-- Portada 4:5 -->
-                <div class="portada-wrapper">
-                    {heroImage
-                        ? <img src={heroImage} alt={title} />
-                        : <div class="portada-fallback">C</div>
-                    }
-                </div>
+            <article class:list={['carta-layout', !heroImage && 'carta-layout--solo-texto']}>
+                {heroImage && (
+                    <figure class="editorial-figure">
+                        <ContentImage src={heroImage} alt={title} width={480} priority />
+                    </figure>
+                )}
 
-                <!-- Carta -->
-                <div class="contenido-wrapper">
+                <div class="editorial-sheet">
                     <p class="breadcrumb">
                         <a href="/cartas">Cartas al Director</a> / Carta
                     </p>

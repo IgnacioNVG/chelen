@@ -2,10 +2,11 @@
 title: 'Ricardo Núñez: De la Renovación Socialista al nuevo ciclo transformador'
 description: 'Una conversación profunda sobre las raíces del socialismo chileno, las autocríticas pendientes de la UP y la necesidad de una identidad nacional-popular.'
 pubDate: 'April 28 2026'
-heroImage: '/de-la-renovacion-al-nuevo-ciclo-transformador.webp'
+heroImage: ./de-la-renovacion-al-nuevo-ciclo-transformador.webp
 author: 'Rodrigo Belmar'
 affiliation: 'Facultad de Derecho'
 category: 'Entrevista'
+tags: ['Socialismo chileno', 'Unidad Popular', 'Renovación socialista']
 ---
 
 Ricardo Núñez ha sido uno de los arquitectos fundamentales de la Renovación Socialista en Chile. En esta conversación, nos sumergimos en las dimensiones teóricas y políticas que permitieron al PS distanciarse del modelo soviético para reencontrarse con una impronta nacional y popular. 

@@ -2,10 +2,11 @@
 title: 'Tuvimos nuestro Mayo francés'
 description: 'Paralelos históricos entre el Octubre chileno y el Mayo del 68: del asalto a la imaginación a la hegemonía de la ultraderecha.'
 pubDate: 'May 3 2026'
-heroImage: '/tuvimos-nuestro-mayo-frances.webp'
+heroImage: ./tuvimos-nuestro-mayo-frances.webp
 author: 'Martín Olate'
 affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
+tags: ['Mayo del 68', 'Historia', 'Ultraderecha']
 ---
 
 El coloso con pies de barro y la sociabilidad fascista dejaron de ser un mero supuesto teórico y, lamentablemente, se han vuelto carne. Aquellas acertadas advertencias hoy nos acechan como el más temido de los fantasmas, y a pesar de la gran derrota que significó el acceso a la presidencia de José Antonio Kast, me tomo el atrevimiento —y renuncio a toda pretensión de originalidad— de recordarle a todo quien lea esta humilde columna que toda derrota es temporal.

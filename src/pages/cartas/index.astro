@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import ContentImage from '../../components/ContentImage.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE_TITLE } from '../../consts';
 
@@ -16,14 +17,12 @@ const cartas = (await getCollection('cartas')).sort(
     <head>
         <BaseHead title={`Cartas al Director | ${SITE_TITLE}`} description="Espacio de debate y opinión ciudadana" />
         <style>
-            /* ===== BASE ===== */
             main {
                 width: min(960px, calc(100% - 2rem));
                 margin: 0 auto;
                 padding: 2.5rem 0 4rem;
             }
 
-            /* ===== ENCABEZADO ===== */
             .seccion-header {
                 font-family: monospace;
                 font-size: 0.8rem;
@@ -33,55 +32,6 @@ const cartas = (await getCollection('cartas')).sort(
                 border-bottom: 1px solid #ccc;
                 padding-bottom: 0.6rem;
                 margin-bottom: 2.5rem;
-            }
-
-            /* ===== CARTA CARD ===== */
-            .carta-card {
-                display: grid;
-                grid-template-columns: 260px 1fr;
-                border: 3px solid #111;
-                margin-bottom: 2.5rem;
-                text-decoration: none;
-                color: inherit;
-                transition: box-shadow 0.2s ease;
-            }
-            .carta-card:hover {
-                box-shadow: 6px 6px 0 #111;
-            }
-
-            /* Portada 4:5 */
-            .carta-portada {
-                overflow: hidden;
-                background: #111;
-            }
-            .carta-portada img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                aspect-ratio: 4/5;
-                display: block;
-                transition: transform 0.4s ease;
-            }
-            .carta-card:hover .carta-portada img { transform: scale(1.04); }
-
-            .carta-portada-fallback {
-                width: 100%;
-                aspect-ratio: 4/5;
-                background: #111;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Sifonn', sans-serif;
-                font-size: 4rem;
-                color: rgba(255,255,255,0.1);
-            }
-
-            /* Contenido */
-            .carta-info {
-                padding: 2rem 2.5rem;
-                border-left: 3px solid #111;
-                display: flex;
-                flex-direction: column;
             }
 
             .carta-titulo {
@@ -110,24 +60,12 @@ const cartas = (await getCollection('cartas')).sort(
                 color: #444;
                 border-left: 4px solid #FF1321;
                 padding-left: 0.6rem;
-                margin-bottom: 1.2rem;
-            }
-
-            .carta-extracto {
-                font-family: 'Raleway', sans-serif;
-                font-size: 0.95rem;
-                line-height: 1.6;
-                color: #555;
-                flex-grow: 1;
-                display: -webkit-box;
-                -webkit-line-clamp: 4;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
+                margin-bottom: 1rem;
             }
 
             .leer-link {
                 display: inline-block;
-                margin-top: 1.2rem;
+                margin-top: 0.5rem;
                 font-family: monospace;
                 font-size: 0.76rem;
                 text-transform: uppercase;
@@ -136,7 +74,6 @@ const cartas = (await getCollection('cartas')).sort(
                 border-bottom: 2px solid #111;
                 text-decoration: none;
                 padding-bottom: 1px;
-                align-self: flex-start;
                 transition: color 0.15s, border-color 0.15s;
             }
             .leer-link:hover { color: #FF1321; border-color: #FF1321; }
@@ -147,32 +84,6 @@ const cartas = (await getCollection('cartas')).sort(
                 font-family: monospace;
                 color: #aaa;
                 font-size: 0.9rem;
-            }
-
-            /* ===== RESPONSIVE ===== */
-            @media (max-width: 900px) {
-                .carta-card { grid-template-columns: 200px 1fr; }
-                .carta-info { padding: 1.5rem 1.8rem; }
-            }
-
-            @media (max-width: 720px) {
-                main { padding: 1.5rem 0 3rem; }
-
-                .carta-card { grid-template-columns: 1fr; }
-
-                .carta-portada img {
-                    aspect-ratio: 16/9;
-                    height: auto;
-                }
-                .carta-portada-fallback { aspect-ratio: 16/9; }
-
-                .carta-info {
-                    border-left: none;
-                    border-top: 3px solid #111;
-                    padding: 1.2rem 1.2rem;
-                }
-
-                .carta-titulo { font-size: 1.3rem; }
             }
         </style>
     </head>
@@ -186,14 +97,13 @@ const cartas = (await getCollection('cartas')).sort(
             )}
 
             {cartas.map((carta) => (
-                <a class="carta-card" href={`/cartas/${carta.id}`}>
-                    <div class="carta-portada">
-                        {carta.data.heroImage
-                            ? <img src={carta.data.heroImage} alt={carta.data.title} />
-                            : <div class="carta-portada-fallback">C</div>
-                        }
-                    </div>
-                    <div class="carta-info">
+                <a class="editorial-card-link" href={`/cartas/${carta.id}`}>
+                    {carta.data.heroImage && (
+                        <figure class="editorial-figure">
+                            <ContentImage src={carta.data.heroImage} alt={carta.data.title} width={480} />
+                        </figure>
+                    )}
+                    <div class="editorial-sheet editorial-sheet--compact">
                         <h2 class="carta-titulo">{carta.data.title}</h2>
                         <div class="carta-meta">
                             <span>{carta.data.author}</span>

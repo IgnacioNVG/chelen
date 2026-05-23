@@ -1,0 +1,91 @@
+import type { ImageMetadata } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+
+export type FeedKind = 'articulo' | 'carta' | 'antologia';
+
+export type FeedItem = {
+	id: string;
+	kind: FeedKind;
+	title: string;
+	description?: string;
+	pubDate: Date;
+	author?: string;
+	affiliation?: string;
+	/** Tipo de pieza (se muestra como etiqueta principal). */
+	category: string;
+	/** Temas; no deben repetir `category`. */
+	tags: string[];
+	href: string;
+	image?: ImageMetadata;
+	imageLayout: 'landscape' | 'portrait' | 'none';
+};
+
+export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): FeedItem[] {
+	return articulos.map((post) => ({
+		id: `articulo-${post.id}`,
+		kind: 'articulo',
+		title: post.data.title,
+		description: post.data.description,
+		pubDate: post.data.pubDate,
+		author: post.data.author,
+		affiliation: post.data.affiliation,
+		category: post.data.category,
+		tags: post.data.tags,
+		href: `/articulos/${post.id}`,
+		image: post.data.heroImage,
+		imageLayout: post.data.heroImage ? 'landscape' : 'none',
+	}));
+}
+
+export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[] {
+	return cartas.map((carta) => ({
+		id: `carta-${carta.id}`,
+		kind: 'carta',
+		title: carta.data.title,
+		pubDate: carta.data.pubDate,
+		author: carta.data.author,
+		affiliation: carta.data.affiliation,
+		category: carta.data.category,
+		tags: carta.data.tags,
+		href: `/cartas/${carta.id}`,
+		image: carta.data.heroImage,
+		imageLayout: carta.data.heroImage ? 'portrait' : 'none',
+	}));
+}
+
+export function buildAntologiaItems(
+	antologias: CollectionEntry<'antologias'>[],
+	poemas: CollectionEntry<'poemas'>[],
+): FeedItem[] {
+	return antologias.map((antologia) => {
+		const count = poemas.filter((p) => p.data.antologia === antologia.id).length;
+		return {
+			id: `antologia-${antologia.id}`,
+			kind: 'antologia',
+			title: antologia.data.title,
+			description: `${antologia.data.description} (${count} poema${count !== 1 ? 's' : ''})`,
+			pubDate: antologia.data.pubDate,
+			author: antologia.data.editor,
+			category: antologia.data.category,
+			tags: antologia.data.tags,
+			href: `/poemas/antologia/${antologia.id}`,
+			image: antologia.data.heroImage,
+			imageLayout: antologia.data.heroImage ? 'portrait' : 'none',
+		};
+	});
+}
+
+export function mergeEditorialFeed(...groups: FeedItem[][]): FeedItem[] {
+	return groups
+		.flat()
+		.sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+}
+
+export function editionLabel(items: FeedItem[]): string {
+	if (items.length === 0) return '';
+	const latest = items.reduce((a, b) => (a.pubDate > b.pubDate ? a : b));
+	return latest.pubDate.toLocaleDateString('es-CL', {
+		month: 'long',
+		year: 'numeric',
+	});
+}

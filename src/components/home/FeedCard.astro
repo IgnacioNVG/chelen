@@ -1,0 +1,66 @@
+---
+import ContentImage from '../ContentImage.astro';
+import FormattedDate from '../FormattedDate.astro';
+import type { FeedItem } from '../../lib/homeFeed';
+
+interface Props {
+	item: FeedItem;
+	variant?: 'hero' | 'featured' | 'compact';
+}
+
+const { item, variant = 'compact' } = Astro.props;
+
+const priority = variant === 'hero';
+const aboveFold = variant === 'hero' || variant === 'featured';
+const loading = aboveFold ? 'eager' : 'lazy';
+---
+
+<article
+	class:list={[
+		'feed-card',
+		`feed-card--${variant}`,
+		`feed-card--${item.kind}`,
+		item.imageLayout !== 'none' && `feed-card--${item.imageLayout}`,
+	]}
+>
+	<a href={item.href} class="feed-card-link">
+		{item.imageLayout === 'landscape' && item.image && (
+			<div class="feed-media feed-media--landscape">
+				<ContentImage src={item.image} alt="" width={960} priority={priority} loading={loading} />
+			</div>
+		)}
+
+		{item.imageLayout === 'portrait' && item.image && (
+			<div class="feed-media feed-media--portrait">
+				<ContentImage src={item.image} alt="" width={480} priority={priority} loading={loading} />
+			</div>
+		)}
+
+		<div class="feed-body">
+			<div class="feed-tags">
+				<span class="feed-tag feed-tag--section">{item.category}</span>
+				{item.tags.slice(0, 2).map((tag) => (
+					<span class="feed-tag">{tag}</span>
+				))}
+			</div>
+
+			<h3 class:list={['feed-title', variant === 'hero' && 'feed-title--hero']}>
+				{item.title}
+			</h3>
+
+			{item.description && variant !== 'compact' && (
+				<p class="feed-desc">{item.description}</p>
+			)}
+
+			<footer class="feed-meta">
+				{item.author && <span class="feed-author">{item.author}</span>}
+				{item.affiliation && variant !== 'compact' && (
+					<span class="feed-affiliation">{item.affiliation}</span>
+				)}
+				<time class="feed-date">
+					<FormattedDate date={item.pubDate} />
+				</time>
+			</footer>
+		</div>
+	</a>
+</article>
