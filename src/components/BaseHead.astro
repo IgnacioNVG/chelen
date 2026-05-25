@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
 	title: string;
@@ -13,6 +14,7 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<ClientRouter />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
@@ -36,3 +38,28 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<script is:inline>
+    const navOrder = ['/', '/grafica', '/poemas', '/cartas', '/articulos', '/nosotros', '/organizacion'];
+    const sectionFor = (url) => {
+        const path = new URL(url, window.location.href).pathname.replace(/\/$/, '') || '/';
+        return navOrder.findIndex((item) => path === item || (item !== '/' && path.startsWith(`${item}/`)));
+    };
+
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest?.('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('http')) return;
+
+        const from = sectionFor(window.location.href);
+        const to = sectionFor(href);
+        if (from === -1 || to === -1 || from === to) {
+            document.documentElement.dataset.navDirection = 'forward';
+            return;
+        }
+
+        document.documentElement.dataset.navDirection = to < from ? 'back' : 'forward';
+    }, { capture: true });
+</script>

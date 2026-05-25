@@ -40,7 +40,8 @@ const { post, isFeatured } = Astro.props;
         aspect-ratio: 3 / 2; /* Tarjetas de grilla: sutil y equilibrado */
     }
     
-    .post-card.featured {
+    .post-card.featured,
+    :global(.featured-item) .post-card {
         /* Destacada: formato cinemático que deja la imagen casi en 2:1 exacto al expandir el texto */
         aspect-ratio: 16 / 9; 
     }
@@ -106,7 +107,8 @@ const { post, isFeatured } = Astro.props;
         transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
     
-    .post-card.featured .title {
+    .post-card.featured .title,
+    :global(.featured-item) .post-card .title {
         font-size: 1.8rem; /* Título ligeramente más grande en la destacada */
     }
 
