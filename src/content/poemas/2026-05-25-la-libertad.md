@@ -1,8 +1,9 @@
 title: "La Libertad"
 pubDate: 2026-05-25
 author: "Juan Tinola"
-heroImage: ./2026-05-25.webp
+heroImage: ./2026-05-25-la-libertad.webp
 category: "Poesía"
+antología: "juan-tinola"
 ---
 
 Nuevamente sobre la libertad pregunto,
