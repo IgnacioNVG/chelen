@@ -7,11 +7,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import {
-	buildAntologiaItems,
-	buildArticuloItems,
-	buildCartaItems,
-	mergeEditorialFeed,
-	editionLabel,
+    buildAntologiaItems,
+    buildArticuloItems,
+    buildCartaItems,
+    mergeEditorialFeed,
+    editionLabel,
 } from '../lib/homeFeed';
 
 const articulos = await getCollection('articulos');
@@ -20,16 +20,16 @@ const antologias = await getCollection('antologias');
 const poemas = await getCollection('poemas');
 
 const editorialFeed = mergeEditorialFeed(
-	buildArticuloItems(articulos),
-	buildCartaItems(cartas),
-	buildAntologiaItems(antologias, poemas),
+    buildArticuloItems(articulos),
+    buildCartaItems(cartas),
+    buildAntologiaItems(antologias, poemas),
 );
 
 const edicion = editionLabel(editorialFeed);
 
 const hero =
-	editorialFeed.find((item) => item.kind === 'articulo' && item.imageLayout === 'landscape') ??
-	editorialFeed[0];
+    editorialFeed.find((item) => item.kind === 'articulo' && item.imageLayout === 'landscape') ??
+    editorialFeed[0];
 
 const feedSinHero = editorialFeed.filter((item) => item.id !== hero?.id);
 const destacados = feedSinHero.filter((item) => item.kind === 'articulo').slice(0, 2);
@@ -40,18 +40,18 @@ const retrato = cronologiaResto.filter((item) => item.kind === 'carta' || item.k
 const articulosResto = cronologiaResto.filter((item) => item.kind === 'articulo');
 
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>(
-	'../assets/grafica-*.{webp,png,jpg,jpeg}',
+    '../assets/grafica-*.{webp,png,jpg,jpeg}',
 );
 const graphics = (
-	await Promise.all(
-		Object.keys(graphicFiles).map(async (path) => {
-			const img = await graphicFiles[path]();
-			const fileName = path.split('/').pop()?.replace(/\.[^.]+$/, '') ?? '';
-			const order = Number.parseInt(fileName.replace('grafica-', ''), 10) || 0;
-			const title = fileName.replace('grafica-', 'Pieza ').replace(/-/g, ' ');
-			return { id: fileName, title, src: img.default, order };
-		}),
-	)
+    await Promise.all(
+        Object.keys(graphicFiles).map(async (path) => {
+            const img = await graphicFiles[path]();
+            const fileName = path.split('/').pop()?.replace(/\.[^.]+$/, '') ?? '';
+            const order = Number.parseInt(fileName.replace('grafica-', ''), 10) || 0;
+            const title = fileName.replace('grafica-', 'Pieza ').replace(/-/g, ' ');
+            return { id: fileName, title, src: img.default, order };
+        }),
+    )
 ).sort((a, b) => a.order - b.order);
 
 const graficaDestacada = graphics.slice(-3).reverse();
@@ -59,460 +59,458 @@ const graficaDestacada = graphics.slice(-3).reverse();
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			.home {
-				width: min(1280px, calc(100% - 2rem));
-				margin: 0 auto;
-				padding: 1.5rem 0 4rem;
-			}
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            .home {
+                width: min(1280px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: 1.5rem 0 4rem;
+            }
 
-			.masthead {
-				border-bottom: 4px solid #111;
-				padding-bottom: 1.25rem;
-				margin-bottom: 2rem;
-			}
+            .masthead {
+                border-bottom: 4px solid #111;
+                padding-bottom: 1.25rem;
+                margin-bottom: 2rem;
+            }
 
-			.masthead-kicker {
-				font-family: monospace;
-				font-size: 0.72rem;
-				text-transform: uppercase;
-				letter-spacing: 0.2em;
-				color: #666;
-				margin: 0 0 0.5rem;
-			}
+            .masthead-kicker {
+                font-family: monospace;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                color: #666;
+                margin: 0 0 0.5rem;
+            }
 
-			.masthead-title {
-				font-family: 'Sifonn', sans-serif;
-				font-size: clamp(2.2rem, 6vw, 4rem);
-				text-transform: uppercase;
-				line-height: 0.95;
-				margin: 0 0 0.35rem;
-				color: #111;
-			}
+            .masthead-title {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.2rem, 6vw, 4rem);
+                text-transform: uppercase;
+                line-height: 0.95;
+                margin: 0 0 0.35rem;
+                color: #111;
+            }
 
-			.masthead-edition {
-				font-family: monospace;
-				font-size: 0.8rem;
-				color: #444;
-				margin: 0;
-			}
+            .masthead-edition {
+                font-family: monospace;
+                font-size: 0.8rem;
+                color: #444;
+                margin: 0;
+            }
 
-			.hero-zone {
-				margin-bottom: 2.5rem;
-			}
+            .section-band {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                border-top: 0.45rem solid #111;
+                padding-top: 0.5rem;
+                margin: 2.5rem 0 1.5rem;
+            }
 
-			.hero-zone :global(.feed-card--hero) {
-				border: 3px solid #111;
-				background: #fff;
-			}
+            .section-band h2 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+                text-transform: uppercase;
+                margin: 0;
+                color: #111;
+            }
 
-			.hero-zone :global(.feed-card--hero .feed-card-link) {
-				display: grid;
-				grid-template-columns: 1.15fr 1fr;
-				text-decoration: none;
-				color: inherit;
-			}
+            .section-band a {
+                font-family: monospace;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                color: #111;
+                text-decoration: none;
+                border-bottom: 1px solid #111;
+            }
 
-			.hero-zone :global(.feed-media--landscape) {
-				aspect-ratio: 2 / 1;
-				background: #f0f0f0;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				overflow: hidden;
-				border-right: 3px solid #111;
-			}
+            .section-band a:hover {
+                color: #ff1321;
+                border-color: #ff1321;
+            }
 
-			.hero-zone :global(.feed-media--landscape img) {
-				width: 100%;
-				height: 100%;
-				object-fit: contain;
-				display: block;
-			}
+            /* --- TARJETAS BRUTALISTAS (HERO, FEED Y GRÁFICA) --- */
+            .hero-zone :global(.feed-card--hero),
+            .feed-grid :global(.feed-card),
+            .graphics-strip a {
+                background-color: #fff;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px 0px #111;
+                overflow: hidden;
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                flex-direction: column;
+            }
 
-			.hero-zone :global(.feed-card--hero .feed-body) {
-				padding: clamp(1.25rem, 3vw, 2.5rem);
-				display: flex;
-				flex-direction: column;
-			}
+            .hero-zone :global(.feed-card--hero:hover),
+            .feed-grid :global(.feed-card:hover),
+            .graphics-strip a:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0px 0px #ff0000;
+                border-color: #ff0000;
+                background-color: #fff;
+            }
 
-			.hero-zone :global(.feed-title--hero) {
-				font-size: clamp(1.6rem, 3.5vw, 2.8rem);
-			}
+            /* --- ESTRUCTURAS DE GRILLA --- */
+            .hero-zone { margin-bottom: 2.5rem; }
 
-			.hero-zone :global(.feed-desc) {
-				font-size: 1rem;
-				line-height: 1.55;
-				color: #333;
-				margin: 0 0 1rem;
-				flex-grow: 1;
-			}
+            .hero-zone :global(.feed-card--hero .feed-card-link) {
+                display: grid;
+                grid-template-columns: 1.15fr 1fr;
+                text-decoration: none;
+                color: inherit;
+            }
 
-			.section-band {
-				display: flex;
-				justify-content: space-between;
-				align-items: baseline;
-				border-top: 0.45rem solid #111;
-				padding-top: 0.5rem;
-				margin: 2.5rem 0 1.25rem;
-			}
+            /* Rejilla artículos (cabecera 2:1) */
+            .feed-grid--articulos {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 2rem; /* Separación amplia para permitir las sombras */
+            }
 
-			.section-band h2 {
-				font-family: 'Sifonn', sans-serif;
-				font-size: clamp(1.2rem, 2.5vw, 1.75rem);
-				text-transform: uppercase;
-				margin: 0;
-				color: #111;
-			}
+            .feed-grid--articulos :global(.feed-card) {
+                grid-column: span 4;
+            }
 
-			.section-band a {
-				font-family: monospace;
-				font-size: 0.7rem;
-				text-transform: uppercase;
-				color: #111;
-				text-decoration: none;
-				border-bottom: 1px solid #111;
-			}
+            .feed-grid--articulos :global(.feed-card--featured) {
+                grid-column: span 6;
+            }
 
-			.section-band a:hover {
-				color: #ff1321;
-				border-color: #ff1321;
-			}
+            /* Rejilla retrato (cartas, antología: 4:5) */
+            .feed-grid--retrato {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
 
-			/* Rejilla artículos (cabecera 2:1) */
-			.feed-grid--articulos {
-				display: grid;
-				grid-template-columns: repeat(12, 1fr);
-				gap: 1px;
-				background: #111;
-				border: 1px solid #111;
-			}
+            /* --- IMÁGENES Y ZOOM FLUIDO --- */
+            .hero-zone :global(.feed-media--landscape) {
+                aspect-ratio: 2 / 1;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-right: 2px solid #111;
+            }
 
-			.feed-grid--articulos :global(.feed-card) {
-				background: #fff;
-				grid-column: span 4;
-			}
+            .feed-grid :global(.feed-media--landscape) {
+                aspect-ratio: 2 / 1;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-bottom: 2px solid #111;
+            }
 
-			.feed-grid--articulos :global(.feed-card--featured) {
-				grid-column: span 6;
-			}
+            .feed-grid :global(.feed-media--portrait) {
+                aspect-ratio: 4 / 5;
+                background: #111;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-bottom: 2px solid #111;
+                padding: 0.75rem;
+                box-sizing: border-box;
+            }
 
-			/* Rejilla retrato (cartas, antología: 4:5) */
-			.feed-grid--retrato {
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				gap: 1px;
-				background: #111;
-				border: 1px solid #111;
-				margin-bottom: 2rem;
-			}
+            .hero-zone :global(.feed-media--landscape img),
+            .feed-grid :global(.feed-media--landscape img),
+            .feed-grid :global(.feed-media--portrait img),
+            .graphics-frame :global(img) {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                display: block;
+                transform: scale(1.01);
+                transition: transform 0.4s ease;
+            }
 
-			.feed-grid--retrato :global(.feed-card) {
-				background: #fff;
-			}
+            .hero-zone :global(.feed-card--hero:hover .feed-media--landscape img),
+            .feed-grid :global(.feed-card:hover .feed-media--landscape img),
+            .feed-grid :global(.feed-card:hover .feed-media--portrait img),
+            .graphics-strip a:hover .graphics-frame :global(img) {
+                transform: scale(1.04);
+            }
 
-			.feed-grid :global(.feed-card-link) {
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-				text-decoration: none;
-				color: inherit;
-			}
+            /* --- CONTENEDORES DE TEXTO --- */
+            .feed-grid :global(.feed-card-link) {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
+            }
 
-			.feed-grid :global(.feed-card:hover) {
-				background: #fafafa;
-			}
+            .hero-zone :global(.feed-card--hero .feed-body) {
+                padding: clamp(1.25rem, 3vw, 2.5rem);
+                display: flex;
+                flex-direction: column;
+            }
 
-			.feed-grid :global(.feed-media--landscape) {
-				aspect-ratio: 2 / 1;
-				background: #f0f0f0;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				overflow: hidden;
-				border-bottom: 1px solid #111;
-			}
+            .feed-grid :global(.feed-body) {
+                padding: 1.25rem;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
 
-			.feed-grid :global(.feed-media--landscape img) {
-				width: 100%;
-				height: 100%;
-				object-fit: contain;
-			}
+            /* --- TIPOGRAFÍA Y ETIQUETAS --- */
+            .hero-zone :global(.feed-title--hero) {
+                font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+                font-family: 'Sifonn', sans-serif;
+                text-transform: uppercase;
+                line-height: 0.95;
+                margin: 0 0 0.5rem;
+                color: #111;
+            }
 
-			.feed-grid :global(.feed-media--portrait) {
-				aspect-ratio: 4 / 5;
-				background: #111;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				overflow: hidden;
-				border-bottom: 1px solid #111;
-				padding: 0.75rem;
-				box-sizing: border-box;
-			}
+            .feed-grid :global(.feed-title) {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin: 0 0 0.5rem;
+                color: #111;
+            }
 
-			.feed-grid :global(.feed-media--portrait img) {
-				max-width: 100%;
-				max-height: 100%;
-				width: auto;
-				height: auto;
-				object-fit: contain;
-				display: block;
-			}
+            .hero-zone :global(.feed-desc),
+            .feed-grid :global(.feed-desc) {
+                font-size: 0.85rem;
+                line-height: 1.45;
+                color: #444;
+                margin: 0 0 0.75rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                flex-grow: 1;
+            }
 
-			.feed-grid :global(.feed-body) {
-				padding: 1rem 1.1rem 1.2rem;
-				display: flex;
-				flex-direction: column;
-				flex-grow: 1;
-			}
+            .hero-zone :global(.feed-desc) {
+                font-size: 1rem;
+                line-height: 1.55;
+            }
 
-			.feed-grid :global(.feed-tags) {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.35rem;
-				margin-bottom: 0.6rem;
-			}
+            .feed-grid :global(.feed-tags),
+            .hero-zone :global(.feed-tags) {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+                margin-bottom: 0.6rem;
+            }
 
-			.feed-grid :global(.feed-tag) {
-				font-family: monospace;
-				font-size: 0.6rem;
-				text-transform: uppercase;
-				background: #eee;
-				color: #333;
-				padding: 0.15rem 0.4rem;
-			}
+            .feed-grid :global(.feed-tag),
+            .hero-zone :global(.feed-tag) {
+                font-family: monospace;
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                background: #eee;
+                color: #333;
+                padding: 0.15rem 0.4rem;
+                transition: background 0.2s, color 0.2s;
+            }
 
-			.feed-grid :global(.feed-tag--section) {
-				background: #111;
-				color: #fff;
-			}
+            .feed-grid :global(.feed-tag--section),
+            .hero-zone :global(.feed-tag--section) {
+                background: #111;
+                color: #fff;
+            }
 
-			.feed-grid :global(.feed-title) {
-				font-family: 'Sifonn', sans-serif;
-				font-size: clamp(0.95rem, 1.4vw, 1.25rem);
-				text-transform: uppercase;
-				line-height: 1.1;
-				margin: 0 0 0.5rem;
-				color: #111;
-			}
+            .feed-grid :global(.feed-card:hover .feed-tag),
+            .hero-zone :global(.feed-card--hero:hover .feed-tag) {
+                background: #ff0000;
+                color: #fff;
+            }
 
-			.feed-grid :global(.feed-desc) {
-				font-size: 0.85rem;
-				line-height: 1.45;
-				color: #444;
-				margin: 0 0 0.75rem;
-				display: -webkit-box;
-				-webkit-line-clamp: 3;
-				-webkit-box-orient: vertical;
-				overflow: hidden;
-			}
+            .feed-grid :global(.feed-meta) {
+                margin-top: auto;
+                font-family: monospace;
+                font-size: 0.65rem;
+                color: #777;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding-top: 0.6rem;
+                border-top: 1px solid #111;
+            }
 
-			.feed-grid :global(.feed-meta) {
-				margin-top: auto;
-				font-family: monospace;
-				font-size: 0.65rem;
-				color: #777;
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.5rem;
-				padding-top: 0.6rem;
-				border-top: 1px solid #eee;
-			}
+            .feed-grid :global(.feed-author) {
+                font-weight: bold;
+                color: #111;
+                border-left: 3px solid #ff1321;
+                padding-left: 0.4rem;
+            }
 
-			.feed-grid :global(.feed-author) {
-				font-weight: bold;
-				color: #111;
-				border-left: 3px solid #ff1321;
-				padding-left: 0.4rem;
-			}
+            /* --- ARCHIVO GRÁFICO (REDISEÑADO COMO CARDS) --- */
+            .graphics-strip {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+            }
 
-			.hero-zone :global(.feed-tag) {
-				font-family: monospace;
-				font-size: 0.6rem;
-				text-transform: uppercase;
-				background: #eee;
-				color: #333;
-				padding: 0.15rem 0.4rem;
-			}
+            .graphics-strip a {
+                text-decoration: none;
+                color: inherit;
+                height: 100%;
+            }
 
-			.hero-zone :global(.feed-tag--section) {
-				background: #111;
-				color: #fff;
-			}
+            .graphics-frame {
+                aspect-ratio: 4 / 5;
+                background: #f5f5f5;
+                border-bottom: 2px solid #111;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
 
-			.graphics-strip {
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				gap: 1px;
-				background: #111;
-				border: 1px solid #111;
-			}
+            .graphics-content {
+                padding: 1.25rem;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
 
-			.graphics-strip a {
-				background: #fff;
-				padding: 1.25rem;
-				text-decoration: none;
-				color: inherit;
-				display: flex;
-				flex-direction: column;
-			}
+            .graphics-content h4 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                margin: 0;
+            }
 
-			.graphics-strip a:hover {
-				background: #fafafa;
-			}
+            .graphics-content span {
+                font-family: monospace;
+                font-size: 0.62rem;
+                color: #888;
+                margin-top: 0.35rem;
+            }
 
-			.graphics-frame {
-				aspect-ratio: 4 / 5;
-				background: #f5f5f5;
-				border: 2px solid #111;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				overflow: hidden;
-				margin-bottom: 0.75rem;
-			}
+            /* --- RESPONSIVIDAD --- */
+            @media (max-width: 1024px) {
+                .feed-grid--articulos :global(.feed-card),
+                .feed-grid--articulos :global(.feed-card--featured) {
+                    grid-column: span 6;
+                }
+                .feed-grid--retrato {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
 
-			.graphics-frame :global(img) {
-				max-width: 100%;
-				max-height: 100%;
-				width: auto;
-				height: auto;
-				object-fit: contain;
-			}
+            @media (max-width: 720px) {
+                .hero-zone :global(.feed-card--hero .feed-card-link) {
+                    grid-template-columns: 1fr;
+                }
 
-			.graphics-strip h4 {
-				font-family: 'Sifonn', sans-serif;
-				font-size: 0.9rem;
-				text-transform: uppercase;
-				margin: 0;
-			}
+                .hero-zone :global(.feed-media--landscape) {
+                    border-right: none;
+                    border-bottom: 2px solid #111;
+                }
 
-			.graphics-strip span {
-				font-family: monospace;
-				font-size: 0.62rem;
-				color: #888;
-				margin-top: 0.35rem;
-			}
+                .feed-grid--articulos :global(.feed-card),
+                .feed-grid--articulos :global(.feed-card--featured) {
+                    grid-column: span 12;
+                }
 
-			@media (max-width: 1024px) {
-				.feed-grid--articulos :global(.feed-card),
-				.feed-grid--articulos :global(.feed-card--featured) {
-					grid-column: span 6;
-				}
-				.feed-grid--retrato {
-					grid-template-columns: repeat(2, 1fr);
-				}
-			}
+                .feed-grid--retrato,
+                .graphics-strip {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main class="home">
+            <header class="masthead">
+                <p class="masthead-kicker">"Nunca más una linea correcta"</p>
+                <h1 class="masthead-title">{SITE_TITLE}</h1>
+                <p class="masthead-edition">
+                    {SITE_DESCRIPTION}
+                    {edicion && ` · ${edicion}`}
+                </p>
+            </header>
 
-			@media (max-width: 720px) {
-				.hero-zone :global(.feed-card--hero .feed-card-link) {
-					grid-template-columns: 1fr;
-				}
+            {hero && (
+                <section class="hero-zone">
+                    <FeedCard item={hero} variant="hero" />
+                </section>
+            )}
 
-				.hero-zone :global(.feed-media--landscape) {
-					border-right: none;
-					border-bottom: 3px solid #111;
-				}
+            {destacados.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>En portada</h2>
+                        <a href="/articulos">Ver artículos →</a>
+                    </div>
+                    <div class="feed-grid feed-grid--articulos">
+                        {destacados.map((item) => (
+                            <FeedCard item={item} variant="featured" />
+                        ))}
+                    </div>
+                </>
+            )}
 
-				.feed-grid--articulos :global(.feed-card),
-				.feed-grid--articulos :global(.feed-card--featured) {
-					grid-column: span 12;
-				}
+            {retrato.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>Cartas, antologías y poemas</h2>
+                        <div>
+                            <a href="/cartas">Cartas →</a>
+                            {' '}
+                            <a href="/poemas">Poemas →</a>
+                        </div>
+                    </div>
+                    <div class="feed-grid feed-grid--retrato">
+                        {retrato.map((item) => (
+                            <FeedCard item={item} />
+                        ))}
+                    </div>
+                </>
+            )}
 
-				.feed-grid--retrato,
-				.graphics-strip {
-					grid-template-columns: 1fr;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main class="home">
-			<header class="masthead">
-				<p class="masthead-kicker">Número en curso</p>
-				<h1 class="masthead-title">{SITE_TITLE}</h1>
-				<p class="masthead-edition">
-					{SITE_DESCRIPTION}
-					{edicion && ` · ${edicion}`}
-				</p>
-			</header>
+            {articulosResto.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>Artículos anteriores</h2>
+                        <a href="/articulos">Archivo completo →</a>
+                    </div>
+                    <div class="feed-grid feed-grid--articulos">
+                        {articulosResto.map((item) => (
+                            <FeedCard item={item} />
+                        ))}
+                    </div>
+                </>
+            )}
 
-			{hero && (
-				<section class="hero-zone">
-					<FeedCard item={hero} variant="hero" />
-				</section>
-			)}
-
-			{destacados.length > 0 && (
-				<>
-					<div class="section-band">
-						<h2>En portada</h2>
-						<a href="/articulos">Ver artículos →</a>
-					</div>
-					<div class="feed-grid feed-grid--articulos">
-						{destacados.map((item) => (
-							<FeedCard item={item} variant="featured" />
-						))}
-					</div>
-				</>
-			)}
-
-			{retrato.length > 0 && (
-				<>
-					<div class="section-band">
-						<h2>Cartas y antología</h2>
-						<div>
-							<a href="/cartas">Cartas →</a>
-							{' '}
-							<a href="/poemas">Poemas →</a>
-						</div>
-					</div>
-					<div class="feed-grid feed-grid--retrato">
-						{retrato.map((item) => (
-							<FeedCard item={item} />
-						))}
-					</div>
-				</>
-			)}
-
-			{articulosResto.length > 0 && (
-				<>
-					<div class="section-band">
-						<h2>Crónica del número</h2>
-						<a href="/articulos">Archivo completo →</a>
-					</div>
-					<div class="feed-grid feed-grid--articulos">
-						{articulosResto.map((item) => (
-							<FeedCard item={item} />
-						))}
-					</div>
-				</>
-			)}
-
-			{graficaDestacada.length > 0 && (
-				<>
-					<div class="section-band">
-						<h2>Archivo gráfico</h2>
-						<a href="/grafica">Ver todo →</a>
-					</div>
-					<div class="graphics-strip">
-						{graficaDestacada.map((g) => (
-							<a href="/grafica">
-								<div class="graphics-frame">
-									<Image src={g.src} alt={g.title} width={500} />
-								</div>
-								<h4>{g.title}</h4>
-								<span>Formato 4:5 · Archivo visual</span>
-							</a>
-						))}
-					</div>
-				</>
-			)}
-		</main>
-		<Footer />
-	</body>
+            {graficaDestacada.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>Archivo gráfico</h2>
+                        <a href="/grafica">Ver todo →</a>
+                    </div>
+                    <div class="graphics-strip">
+                        {graficaDestacada.map((g) => (
+                            <a href="/grafica">
+                                <div class="graphics-frame">
+                                    <Image src={g.src} alt={g.title} width={500} />
+                                </div>
+                                <div class="graphics-content">
+                                    <h4>{g.title}</h4>
+                                    <span>Formato 4:5 · Archivo visual</span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </>
+            )}
+        </main>
+        <Footer />
+    </body>
 </html>
