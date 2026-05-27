@@ -40,26 +40,43 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
 <script is:inline>
-    const navOrder = ['/', '/grafica', '/poemas', '/cartas', '/articulos', '/nosotros', '/organizacion'];
-    const sectionFor = (url) => {
-        const path = new URL(url, window.location.href).pathname.replace(/\/$/, '') || '/';
-        return navOrder.findIndex((item) => path === item || (item !== '/' && path.startsWith(`${item}/`)));
-    };
+    (function() {
+        if (window.hasAddedNavListeners) return;
+        window.hasAddedNavListeners = true;
 
-    document.addEventListener('click', (event) => {
-        const link = event.target.closest?.('a[href]');
-        if (!link) return;
+        const navOrder = ['/', '/grafica', '/poemas', '/cartas', '/articulos', '/nosotros', '/organizacion'];
+        
+        const sectionFor = (url) => {
+            if (!url) return -1;
+            const urlStr = url instanceof URL ? url.href : String(url);
+            try {
+                const path = new URL(urlStr, window.location.origin).pathname.replace(/\/$/, '') || '/';
+                return navOrder.findIndex((item) => path === item || (item !== '/' && path.startsWith(`${item}/`)));
+            } catch (e) {
+                return -1;
+            }
+        };
 
-        const href = link.getAttribute('href');
-        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('http')) return;
+        // Escuchar antes de que comience la preparación de la transición
+        document.addEventListener('astro:before-preparation', (event) => {
+            const from = sectionFor(event.from);
+            const to = sectionFor(event.to);
 
-        const from = sectionFor(window.location.href);
-        const to = sectionFor(href);
-        if (from === -1 || to === -1 || from === to) {
-            document.documentElement.dataset.navDirection = 'forward';
-            return;
-        }
+            // Avanzar en el nav (mayor índice = más a la derecha) → contenido entra desde la derecha
+            // Retroceder (menor índice = más a la izquierda) → contenido entra desde la izquierda
+            let direction = 'forward';
+            if (from !== -1 && to !== -1 && from !== to) {
+                direction = to > from ? 'forward' : 'back';
+            }
+            document.documentElement.dataset.navDirection = direction;
+        });
 
-        document.documentElement.dataset.navDirection = to < from ? 'back' : 'forward';
-    }, { capture: true });
+        // Asegurar que el atributo se mantenga en el nuevo documento tras el swap
+        document.addEventListener('astro:before-swap', (event) => {
+            const direction = document.documentElement.dataset.navDirection;
+            if (direction) {
+                event.newDocument.documentElement.dataset.navDirection = direction;
+            }
+        });
+    })();
 </script>

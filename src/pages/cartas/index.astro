@@ -23,15 +23,19 @@ const cartas = (await getCollection('cartas')).sort(
                 padding: 2.5rem 0 4rem;
             }
 
-            .seccion-header {
+            .page-header {
+                border-bottom: 4px solid #111;
+                margin-bottom: 2.5rem;
+                padding-bottom: 1rem;
+            }
+
+            .page-header h1 {
                 font-family: 'Sifonn', sans-serif;
-                font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+                font-size: clamp(2rem, 8vw, 4.5rem);
                 text-transform: uppercase;
-                line-height: 1;
-                color: #111;
-                border-top: 0.45rem solid #111;
-                padding-top: 0.5rem;
-                margin: 0 0 1.5rem;
+                margin: 0;
+                letter-spacing: -0.02em;
+                line-height: 0.9;
             }
 
             .cartas-grid {
@@ -198,7 +202,9 @@ const cartas = (await getCollection('cartas')).sort(
     <body>
         <Header />
         <main>
-            <p class="seccion-header">// Cartas al Director</p>
+            <header class="page-header">
+                <h1>Cartas al Director</h1>
+            </header>
 
             {cartas.length === 0 && <p class="estado-vacio">No hay cartas publicadas aún.</p>}
 

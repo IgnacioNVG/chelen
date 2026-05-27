@@ -32,6 +32,21 @@ const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
                 padding: 2.5rem 0 4rem;
             }
 
+            .page-header {
+                border-bottom: 4px solid #111;
+                margin-bottom: 2.5rem;
+                padding-bottom: 1rem;
+            }
+
+            .page-header h1 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2rem, 8vw, 4.5rem);
+                text-transform: uppercase;
+                margin: 0;
+                letter-spacing: -0.02em;
+                line-height: 0.9;
+            }
+
             .seccion-header {
                 font-family: 'Sifonn', sans-serif;
                 font-size: clamp(1.2rem, 2.5vw, 1.75rem);
@@ -269,6 +284,10 @@ const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
     <body>
         <Header />
         <main>
+            <header class="page-header">
+                <h1>Poemas</h1>
+            </header>
+
             {antologias.length > 0 && (
                 <>
                     <p class="seccion-header">// Antologías</p>
