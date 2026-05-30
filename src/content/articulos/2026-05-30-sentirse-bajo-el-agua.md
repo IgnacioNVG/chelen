@@ -9,9 +9,9 @@ category: 'Columna de opinión'
 tags: ['Cultura', 'Salud Mental']
 ---
 
-> *"Adolezco de una pena que no se va; fluye funcionalmente y la oculto, igual que Lloyd Tate, con una dosis de antidepresivos tricíclicos todas las mañanas. Una dosis que dejo de tomar cuando me siento bien, bajo la falsa ilusión de que ya mejoré. Es un sentimiento de angustia constante, una autoexigencia por tener que cumplir con mis estudios y con cada cosa que me propongo, una presión que termina nublando toda la felicidad que me da el haber cumplido.*
->
-> *A veces no me siento buen pololo, ni buen amigo, ni buen hijo. Llevo años sintiéndome bajo el agua, donde el tiempo se distorsiona: todo pasa demasiado lento cuando se trata de las penas, y demasiado rápido con las felicidades."*
+**Adolezco de una pena que no se va; fluye funcionalmente y la oculto, igual que Lloyd Tate, con una dosis de antidepresivos tricíclicos todas las mañanas. Una dosis que dejo de tomar cuando me siento bien, bajo la falsa ilusión de que ya mejoré. Es un sentimiento de angustia constante, una autoexigencia por tener que cumplir con mis estudios y con cada cosa que me propongo, una presión que termina nublando toda la felicidad que me da el haber cumplido.**
+
+A veces no me siento buen pololo, ni buen amigo, ni buen hijo. **Llevo años sintiéndome bajo el agua, donde el tiempo se distorsiona: todo pasa demasiado lento cuando se trata de las penas, y demasiado rápido con las felicidades.**
 
 Me resulta imposible desligar mis sentimientos de esta obra. Para mí, no es solo otra película indie fácilmente tildada de "ñuñoína"; es el refugio que me acompañó y me hizo sentir comprendido cuando un amigo decidió partir.
 
@@ -21,9 +21,7 @@ Vi reflejadas en ella —en su familia de características particulares, en Lloy
 
 Podría extenderme haciendo una descripción de la película y el libro, desmenuzando sus sutiles pero expresas diferencias. Sin embargo, no me gustaría quedarme en lo meramente descriptivo. Las obras así, tan profundamente emocionales, no son fácilmente simplificables sin perder toda su magia en el proceso; y para escribir algo así, prefiero no escribir nada.
 
-Por eso prefiero quedarme con algunas escenas.
-
-Con aquellas que, por una u otra razón, nunca terminaron de abandonarme.
+Por eso prefiero quedarme con algunas escenas. Con aquellas que, por una u otra razón, nunca terminaron de abandonarme.
 
 ---
 
@@ -41,7 +39,7 @@ Hay algo profundamente triste en querer desaparecer no por el deseo de dejar de 
 
 > Recuerdo sentirme así. Desplazado incluso por mis amigos. Constantemente insuficiente, sin entender qué estaba haciendo mal. Y lo peor es que no hablo de algo lejano: mi último recuerdo de esa sensación no ocurrió hace años, ocurrió hace apenas unos días.
 
-*Submarine* comienza bajo el agua mucho antes de que el agua aparezca.
+**Submarine comienza bajo el agua mucho antes de que el agua aparezca.**
 
 Y quizá por eso nunca pude olvidarla.
 
@@ -53,15 +51,11 @@ Lloyd Tate es un historiador según el libro, y prefiero quedarme con eso. Padre
 
 La descripción que hace su hijo, sin embargo, es mucho más dolorosa.
 
-Habla de cómo deambula por la casa en pijama. De cómo toma té una y otra vez en la misma taza sin lavar. De cómo se queda inmóvil mirando por la ventana, contemplando algo que nunca sabemos exactamente qué es.
+Habla de cómo deambula por la casa en pijama. De cómo toma té una y otra vez en la misma taza sin lavar. De cómo se queda inmóvil mirando por la ventana, contemplando algo que nunca sabemos exactamente qué es. Habla de una persona que parece haberse retirado lentamente del mundo sin abandonarlo por completo.
 
-Habla de una persona que parece haberse retirado lentamente del mundo sin abandonarlo por completo.
+**No hay dramatismo en su depresión.**
 
-No hay dramatismo en su depresión.
-
-No hay gritos.
-
-No hay crisis espectaculares.
+No hay gritos. No hay crisis espectaculares.
 
 Solo días.
 
@@ -73,9 +67,7 @@ Eso es lo que vuelve tan devastadora la figura de Lloyd Tate. La depresión no a
 
 Aparece como algo mucho más reconocible:
 
-**la lenta desaparición de alguien que sigue estando ahí.**
-
-La sensación de quedarse quieto mientras la vida continúa avanzando alrededor.
+**La lenta desaparición de alguien que sigue estando ahí.**
 
 > De cómo me quedo mirando la pared en silencio, inmóvil, incapaz de articular un pensamiento claro más allá de una pena fría mezclada con nostalgia cada vez que vuelvo a caer ahí.
 
@@ -85,7 +77,7 @@ No sé por qué.
 
 Tal vez porque la tristeza profunda rara vez se manifiesta en grandes gestos.
 
-A veces se parece más a una taza sin lavar durante demasiado tiempo.
+**A veces se parece más a una taza sin lavar durante demasiado tiempo.**
 
 ---
 
@@ -99,29 +91,21 @@ Pero cuando pierde a Jordana, algo cambia.
 
 **El agua termina alcanzándolo también.**
 
-La película y el libro insisten una y otra vez en esa sensación de hundimiento. No solo como metáfora, sino como imagen concreta.
-
-Oliver se deja caer en la bañera.
-
-Permanece bajo el agua.
-
-Más tarde se arroja a la piscina y flota suspendido, aislado del mundo exterior por una capa silenciosa que amortigua todos los sonidos.
+La película y el libro insisten una y otra vez en esa sensación de hundimiento. No solo como metáfora, sino como imagen concreta. Oliver se deja caer en la bañera. Permanece bajo el agua. Más tarde se arroja a la piscina y flota suspendido, aislado del mundo exterior por una capa silenciosa que amortigua todos los sonidos.
 
 Por primera vez deja de analizar el dolor.
 
-Simplemente lo habita.
+**Simplemente lo habita.**
 
 Y resulta imposible no pensar en Lloyd.
 
 La tristeza ha heredado una forma.
 
-El hijo termina ocupando el mismo espacio emocional que el padre.
+El hijo termina ocupando el mismo espacio emocional que el padre:
 
-La misma inmovilidad.
-
-La misma distancia.
-
-La misma incapacidad de responder al mundo.
+* La misma inmovilidad.
+* La misma distancia.
+* La misma incapacidad de responder al mundo.
 
 Y encima a la misma edad en que él dijo que comenzó su depresión.
 
@@ -143,13 +127,9 @@ Oliver enumera razones para seguir viviendo. Ninguna parece particularmente tras
 
 Y sin embargo funcionan.
 
-Porque cuando uno se encuentra realmente hundido, la esperanza rara vez adopta la forma de una gran revelación.
+Porque cuando uno se encuentra realmente hundido, la esperanza rara vez adopta la forma de una gran revelación. Lo habitual es que aparezca en cosas pequeñas. Ridículas incluso.
 
-Lo habitual es que aparezca en cosas pequeñas.
-
-Ridículas incluso.
-
-La carta entiende algo fundamental sobre la depresión: que el deseo de desaparecer y el deseo de quedarse suelen coexistir al mismo tiempo.
+La carta entiende algo fundamental sobre la depresión: **que el deseo de desaparecer y el deseo de quedarse suelen coexistir al mismo tiempo.**
 
 Uno quiere dejar de sentir.
 
@@ -161,13 +141,9 @@ Uno quiere rendirse.
 
 Pero también quiere quedarse un poco más.
 
-Quiere escuchar una canción más.
+Quiere escuchar una canción más. Ver una película más. Abrazar a alguien una vez más.
 
-Ver una película más.
-
-Abrazar a alguien una vez más.
-
-La carta es un salvavidas construido con objetos frágiles.
+**La carta es un salvavidas construido con objetos frágiles.**
 
 Y precisamente por eso resulta tan humana.
 
@@ -179,11 +155,7 @@ Y precisamente por eso resulta tan humana.
 
 Y finalmente está la escena final del libro.
 
-No hay playa.
-
-No hay cierre estético.
-
-No hay una resolución limpia.
+No hay playa. No hay cierre estético. No hay una resolución limpia.
 
 Solo una conversación aparentemente sencilla durante una salida familiar.
 
@@ -191,9 +163,7 @@ En ella aparece la historia de un farero que, tras la muerte de su hijo, decide 
 
 Lo que vuelve inolvidable ese momento no es la tragedia en sí misma, sino la reacción de los padres de Oliver.
 
-La absoluta incapacidad de ambos para siquiera imaginar una pérdida semejante.
-
-Por eso, dentro de la conversación, la historia termina siendo descrita como una historia de terror.
+La absoluta incapacidad de ambos para siquiera imaginar una pérdida semejante. Por eso, dentro de la conversación, la historia termina siendo descrita como una historia de terror.
 
 No pueden comprenderla.
 
@@ -203,23 +173,19 @@ Y es precisamente esa imposibilidad la que termina revelándolo todo.
 
 Durante gran parte de la historia Oliver se siente invisible. Fantasea con su propia muerte. Imagina funerales. Intenta medir constantemente cuánto significa para quienes lo rodean.
 
-Sin embargo, en este momento final descubre algo que nunca había considerado realmente.
+Sin embargo, en este momento final descubre algo que nunca había considerado realmente:
 
-Que existen personas para quienes su desaparición no sería una idea triste.
+**Que existen personas para quienes su desaparición no sería una idea triste.**
 
 **Sería una idea imposible.**
 
 Y hay una ternura devastadora en eso.
 
-Porque el libro no termina resolviendo la tristeza.
+Porque el libro no termina resolviendo la tristeza. No termina prometiendo felicidad. Ni siquiera promete que las heridas sanarán.
 
-No termina prometiendo felicidad.
+Solo nos deja frente a una verdad mucho más pequeña y mucho más humana:
 
-Ni siquiera promete que las heridas sanarán.
-
-Solo nos deja frente a una verdad mucho más pequeña y más humana.
-
-Que incluso en nuestros momentos de mayor aislamiento existen vínculos que sobreviven a nuestra incapacidad de verlos.
+**Que incluso en nuestros momentos de mayor aislamiento existen vínculos que sobreviven a nuestra incapacidad de verlos.**
 
 > Como luces lejanas observadas desde el fondo del agua.
 
