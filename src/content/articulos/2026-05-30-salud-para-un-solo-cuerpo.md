@@ -4,7 +4,7 @@ description: 'Cuando un solo cuerpo se convierte en la medida de todos los demá
 pubDate: 'May 30 2026'
 heroImage: ./2026-05-30-salud-para-un-solo-cuerpo.webp
 author: 'Sofía Fuentealba'
-affiliation: 'Facultad de Ciencias Sociales'
+affiliation: 'Externo'
 category: 'Columna de opinión'
 tags: ['Feminismo', 'Corporalidad', 'Ciencia', 'Salud']
 ---
