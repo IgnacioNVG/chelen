@@ -1,7 +1,7 @@
 ---
 title: 'Romper el ciclo de la violencia: es la labor del socialista'
 description: 'Respuesta a la columna “Nos declaramos: Violentos, Convictos y Confesos”, análisis del movimiento secundario y su potencial.'
-pubDate: 'May 26 2026'
+pubDate: '2026-05-26'
 heroImage: ./2026-05-26-romper-el-ciclo-de-la-violencia.webp
 author: 'Vicente Espinoza.'
 affiliation: 'Externo'

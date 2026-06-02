@@ -1,7 +1,7 @@
 ---
 title: 'De la fe y la revolución'
 description: 'Una defensa de la compatibilidad entre el catolicismo y la teoría materialista frente al individualismo neoliberal.'
-pubDate: 'May 14 2026'
+pubDate: '2026-05-14'
 heroImage: ./2026-05-14-de-la-fe-y-la-revolucion.webp
 author: 'Joaquín Friz'
 affiliation: 'Externo'

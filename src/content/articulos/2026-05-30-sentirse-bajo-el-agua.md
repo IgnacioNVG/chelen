@@ -1,7 +1,7 @@
 ---
 title: 'Sentirse bajo el agua'
 description: 'Apuntes sobre mí y sobre el libro y la película *Submarine* de Joe Dunthorne.'
-pubDate: 'May 30 2026'
+pubDate: '2026-05-30'
 heroImage: ./2026-05-30-sentirse-bajo-el-agua.webp
 author: 'Anónimo'
 affiliation: 'Anónimo'

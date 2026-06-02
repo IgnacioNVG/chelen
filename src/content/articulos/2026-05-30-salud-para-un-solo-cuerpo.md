@@ -1,7 +1,7 @@
 ---
 title: '¿Salud para un solo cuerpo?'
 description: 'Cuando un solo cuerpo se convierte en la medida de todos los demás, la desigualdad deja de ser una opinión y se transforma en una práctica médica.'
-pubDate: 'May 30 2026'
+pubDate: '2026-05-30'
 heroImage: ./2026-05-30-salud-para-un-solo-cuerpo.webp
 author: 'Sofía Fuentealba'
 affiliation: 'Externo'

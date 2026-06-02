@@ -1,7 +1,7 @@
 ---
 title: '¿Como no vamos a ser violentos?'
 description: 'Respuesta a las columnas sobre violencia'
-pubDate: 'May 27 2026'
+pubDate: '2026-05-27'
 heroImage: ./2026-05-27-como-no-vamos-a-ser-violentos.webp
 author: 'Ignacio Navas.'
 affiliation: 'Facultad de Ciencias Sociales'

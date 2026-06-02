@@ -1,7 +1,7 @@
 ---
 title: 'Tuvimos nuestro Mayo francés'
 description: 'Paralelos históricos entre el Octubre chileno y el Mayo del 68: del asalto a la imaginación a la hegemonía de la ultraderecha.'
-pubDate: 'May 3 2026'
+pubDate: '2026-05-03'
 heroImage: ./2026-05-03-tuvimos-nuestro-mayo-frances.webp
 author: 'Martín Olate'
 affiliation: 'Facultad de Gobierno'
