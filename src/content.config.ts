@@ -162,5 +162,47 @@ const antologias = defineCollection({
 
 
 
-export const collections = { articulos, cartas, poemas, antologias };
+const columnistas = defineCollection({
+
+	loader: glob({
+
+		pattern: '**/*.{md,mdx}',
+
+		base: './src/content/columnistas',
+
+		generateId: stripExtension,
+
+	}),
+
+	schema: ({ image }) =>
+
+		z.object({
+
+			name: z.string(),
+
+			role: z.string().default('Columnista'),
+
+			affiliation: z.string().optional(),
+
+			summary: z.string(),
+
+			portrait: image().optional(),
+
+			email: z.string().email().optional(),
+
+			instagram: z.string().optional(),
+
+			tags,
+
+			order: z.number().default(100),
+
+			featured: z.boolean().default(false),
+
+		}),
+
+});
+
+
+
+export const collections = { articulos, cartas, poemas, antologias, columnistas };
 
