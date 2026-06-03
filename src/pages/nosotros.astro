@@ -3,122 +3,122 @@ import Layout from '../layouts/ArticuloPost.astro';
 ---
 
 <Layout
-	title="Acerca de Chelén"
-	description="Manifiesto y origen de la revista"
-	pubDate={new Date('May 10 2026')}
-	heroImage="/portada-acerca-de.webp"
+    title="Acerca de Chelén"
+    description="Manifiesto y origen de la revista"
+    pubDate={new Date('May 10 2026')}
+    heroImage="/portada-acerca-de.webp"
 >
-	<style>
-		.about-sections {
-			display: flex;
-			flex-direction: column;
-			gap: 4rem;
-		}
+    <style>
+        .about-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
 
-		h2 {
-			font-family: 'Sifonn', sans-serif;
-			font-size: 2.5rem;
-			text-transform: uppercase;
-			border-left: 10px solid #000;
-			padding-left: 1.5rem;
-			margin-bottom: 1.5rem;
-			line-height: 0.8;
-		}
+        h2 {
+            font-family: 'Sifonn', sans-serif;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            border-left: 10px solid #000;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 0.8;
+        }
 
-		section {
-			display: grid;
-			grid-template-columns: repeat(12, 1fr);
-			gap: 1rem;
-		}
+        section {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1rem;
+        }
 
-		.content-text {
-			grid-column: 1 / 13;
-		}
+        .content-text {
+            grid-column: 1 / 13;
+        }
 
-		/* Bloque destacado constructivista */
-		.highlight-box {
-			grid-column: 1 / 13;
-			background: #000;
-			color: #fff;
-			padding: 3rem;
-			border: 2px solid #ff0000;
-			box-shadow: 10px 10px 0px #ff0000;
-		}
+        /* Bloque destacado constructivista */
+        .highlight-box {
+            grid-column: 1 / 13;
+            background: #000;
+            color: #fff;
+            padding: 3rem;
+            border: 2px solid #ff0000;
+            box-shadow: 10px 10px 0px #ff0000;
+        }
 
-		.highlight-box p {
-			font-size: 1.8rem;
-			font-weight: 900;
-			text-transform: uppercase;
-			line-height: 1.1;
-			margin: 0;
-		}
+        .highlight-box p {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin: 0;
+        }
 
-		.team-cta {
-			grid-column: 1 / 13;
-			text-align: center;
-			padding: 4rem 0;
-			border-top: 4px solid #000;
-		}
+        .team-cta {
+            grid-column: 1 / 13;
+            text-align: center;
+            padding: 4rem 0;
+            border-top: 4px solid #000;
+        }
 
-		.btn-organizacion {
-			display: inline-block;
-			background: #000;
-			color: #fff;
-			padding: 1.5rem 3rem;
-			text-decoration: none;
-			font-family: 'Sifonn', sans-serif;
-			font-size: 2rem;
-			text-transform: uppercase;
-			transition: all 0.2s ease;
-		}
+        .btn-organizacion {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            padding: 1.5rem 3rem;
+            text-decoration: none;
+            font-family: 'Sifonn', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
 
-		.btn-organizacion:hover {
-			background: #ff0000;
-			transform: translate(-5px, -5px);
-			box-shadow: 5px 5px 0px #000;
-		}
+        .btn-organizacion:hover {
+            background: #ff0000;
+            transform: translate(-5px, -5px);
+            box-shadow: 5px 5px 0px #000;
+        }
 
-		@media (max-width: 720px) {
-			.highlight-box { padding: 1.5rem; }
-			.highlight-box p { font-size: 1.2rem; }
-		}
-	</style>
+        @media (max-width: 720px) {
+            .highlight-box { padding: 1.5rem; }
+            .highlight-box p { font-size: 1.2rem; }
+        }
+    </style>
 
-	<div class="about-sections">
-		<section>
-			<div class="content-text">
-				<h2>El Origen</h2>
-				<p>
-					Revista Chelén nace en 2026 al alero del Núcleo de la Juventud del Partido Socialista Jaime Robotham, correspondiente al Campus Juan Gomez Millas de la Universidad de chile. Entre sus obejtivos estaba plantear la alternativa socialista, la defensa de la no neutralidad expresa y la articulación para el contenido social y cultural de una amplia izquierda, buscando ser así, un espacio donde la reflexión teórica y la acción política se encuentren en un punto de tensión productiva.
-				</p>
-			</div>
-		</section>
+    <div class="about-sections">
+        <section>
+            <div class="content-text">
+                <h2>El Origen</h2>
+                <p>
+                    Revista Chelén nace en 2026 al alero del Núcleo de la Juventud del Partido Socialista Jaime Robotham, correspondiente al Campus Juan Gómez Millas de la Universidad de Chile. Entre sus objetivos estaba plantear la alternativa socialista, la defensa de la no neutralidad expresa y la articulación para el contenido social y cultural de una amplia izquierda, buscando ser así un espacio donde la reflexión teórica y la acción política se encuentren en un punto de tensión productiva.
+                </p>
+            </div>
+        </section>
 
-		<div class="highlight-box">
-			<p>El socialismo es una pulsión histórica que late en la juventud y su deseo de transformar la realidad material.</p>
-		</div>
+        <div class="highlight-box">
+            <p>CHELÉN ES VERIFICAR LA CONVICCIÓN Y PROBAR LA PRÁCTICA</p>
+        </div>
 
-		<section>
-			<div class="content-text">
-				<h2>Teoría y Crítica</h2>
-				<p>
-					Buscamos distanciarnos de las lógicas neoliberales, que se asienta no solo en los esquemas inmediatamente productivos sino que tambien impregnan a la estructura social y cultural. Nuestra línea editorial se nutre del materialismo histórico, el estudio de los movimientos populares, y los tipos de teoría crítica que permitan comprender y problematizar la sociedad actual desde perspectivas heterodoxas, no dogmáticas ni que secunden las luchas sociales por falsas purezas doctrinarias.
-				</p>
-			</div>
-		</section>
+        <section>
+            <div class="content-text">
+                <h2>Teoría y Crítica</h2>
+                <p>
+                    Buscamos distanciarnos de las lógicas neoliberales, que se asientan no solo en los esquemas inmediatamente productivos, sino que también impregnan la estructura social y cultural. Nuestra línea editorial se nutre del materialismo histórico, el estudio de los movimientos populares y las corrientes de teoría crítica que permiten comprender y problematizar la sociedad actual desde perspectivas heterodoxas, no dogmáticas, y que no subordinen las luchas sociales a falsas purezas doctrinarias.
+                </p>
+            </div>
+        </section>
 
-		<section>
-			<div class="content-text">
-				<h2>(Re)Pensar(nos)</h2>
-				<p>
-					¿Como hablar de un Nuevo Horizonte y Socialista en el siglo 21? Aceptando la democracia, no de forma liberal y burguesa, de forma radical y como acción de construcción concreta y colectiva; la democracia desde todas las perspectivas está inherentemente vinculada a la libertad, nuestra definición de libertad sin embargo se posa desde lo positivo, desde la acción posiblemente creativa y autonoma basado en condiciones historicas, y no desde lo negativo, como si las coerciones son solo estatales y las libertades meros ejercios logicos-formal.
-				</p>
-			</div>
-		</section>
+        <section>
+            <div class="content-text">
+                <h2>(Re)Pensar(nos)</h2>
+                <p>
+                    ¿Cómo hablar de un Nuevo Horizonte socialista en el siglo XXI? Aceptando la democracia, no de forma liberal y burguesa, sino de forma radical y como acción de construcción concreta y colectiva. La democracia desde todas las perspectivas está inherentemente vinculada a la libertad; nuestra definición de libertad, sin embargo, se posiciona desde lo positivo, desde la acción creativa y autónoma basada en condiciones históricas, y no desde lo negativo, como si las coerciones fueran solo estatales y las libertades meros ejercicios lógico-formales.
+                </p>
+            </div>
+        </section>
 
-		<div class="team-cta">
-			<p>Conoce la estructura interna y el equipo de trabajo.</p>
-			<a href="/organizacion" class="btn-organizacion">Ver Equipo</a>
-		</div>
-	</div>
+        <div class="team-cta">
+            <p>Conoce la estructura interna y el equipo de trabajo.</p>
+            <a href="/organizacion" class="btn-organizacion">Ver Equipo</a>
+        </div>
+    </div>
 </Layout>
