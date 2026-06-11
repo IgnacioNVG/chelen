@@ -166,7 +166,7 @@ const columnistas = defineCollection({
 
 	loader: glob({
 
-		pattern: '**/*.{md,mdx}',
+		pattern: '**/*.{md,mdx,yaml,yml}',
 
 		base: './src/content/columnistas',
 
@@ -178,23 +178,21 @@ const columnistas = defineCollection({
 
 		z.object({
 
-			name: z.string(),
+			slug: z.object({ name: z.string(), slug: z.string() }).optional(),
 
 			role: z.string().default('Columnista'),
 
 			affiliation: z.string().optional(),
 
-			summary: z.string(),
+			summary: z.string().optional(),
 
 			portrait: image().optional(),
 
-			email: z.string().email().optional(),
+			email: z.union([z.literal(''), z.string().email()]).optional(),
 
 			instagram: z.string().optional(),
 
 			tags,
-
-			order: z.number().default(100),
 
 			featured: z.boolean().default(false),
 

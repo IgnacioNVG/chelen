@@ -1,0 +1,455 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ContentImage from '../../components/ContentImage.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { authorSlug } from '../../lib/authorSlug';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	const [articulos, cartas, columnistas] = await Promise.all([
+		getCollection('articulos'),
+		getCollection('cartas'),
+		getCollection('columnistas'),
+	]);
+
+	// Recolectar todos los autores únicos (de artículos + cartas)
+	const authorNames = new Set<string>();
+	articulos.forEach((a) => authorNames.add(a.data.author));
+	cartas.forEach((c) => authorNames.add(c.data.author));
+	// Agregar también los columnistas que quizás no tengan artículos todavía
+	columnistas.forEach((c) => authorNames.add(c.data.name));
+
+	return Array.from(authorNames).map((name) => {
+		const slug = authorSlug(name);
+		// Buscar si existe un perfil registrado
+		const profile = columnistas.find((c) => authorSlug(c.data.name) === slug) ?? null;
+		// Juntar artículos y cartas de este autor
+		const authorArticulos = articulos.filter((a) => authorSlug(a.data.author) === slug);
+		const authorCartas = cartas.filter((c) => authorSlug(c.data.author) === slug);
+
+		return {
+			params: { slug },
+			props: { name, profile, authorArticulos, authorCartas },
+		};
+	});
+}
+
+const { name, profile, authorArticulos, authorCartas } = Astro.props;
+
+// Ordenar publicaciones por fecha descendente
+const allPublications = [
+	...authorArticulos.map((a) => ({ ...a, type: 'articulo' as const })),
+	...authorCartas.map((c) => ({ ...c, type: 'carta' as const })),
+].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const pageTitle = profile?.data.name ?? name;
+const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`${pageTitle} | ${SITE_TITLE}`} description={pageDesc} />
+		<style>
+			/* ── Layout principal ── */
+			main {
+				width: min(1080px, calc(100% - 2rem));
+				margin: 0 auto;
+				padding: 2.5rem 0 5rem;
+			}
+
+			/* ── Breadcrumb ── */
+			.breadcrumb {
+				font-family: monospace;
+				font-size: 0.72rem;
+				color: #888;
+				text-transform: uppercase;
+				letter-spacing: 0.1em;
+				margin-bottom: 2rem;
+			}
+			.breadcrumb a {
+				color: #888;
+				text-decoration: none;
+			}
+			.breadcrumb a:hover {
+				color: #111;
+			}
+
+			/* ── Tarjeta de perfil (hero) ── */
+			.profile-hero {
+				display: grid;
+				grid-template-columns: auto 1fr;
+				gap: 2.5rem;
+				align-items: center;
+				border-top: 0.45rem solid #111;
+				border-bottom: 2px solid #111;
+				padding: 2rem 0;
+				margin-bottom: 3rem;
+			}
+
+			/* Foto de perfil */
+			.profile-avatar {
+				width: 130px;
+				height: 130px;
+				border-radius: 50%;
+				border: 3px solid #111;
+				box-shadow: 4px 4px 0 #111;
+				overflow: hidden;
+				flex-shrink: 0;
+				background: #e8e8e8;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.profile-avatar :global(img) {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				border-radius: 0;
+			}
+
+			/* SVG placeholder sin foto */
+			.avatar-placeholder {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #ddd;
+			}
+
+			.avatar-placeholder svg {
+				width: 65%;
+				height: 65%;
+				fill: #aaa;
+			}
+
+			/* Info de perfil */
+			.profile-info {
+				min-width: 0;
+			}
+
+			.profile-role {
+				display: inline-block;
+				background: #111;
+				color: #fff;
+				font-family: monospace;
+				font-size: 0.7rem;
+				text-transform: uppercase;
+				padding: 0.2rem 0.5rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.profile-name {
+				font-family: 'Sifonn', sans-serif;
+				font-size: clamp(1.8rem, 4vw, 3rem);
+				text-transform: uppercase;
+				line-height: 1;
+				margin: 0 0 0.5rem;
+				color: #111;
+			}
+
+			.profile-affiliation {
+				font-family: monospace;
+				font-size: 0.8rem;
+				font-weight: bold;
+				color: #555;
+				border-left: 4px solid #ff1321;
+				padding-left: 0.6rem;
+				margin-bottom: 1rem;
+				line-height: 1.4;
+			}
+
+			.profile-bio {
+				font-size: 1rem;
+				line-height: 1.65;
+				color: #333;
+				max-width: 55ch;
+				margin: 0;
+			}
+
+			/* Stats de publicaciones */
+			.profile-stats {
+				display: flex;
+				gap: 1.5rem;
+				margin-top: 1.2rem;
+			}
+
+			.stat-item {
+				text-align: center;
+			}
+
+			.stat-num {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 1.8rem;
+				line-height: 1;
+				color: #111;
+				display: block;
+			}
+
+			.stat-label {
+				font-family: monospace;
+				font-size: 0.6rem;
+				text-transform: uppercase;
+				color: #888;
+			}
+
+			/* ── Sección de publicaciones ── */
+			.section-title {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 1.4rem;
+				text-transform: uppercase;
+				letter-spacing: -0.01em;
+				margin: 0 0 1.5rem;
+				border-top: 0.35rem solid #111;
+				padding-top: 0.5rem;
+			}
+
+			.pub-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1.5rem;
+			}
+
+			/* ── Tarjeta de publicación ── */
+			.pub-card {
+				border: 2px solid #111;
+				border-radius: 8px;
+				box-shadow: 4px 4px 0 #111;
+				overflow: hidden;
+				-webkit-mask-image: -webkit-radial-gradient(white, black);
+				text-decoration: none;
+				color: #111;
+				display: flex;
+				flex-direction: column;
+				transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+				background: #fff;
+			}
+
+			.pub-card:hover {
+				transform: translate(-3px, -3px);
+				box-shadow: 6px 6px 0 #ff1321;
+				border-color: #ff1321;
+			}
+
+			.pub-thumb {
+				aspect-ratio: 16 / 9;
+				background: #f0f0f0;
+				border-bottom: 2px solid #111;
+				overflow: hidden;
+			}
+
+			.pub-thumb :global(img) {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transform: scale(1.01);
+				transition: transform 0.3s ease;
+			}
+
+			.pub-card:hover .pub-thumb :global(img) {
+				transform: scale(1.06);
+			}
+
+			.pub-thumb-placeholder {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #f0f0f0;
+			}
+
+			.pub-thumb-placeholder svg {
+				width: 40px;
+				height: 40px;
+				fill: #ccc;
+			}
+
+			.pub-body {
+				padding: 1rem;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.pub-type {
+				font-family: monospace;
+				font-size: 0.6rem;
+				text-transform: uppercase;
+				background: #111;
+				color: #fff;
+				padding: 0.15rem 0.4rem;
+				width: fit-content;
+				margin-bottom: 0.5rem;
+			}
+
+			.pub-card:hover .pub-type {
+				background: #ff1321;
+			}
+
+			.pub-title {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 0.95rem;
+				text-transform: uppercase;
+				line-height: 1.15;
+				margin: 0 0 auto;
+				color: #111;
+			}
+
+			.pub-date {
+				font-family: monospace;
+				font-size: 0.62rem;
+				color: #888;
+				margin-top: 0.75rem;
+				padding-top: 0.5rem;
+				border-top: 1px solid #eee;
+			}
+
+			/* ── Sin publicaciones ── */
+			.empty-state {
+				font-family: monospace;
+				font-size: 0.85rem;
+				color: #aaa;
+				padding: 2rem 0;
+			}
+
+			/* ── Responsive ── */
+			@media (max-width: 900px) {
+				.pub-grid {
+					grid-template-columns: repeat(2, 1fr);
+				}
+			}
+
+			@media (max-width: 640px) {
+				.profile-hero {
+					grid-template-columns: 1fr;
+					text-align: center;
+				}
+
+				.profile-avatar {
+					margin: 0 auto;
+				}
+
+				.profile-affiliation {
+					border-left: none;
+					border-top: 4px solid #ff1321;
+					padding-left: 0;
+					padding-top: 0.4rem;
+				}
+
+				.profile-stats {
+					justify-content: center;
+				}
+
+				.profile-bio {
+					text-align: left;
+				}
+
+				.pub-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<!-- Breadcrumb -->
+			<nav class="breadcrumb" aria-label="Navegación">
+				<a href="/">Inicio</a> / <a href="/autores">Autores</a> / {pageTitle}
+			</nav>
+
+			<!-- Hero del perfil -->
+			<section class="profile-hero">
+				<!-- Avatar -->
+				<div class="profile-avatar">
+					{profile?.data.portrait ? (
+						<ContentImage src={profile.data.portrait} alt={`Foto de ${pageTitle}`} width={260} />
+					) : (
+						<div class="avatar-placeholder" aria-label="Sin foto de perfil">
+							<!-- Silueta estilo Facebook -->
+							<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+								<path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+							</svg>
+						</div>
+					)}
+				</div>
+
+				<!-- Info -->
+				<div class="profile-info">
+					{profile?.data.role && (
+						<span class="profile-role">{profile.data.role}</span>
+					)}
+					<h1 class="profile-name">{pageTitle}</h1>
+					{profile?.data.affiliation && (
+						<p class="profile-affiliation">{profile.data.affiliation}</p>
+					)}
+					{profile?.data.summary && (
+						<p class="profile-bio">{profile.data.summary}</p>
+					)}
+
+					<!-- Stats -->
+					<div class="profile-stats">
+						{authorArticulos.length > 0 && (
+							<div class="stat-item">
+								<span class="stat-num">{authorArticulos.length}</span>
+								<span class="stat-label">{authorArticulos.length === 1 ? 'Columna' : 'Columnas'}</span>
+							</div>
+						)}
+						{authorCartas.length > 0 && (
+							<div class="stat-item">
+								<span class="stat-num">{authorCartas.length}</span>
+								<span class="stat-label">{authorCartas.length === 1 ? 'Carta' : 'Cartas'}</span>
+							</div>
+						)}
+					</div>
+				</div>
+			</section>
+
+			<!-- Publicaciones -->
+			<section>
+				<h2 class="section-title">Publicaciones</h2>
+
+				{allPublications.length === 0 ? (
+					<p class="empty-state">Este autor no tiene publicaciones registradas aún.</p>
+				) : (
+					<div class="pub-grid">
+						{allPublications.map((pub) => (
+							<a
+								class="pub-card"
+								href={pub.type === 'articulo' ? `/articulos/${pub.id}/` : `/cartas/${pub.id}/`}
+							>
+								<div class="pub-thumb">
+									{pub.data.heroImage ? (
+										<ContentImage src={pub.data.heroImage} alt={pub.data.title} width={480} />
+									) : (
+										<div class="pub-thumb-placeholder" aria-hidden="true">
+											<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+												<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+											</svg>
+										</div>
+									)}
+								</div>
+								<div class="pub-body">
+									<span class="pub-type">
+										{pub.type === 'articulo' ? (pub.data.category ?? 'Columna') : 'Carta al Director'}
+									</span>
+									<h3 class="pub-title">{pub.data.title}</h3>
+									<p class="pub-date">
+										<FormattedDate date={pub.data.pubDate} />
+									</p>
+								</div>
+							</a>
+						))}
+					</div>
+				)}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

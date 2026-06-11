@@ -1,6 +1,7 @@
 ---
 import ContentImage from './ContentImage.astro';
 import FormattedDate from './FormattedDate.astro';
+import AuthorLink from './AuthorLink.astro';
 
 const { post, isFeatured } = Astro.props;
 ---
@@ -16,7 +17,7 @@ const { post, isFeatured } = Astro.props;
             <span class="post-category">{post.data.category || 'Artículo'}</span>
             <h4 class="title">{post.data.title}</h4>
             <div class="post-author-row">
-                <span>{post.data.author || 'Redacción'}</span>
+                <AuthorLink name={post.data.author || 'Redacción'} />
                 <span class="affiliation">{post.data.affiliation || 'UCh'}</span>
             </div>
         </div>

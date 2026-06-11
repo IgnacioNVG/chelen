@@ -5,6 +5,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ContentImage from '../../components/ContentImage.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import AuthorLink from '../../components/AuthorLink.astro';
 import { SITE_TITLE } from '../../consts';
 
 const cartas = (await getCollection('cartas')).sort(
@@ -227,7 +228,7 @@ const cartas = (await getCollection('cartas')).sort(
                                 <h2 class="carta-titulo">{carta.data.title}</h2>
                                 {carta.data.affiliation && <div class="affiliation-tag">{carta.data.affiliation}</div>}
                                 <div class="carta-meta">
-                                    <span>{carta.data.author}</span>
+                                    <span><AuthorLink name={carta.data.author} /></span>
                                     <span><FormattedDate date={carta.data.pubDate} /></span>
                                 </div>
                                 <span class="leer-link">Leer carta completa →</span>

@@ -1,0 +1,29 @@
+---
+import { authorSlug } from '../lib/authorSlug';
+
+interface Props {
+	name: string;
+	class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const slug = authorSlug(name);
+---
+
+<a href={`/autores/${slug}`} class:list={['author-link', className]} onclick="event.stopPropagation()">
+	{name}
+</a>
+
+<style>
+	.author-link {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid currentColor;
+		transition: color 0.2s, border-color 0.2s;
+	}
+
+	.author-link:hover {
+		color: #ff1321;
+		border-color: #ff1321;
+	}
+</style>

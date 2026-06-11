@@ -19,6 +19,7 @@ export default config({
     brand: { name: 'Panel de Administración' },
     navigation: {
       Contenido: ['articulos', 'cartas', 'poemas', 'antologias'],
+      Autores: ['columnistas'],
     },
   },
   collections: {
@@ -181,6 +182,52 @@ export default config({
         }),
         tags: tagsField,
         content: bodyField(),
+      },
+    }),
+    columnistas: collection({
+      label: 'Autores / Columnistas',
+      slugField: 'slug',
+      path: 'src/content/columnistas/*',
+      format: { data: 'yaml' },
+      entryLayout: 'form',
+      columns: ['name', 'role', 'affiliation'],
+      schema: {
+        slug: fields.slug({
+          name: { label: 'Nombre completo', description: 'Nombre tal como aparece en los artículos y cartas al director.' },
+        }),
+        role: fields.text({
+          label: 'Rol',
+          defaultValue: 'Columnista',
+          description: 'Ej: Columnista, Estudiante, Editor, etc.',
+        }),
+        affiliation: fields.text({
+          label: 'Casa de estudios / Afiliación',
+          description: 'Ej: Estudiante de Derecho UCh, Facultad de Arte UChile.',
+        }),
+        summary: fields.text({
+          label: 'Presentación personal',
+          multiline: true,
+          description: 'Texto libre que el autor/a quiere compartir sobre sí mismo. Aparece en su perfil público.',
+          validation: { isRequired: false },
+        }),
+        portrait: fields.image({
+          label: 'Foto de perfil',
+          description: 'Usa imagen cuadrada en formato .webp. Se mostrará recortada en círculo.',
+          directory: 'src/content/columnistas',
+          publicPath: './',
+        }),
+        email: fields.text({
+          label: 'Correo electrónico (opcional)',
+        }),
+        instagram: fields.text({
+          label: 'Instagram (opcional)',
+          description: 'Solo el nombre de usuario, sin @.',
+        }),
+        tags: tagsField,
+        featured: fields.checkbox({
+          label: '¿Destacado en la página de autores?',
+          defaultValue: false,
+        }),
       },
     }),
   },
