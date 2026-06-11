@@ -3,8 +3,8 @@ title: 'Un gobierno de cuentos'
 description: 'El peligro de las metáforas en el mandato presidencial'
 pubDate: '2026-06-3'
 heroImage: ./2026-06-3-un-gobierno-de-cuentos.webp
-author: 'Anónimo'
-affiliation: 'Anónimo'
+author: 'Vania Gaete'
+affiliation: 'Universidad Diego Portales'
 category: 'Columna de opinión'
 tags: ['Kast', 'Gobierno']
 ---
