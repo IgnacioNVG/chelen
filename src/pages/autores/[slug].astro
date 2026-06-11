@@ -20,12 +20,23 @@ export async function getStaticPaths() {
 	articulos.forEach((a) => authorNames.add(a.data.author));
 	cartas.forEach((c) => authorNames.add(c.data.author));
 	// Agregar también los columnistas que quizás no tengan artículos todavía
-	columnistas.forEach((c) => authorNames.add(c.data.name));
+	columnistas.forEach((c) => {
+		if (c.data.name) {
+			authorNames.add(c.data.name);
+		} else if (c.id !== 'ejemplo-autor') {
+			authorNames.add(c.id);
+		}
+	});
 
-	return Array.from(authorNames).map((name) => {
+	// Filtrar "Anónimo" u otras variantes que no deban tener perfil
+	const filteredNames = Array.from(authorNames).filter(name => 
+		name.toLowerCase() !== 'anónimo' && name.toLowerCase() !== 'anonimo'
+	);
+
+	return filteredNames.map((name) => {
 		const slug = authorSlug(name);
 		// Buscar si existe un perfil registrado
-		const profile = columnistas.find((c) => authorSlug(c.data.name) === slug) ?? null;
+		const profile = columnistas.find((c) => c.id === slug || authorSlug(c.data.name) === slug) ?? null;
 		// Juntar artículos y cartas de este autor
 		const authorArticulos = articulos.filter((a) => authorSlug(a.data.author) === slug);
 		const authorCartas = cartas.filter((c) => authorSlug(c.data.author) === slug);

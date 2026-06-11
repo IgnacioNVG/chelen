@@ -1,18 +1,35 @@
 ---
+import { getCollection } from 'astro:content';
 import { authorSlug } from '../lib/authorSlug';
 
 interface Props {
-	name: string;
+	name?: string;
 	class?: string;
 }
 
 const { name, class: className } = Astro.props;
-const slug = authorSlug(name);
+
+const columnistas = await getCollection('columnistas');
+const cleanName = name || 'Anónimo';
+
+// Buscar si el autor es un columnista registrado (por su ID o por su nombre completo slugificado)
+const profile = columnistas.find(
+	(c) => c.id === cleanName || authorSlug(c.data.name) === authorSlug(cleanName)
+) ?? null;
+
+const displayName = profile?.data.name ?? cleanName;
+const slug = profile?.id ?? authorSlug(cleanName);
+
+const isAnon = displayName.toLowerCase() === 'anónimo' || displayName.toLowerCase() === 'anonimo';
 ---
 
-<a href={`/autores/${slug}`} class:list={['author-link', className]} onclick="event.stopPropagation()">
-	{name}
-</a>
+{isAnon ? (
+	<span class:list={[className]}>{displayName}</span>
+) : (
+	<a href={`/autores/${slug}`} class:list={['author-link', className]} onclick="event.stopPropagation()">
+		{displayName}
+	</a>
+)}
 
 <style>
 	.author-link {

@@ -50,10 +50,10 @@ export default config({
           directory: 'src/content/articulos',
           publicPath: './',
         }),
-        author: fields.text({
+        author: fields.relationship({
           label: 'Autor',
-          defaultValue: 'Redacción',
-          validation: { isRequired: true },
+          collection: 'columnistas',
+          validation: { isRequired: false },
         }),
         affiliation: fields.text({
           label: 'Afiliación',
@@ -90,9 +90,10 @@ export default config({
           directory: 'src/content/cartas',
           publicPath: './',
         }),
-        author: fields.text({
+        author: fields.relationship({
           label: 'Autor',
-          validation: { isRequired: true },
+          collection: 'columnistas',
+          validation: { isRequired: false },
         }),
         affiliation: fields.text({
           label: 'Afiliación',
@@ -186,13 +187,13 @@ export default config({
     }),
     columnistas: collection({
       label: 'Autores / Columnistas',
-      slugField: 'slug',
+      slugField: 'name',
       path: 'src/content/columnistas/*',
-      format: { data: 'yaml' },
-      entryLayout: 'form',
+      format: { contentField: 'bio' },
+      entryLayout: 'content',
       columns: ['name', 'role', 'affiliation'],
       schema: {
-        slug: fields.slug({
+        name: fields.slug({
           name: { label: 'Nombre completo', description: 'Nombre tal como aparece en los artículos y cartas al director.' },
         }),
         role: fields.text({
@@ -228,6 +229,7 @@ export default config({
           label: '¿Destacado en la página de autores?',
           defaultValue: false,
         }),
+        bio: bodyField(),
       },
     }),
   },

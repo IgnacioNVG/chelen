@@ -40,7 +40,7 @@ const articulos = defineCollection({
 
 			heroImage: image().optional(),
 
-			author: z.string().default('Redacción'),
+			author: z.string().optional(),
 
 			affiliation: z.string().default('UCh'),
 
@@ -76,7 +76,7 @@ const cartas = defineCollection({
 
 			heroImage: image().optional(),
 
-			author: z.string(),
+			author: z.string().optional(),
 
 			affiliation: z.string(),
 
@@ -166,7 +166,7 @@ const columnistas = defineCollection({
 
 	loader: glob({
 
-		pattern: '**/*.{md,mdx,yaml,yml}',
+		pattern: '**/*.{md,mdx}',
 
 		base: './src/content/columnistas',
 
@@ -178,7 +178,7 @@ const columnistas = defineCollection({
 
 		z.object({
 
-			slug: z.object({ name: z.string(), slug: z.string() }).optional(),
+			name: z.string(),
 
 			role: z.string().default('Columnista'),
 

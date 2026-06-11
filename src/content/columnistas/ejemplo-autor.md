@@ -6,7 +6,6 @@ summary: Breve descripción personal que aparece en el perfil público. Puedes h
 email: ""
 instagram: ""
 tags: []
-order: 100
 featured: false
 ---
 
