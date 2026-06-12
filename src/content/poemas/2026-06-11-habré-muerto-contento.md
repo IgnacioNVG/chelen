@@ -37,11 +37,11 @@ Cuando no falte el pan en las mesas de mi barrio,
 Cuando finalmente mi pueblo
 Alce el estandarte carmesí de la liberación.
 
-Solo ahí me veré un hombre realmente libre.
-Solo ahí, solo ahí compañeros, seremos libres.
-Es solo ahí, cuando esté construido el mañana mejor,
-Es que seremos los hombres y mujeres libres
-Que nos convoca nuestra dignidad.
-
-> Pues como reza la antigua canción nacional:
-> “La libertad es el eco de alarma y la divisa: vencer o morir”
+He ahí mi destino final, he ahí mi muerte
+Pero mi muerte en realidad no es nada,
+Pues las ideas que llevaron mi vida las llevará alguien más
+Viviré en esa persona, viviré en mi pueblo
+Viviré habiendo muerto contento
+Habiendo muerto viendo la revolución en permanente desarrollo
+O habré muerto luchando por ella
+De todas formas, habré muerto contento.
