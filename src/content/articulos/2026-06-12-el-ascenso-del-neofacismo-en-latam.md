@@ -2,7 +2,7 @@
 title: 'El ascenso del neofacismo en latam'
 description: 'Análisis profundo sobre el avance de la ultraderecha en América Latina, sus estrategias de manipulación mediática y el impacto directo en las instituciones democráticas de la región.'
 pubDate: '2026-06-1'
-heroImage: ./2026-06-11-el-ascenso-del-neofacismo-en-latam.webp
+heroImage: ./2026-06-12-el-ascenso-del-neofacismo-en-latam.webp
 author: 'Tito Riera'
 affiliation: 'Universidad De Chile'
 category: 'Columna de opinión'
