@@ -9,8 +9,11 @@ import keystatic from "@keystatic/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://example.com",
-  output: "static", // Modificado para Astro 5+
+  site: "https://example.com", // Recuerda cambiar esto por tu dominio real
+
+  // ¡ESTE ES EL CAMBIO CLAVE!
+  output: "hybrid",
+
   image: {
     layout: "constrained",
   },
