@@ -9,11 +9,8 @@ import keystatic from "@keystatic/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://example.com", // Recuerda cambiar esto por tu dominio real
-
-  // ¡ESTE ES EL CAMBIO CLAVE!
+  site: "https://revistachelen.com",
   output: "static",
-
   image: {
     layout: "constrained",
   },
@@ -25,4 +22,12 @@ export default defineConfig({
       enabled: true,
     },
   }),
+
+  // ¡NUEVO: Instrucciones para que Vite no rompa la compilación!
+  vite: {
+    optimizeDeps: {
+      // Excluimos Keystatic y el preset de Cloudflare de la pre-optimización
+      exclude: ["@keystatic/astro", "@cloudflare/unenv-preset"],
+    },
+  },
 });
