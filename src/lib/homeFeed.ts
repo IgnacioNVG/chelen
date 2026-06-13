@@ -1,3 +1,4 @@
+import { resolveAuthorRef } from '../lib/authorSlug';
 import type { ImageMetadata } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
@@ -27,7 +28,7 @@ export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): F
 		title: post.data.title,
 		description: post.data.description,
 		pubDate: post.data.pubDate,
-		author: post.data.author,
+		author: resolveAuthorRef(post.data.author),
 		affiliation: post.data.affiliation,
 		category: post.data.category,
 		tags: post.data.tags,

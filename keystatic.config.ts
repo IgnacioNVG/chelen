@@ -26,7 +26,7 @@ export default config({
     articulos: collection({
       label: 'Artículos',
       slugField: 'title',
-      path: 'src/content/articulos/*',
+      path: 'src/content/articulos/*/',
       format: { contentField: 'content' },
       entryLayout: 'content',
       columns: ['title', 'pubDate', 'category', 'author'],
@@ -47,7 +47,7 @@ export default config({
         heroImage: fields.image({
           label: 'Imagen de portada',
           description: 'Usa imágenes en formato .webp para mantener el sitio liviano.',
-          directory: 'src/content/articulos',
+          directory: 'src/content/articulos/*/',
           publicPath: './',
         }),
         author: fields.relationship({

@@ -2,8 +2,7 @@
 title: 'Sentirse bajo el agua'
 description: 'Apuntes sobre mí y sobre el libro y la película *Submarine* de Joe Dunthorne.'
 pubDate: '2026-05-30'
-heroImage: ./2026-05-30-sentirse-bajo-el-agua.webp
-author: 'Anónimo'
+heroImage: ./hero.webp
 affiliation: 'Anónimo'
 category: 'Columna de opinión'
 tags: ['Cultura', 'Salud Mental']

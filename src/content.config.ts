@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 
 import { glob } from 'astro/loaders';
 
@@ -7,6 +7,12 @@ import { glob } from 'astro/loaders';
 const stripExtension = ({ entry }: { entry: string }) =>
 
 	entry.replace(/\.(md|mdx)$/, '');
+
+
+
+const articleId = ({ entry }: { entry: string }) =>
+
+	entry.replace(/\/index\.(md|mdx)$/, '').replace(/\.(md|mdx)$/, '');
 
 
 
@@ -20,11 +26,11 @@ const articulos = defineCollection({
 
 	loader: glob({
 
-		pattern: '**/*.{md,mdx}',
+		pattern: '**/index.{md,mdx}',
 
 		base: './src/content/articulos',
 
-		generateId: stripExtension,
+		generateId: articleId,
 
 	}),
 
@@ -40,7 +46,7 @@ const articulos = defineCollection({
 
 			heroImage: image().optional(),
 
-			author: z.string().optional(),
+			author: reference('columnistas').optional(),
 
 			affiliation: z.string().default('UCh'),
 

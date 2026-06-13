@@ -2,8 +2,8 @@
 title: 'La derrota histórica'
 description: 'Cómo el neoliberalismo chileno destruyó las mediaciones colectivas capaces de transformar antagonismos sociales en proyecto político.'
 pubDate: '2026-05-01'
-heroImage: ./2026-05-24-la-derrota-historica.webp
-author: 'Ignacio Navas Granizo'
+heroImage: ./hero.webp
+author: ignacio-navas-granizo
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 tags: ['Neoliberalismo', 'Chile', 'Estallido Social', 'Izquierda', 'Materialismo']

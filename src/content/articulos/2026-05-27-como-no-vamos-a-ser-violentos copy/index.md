@@ -2,8 +2,8 @@
 title: '¿Como no vamos a ser violentos?'
 description: 'Respuesta a las columnas sobre violencia'
 pubDate: '2026-05-27'
-heroImage: ./2026-05-27-como-no-vamos-a-ser-violentos.webp
-author: 'Ignacio Navas Granizo'
+heroImage: ./hero.webp
+author: ignacio-navas-granizo
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 tags: ['Movimiento secundario', 'Violencia política', 'Tomas', 'Educación']

@@ -1,14 +1,15 @@
 ---
-title: 'Ciudadanos bajo condición'
+title: Ciudadanos bajo condición
 description: 'Plan de Gobierno: ciudadanos bajo condición'
-pubDate: '2026-06-1'
-heroImage: ./2026-06-11-ciudadanos-bajo-condicion.webp
-author: 'Francisco Saba'
-affiliation: 'Universidad De Chile'
-category: 'Columna de opinión'
-tags: ['Kast', 'Gobierno']
+pubDate: 2026-06-11
+heroImage: ./hero.webp
+author: francisco-saba
+affiliation: Universidad De Chile
+category: Columna de opinión
+tags:
+  - Kast
+  - Gobierno
 ---
-
 En su cuenta pública, el presidente José Antonio Kast dedicó varios párrafos a criticar el error histórico de creer que un Estado más grande es automáticamente un mejor Estado. El diagnóstico tenía cierta elegancia retórica. La solución anunciada fue la austeridad, la eficiencia, el fin del gigantismo burocrático. Una larga cantidad de adjetivos comunes sin profundidad.
 
 Lo que el mismo discurso reveló, sin proponérselo, es que esa austeridad tiene una geografía muy precisa: el Estado se achica donde distribuye y se expande donde controla. Siete nuevas Fuerzas de Tarea, un Plan de Intervención Barrial Intensivo en 50 barrios, tecnología de monitoreo masivo, pórticos lectores de patentes, postes inteligentes, 20 mil nuevas plazas penitenciarias y un Registro de Vándalos con capacidad de revocar beneficios sociales.

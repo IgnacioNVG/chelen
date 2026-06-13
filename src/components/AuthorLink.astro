@@ -1,16 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
-import { authorSlug } from '../lib/authorSlug';
+import { authorSlug, resolveAuthorRef } from '../lib/authorSlug';
 
 interface Props {
-	name?: string;
+	name?: string | { id: string };
 	class?: string;
 }
 
 const { name, class: className } = Astro.props;
 
 const columnistas = await getCollection('columnistas');
-const cleanName = name || 'Anónimo';
+const authorId = resolveAuthorRef(name);
+const cleanName = authorId || 'Anónimo';
 
 // Buscar si el autor es un columnista registrado (por su ID o por su nombre completo slugificado)
 const profile = columnistas.find(

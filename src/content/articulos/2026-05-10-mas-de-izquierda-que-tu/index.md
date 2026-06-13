@@ -2,8 +2,8 @@
 title: 'Más de izquierda que tú'
 description: 'Una reflexión crítica sobre la lógica del espectáculo, el ego y la falta de disciplina en el movimiento estudiantil actual.'
 pubDate: '2026-05-10'
-heroImage: ./2026-05-10-mas-de-izquierda-que-tu.webp
-author: 'Vicente Mora'
+heroImage: ./hero.webp
+author: vicente-mora
 affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
 tags: ['Movimiento estudiantil', 'Organización', 'Espectáculo']

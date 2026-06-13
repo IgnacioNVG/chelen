@@ -10,3 +10,11 @@ export function authorSlug(name: string): string {
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-|-$/g, '');
 }
+
+/** Normaliza referencias de autor (string o `{ id }` de Astro Content). */
+export function resolveAuthorRef(
+	author: string | { id: string } | undefined,
+): string | undefined {
+	if (!author) return undefined;
+	return typeof author === 'string' ? author : author.id;
+}
