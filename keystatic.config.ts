@@ -71,7 +71,7 @@ export default config({
     cartas: collection({
       label: 'Cartas al Director',
       slugField: 'title',
-      path: 'src/content/cartas/*',
+      path: 'src/content/cartas/*/',
       format: { contentField: 'content' },
       entryLayout: 'content',
       columns: ['title', 'pubDate', 'author', 'affiliation'],
@@ -87,7 +87,7 @@ export default config({
         heroImage: fields.image({
           label: 'Imagen de portada',
           description: 'Usa imágenes en formato .webp para mantener el sitio liviano.',
-          directory: 'src/content/cartas',
+          directory: 'src/content/cartas/*/',
           publicPath: './',
         }),
         author: fields.relationship({
@@ -110,7 +110,7 @@ export default config({
     poemas: collection({
       label: 'Poemas',
       slugField: 'title',
-      path: 'src/content/poemas/*',
+      path: 'src/content/poemas/*/',
       format: { contentField: 'content' },
       entryLayout: 'content',
       columns: ['title', 'pubDate', 'author'],
@@ -126,7 +126,7 @@ export default config({
         heroImage: fields.image({
           label: 'Imagen de portada',
           description: 'Usa imágenes en formato .webp para mantener el sitio liviano.',
-          directory: 'src/content/poemas',
+          directory: 'src/content/poemas/*/',
           publicPath: './',
         }),
         author: fields.text({
@@ -149,7 +149,7 @@ export default config({
     antologias: collection({
       label: 'Antologías',
       slugField: 'title',
-      path: 'src/content/poemas/antologia/*',
+      path: 'src/content/poemas/antologia/*/',
       format: { contentField: 'content' },
       entryLayout: 'content',
       columns: ['title', 'pubDate', 'editor'],
@@ -170,8 +170,8 @@ export default config({
         heroImage: fields.image({
           label: 'Imagen de portada',
           description: 'Usa imágenes en formato .webp para mantener el sitio liviano.',
-          directory: 'src/content/poemas',
-          publicPath: '../',
+          directory: 'src/content/poemas/antologia/*/',
+          publicPath: './',
         }),
         editor: fields.text({
           label: 'Editor',

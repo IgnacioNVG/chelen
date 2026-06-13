@@ -44,7 +44,7 @@ export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[]
 		kind: 'carta',
 		title: carta.data.title,
 		pubDate: carta.data.pubDate,
-		author: carta.data.author,
+		author: resolveAuthorRef(carta.data.author),
 		affiliation: carta.data.affiliation,
 		category: carta.data.category,
 		tags: carta.data.tags,

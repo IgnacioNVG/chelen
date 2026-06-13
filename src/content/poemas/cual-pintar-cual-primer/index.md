@@ -2,7 +2,7 @@
 title: "Cual pintar cual primer"
 pubDate: 2026-05-23
 author: "Aristóteles España"
-heroImage: ./el-poeta-dawson.webp
+heroImage: ./hero.webp
 category: "Poesía"
 antologia: "el-poeta-dawson"
 ---

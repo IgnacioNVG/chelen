@@ -2,7 +2,7 @@
 title: "El Poeta Dawson"
 description: "Aristoteles España, preso en la Isla Dawson pero libre en los poemas."
 pubDate: 2026-05-23
-heroImage: ../el-poeta-dawson.webp
+heroImage: ./hero.webp
 editor: "Redacción Chelén"
 category: "Antología"
 tags: ["Isla Dawson", "Aristóteles España", "Prisión política"]

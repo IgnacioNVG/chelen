@@ -2,7 +2,7 @@
 title: "La Libertad"
 pubDate: 2026-05-25
 author: "Juan Tinola"
-heroImage: ./2026-05-25-la-libertad.webp
+heroImage: ./hero.webp
 category: "Poesía"
 ---
 

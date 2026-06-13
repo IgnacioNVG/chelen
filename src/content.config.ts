@@ -64,11 +64,11 @@ const cartas = defineCollection({
 
 	loader: glob({
 
-		pattern: '**/*.{md,mdx}',
+		pattern: '**/index.{md,mdx}',
 
 		base: './src/content/cartas',
 
-		generateId: stripExtension,
+		generateId: articleId,
 
 	}),
 
@@ -82,7 +82,7 @@ const cartas = defineCollection({
 
 			heroImage: image().optional(),
 
-			author: z.string().optional(),
+			author: reference('columnistas').optional(),
 
 			affiliation: z.string(),
 
@@ -100,11 +100,11 @@ const poemas = defineCollection({
 
 	loader: glob({
 
-		pattern: '*.{md,mdx}',
+		pattern: '*/index.{md,mdx}',
 
 		base: './src/content/poemas',
 
-		generateId: stripExtension,
+		generateId: articleId,
 
 	}),
 
@@ -136,11 +136,11 @@ const antologias = defineCollection({
 
 	loader: glob({
 
-		pattern: '**/*.{md,mdx}',
+		pattern: '**/index.{md,mdx}',
 
 		base: './src/content/poemas/antologia',
 
-		generateId: stripExtension,
+		generateId: articleId,
 
 	}),
 

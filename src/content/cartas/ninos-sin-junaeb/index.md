@@ -1,9 +1,9 @@
 ---
 title: "¿Niños sin Junaeb? ¡Que coman pastel!"
 pubDate: 2026-05-23
-author: "Claudio Valenzuela Ceballos"
+author: claudio-valenzuela-ceballos
 affiliation: "Estudiante de Agronomía e Ing. Forestal UC"
-heroImage: ./ninos-sin-junaeb.webp
+heroImage: ./hero.webp
 category: "Cartas al Director"
 tags: ["Junaeb", "Política educacional", "Alimentación escolar"]
 ---

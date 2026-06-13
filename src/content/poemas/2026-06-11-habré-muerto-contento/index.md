@@ -2,7 +2,7 @@
 title: "Habré muerto contento"
 pubDate: 2026-05-25
 author: "Juan Tinola"
-heroImage: ./2026-06-11-habré-muerto-contento.png
+heroImage: ./hero.png
 category: "Poesía"
 ---
 

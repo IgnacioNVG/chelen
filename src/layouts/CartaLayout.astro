@@ -5,15 +5,17 @@ import Footer from '../components/Footer.astro';
 import ContentImage from '../components/ContentImage.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import AuthorLink from '../components/AuthorLink.astro';
+import { resolveAuthorRef } from '../lib/authorSlug';
 import { SITE_TITLE } from '../consts';
 
 const { title, pubDate, heroImage, author, affiliation } = Astro.props;
+const authorId = resolveAuthorRef(author);
 ---
 
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Carta al Director: ${title}, por ${author}`} />
+        <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Carta al Director: ${title}, por ${authorId ?? 'Redacción Chelén'}`} />
         <style>
             main {
                 width: min(960px, calc(100% - 2rem));
