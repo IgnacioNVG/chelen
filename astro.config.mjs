@@ -12,7 +12,7 @@ export default defineConfig({
   site: "https://example.com", // Recuerda cambiar esto por tu dominio real
 
   // ¡ESTE ES EL CAMBIO CLAVE!
-  output: "hybrid",
+  output: "static",
 
   image: {
     layout: "constrained",
