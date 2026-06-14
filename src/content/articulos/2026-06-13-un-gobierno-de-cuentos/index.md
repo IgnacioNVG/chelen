@@ -1,7 +1,7 @@
 ---
 title: Un gobierno de cuentos
 description: El peligro de las metáforas en el mandato presidencial
-pubDate: 2026-06-03
+pubDate: 2026-06-13
 heroImage: ./hero.webp
 author: vania-gaete
 affiliation: Universidad Diego Portales
