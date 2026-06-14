@@ -196,7 +196,7 @@ const posts = (await getCollection('articulos'))
             .sidebar-list {
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: 1.5rem; /* Separación un poco mayor para respirar */
                 overflow-y: auto;
                 overscroll-behavior: contain;
                 padding: 0 0.5rem 0.5rem 0;
@@ -217,15 +217,15 @@ const posts = (await getCollection('articulos'))
                 border-radius: 999px;
             }
 
+            /* --- OTRAS LECTURAS (IMAGEN GRANDE, METADATOS ABAJO) --- */
             .sidebar-item {
                 text-decoration: none;
                 color: inherit;
-                display: grid;
-                grid-template-columns: 108px minmax(0, 1fr);
-                gap: 1rem;
-                align-items: start;
-                border-bottom: 1px solid #111;
-                padding-bottom: 1rem;
+                display: flex;
+                flex-direction: column; /* Apila todo en vertical */
+                gap: 0.6rem; /* Separación entre la imagen y los textos inferiores */
+                border-bottom: 2px solid #111;
+                padding-bottom: 1.5rem; /* Margen inferior del bloque */
             }
 
             .sidebar-item:hover {
@@ -234,7 +234,8 @@ const posts = (await getCollection('articulos'))
 
             .sidebar-media-box {
                 position: relative;
-                aspect-ratio: 1 / 1;
+                width: 100%; /* Toma todo el ancho posible */
+                aspect-ratio: 2 / 1; /* 2 de ancho, 1 de alto */
                 background: #f5f5f5;
                 border: 2px solid #111;
                 border-radius: 8px;
@@ -274,27 +275,14 @@ const posts = (await getCollection('articulos'))
                 transform: scale(1.06);
             }
 
-            .sidebar-text {
-                padding: 0;
-            }
-
-            .sidebar-text h4 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: 0.95rem;
-                text-transform: uppercase;
-                margin: 0;
-                line-height: 1.1;
-                color: #111;
-                transition: color 0.2s;
-            }
-
+            /* Autor y categoría debajo de la foto */
             .sidebar-meta {
                 display: flex;
-                flex-direction: column;
-                gap: 0.2rem;
-                margin-top: 0.5rem;
+                flex-direction: row;
+                align-items: center;
+                gap: 0.4rem;
                 font-family: monospace;
-                font-size: 0.68rem;
+                font-size: 0.72rem;
                 text-transform: uppercase;
             }
 
@@ -304,11 +292,7 @@ const posts = (await getCollection('articulos'))
             }
 
             .sidebar-category {
-                color: #777;
-            }
-
-            .sidebar-item:hover h4 {
-                color: #ff0000;
+                color: #555;
             }
 
             @media (max-width: 960px) {
@@ -327,10 +311,6 @@ const posts = (await getCollection('articulos'))
                     grid-template-columns: repeat(2, 1fr);
                     overflow: visible;
                     padding-right: 0;
-                }
-
-                .sidebar-item {
-                    grid-template-columns: 96px minmax(0, 1fr);
                 }
             }
 
@@ -396,16 +376,13 @@ const posts = (await getCollection('articulos'))
                                     <ContentImage src={post.data.heroImage} alt="" width={360} />
                                 )}
                             </div>
-                            <div class="sidebar-text">
-                                <h4>{post.data.title}</h4>
-                                <div class="sidebar-meta">
-                                    <span class="sidebar-author">
-                                        <AuthorLink name={resolveAuthorRef(post.data.author) || 'Redacción'} />
-                                    </span>
-                                    {post.data.category && (
-                                        <span class="sidebar-category">— {post.data.category}</span>
-                                    )}
-                                </div>
+                            <div class="sidebar-meta">
+                                <span class="sidebar-author">
+                                    <AuthorLink name={resolveAuthorRef(post.data.author) || 'Redacción'} />
+                                </span>
+                                {post.data.category && (
+                                    <span class="sidebar-category">— {post.data.category}</span>
+                                )}
                             </div>
                         </a>
                     ))}
