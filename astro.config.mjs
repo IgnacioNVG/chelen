@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
@@ -12,7 +12,10 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "passthrough",
   }),
-  integrations: [mdx(), sitemap(), react()],
+  image: {
+    service: passthroughImageService(),
+  },
+  integrations: [mdx(), sitemap(), react(), keystatic()],
   vite: {
     optimizeDeps: {
       exclude: ["@keystatic/astro"],
