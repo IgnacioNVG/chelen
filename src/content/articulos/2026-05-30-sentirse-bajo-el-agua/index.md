@@ -1,13 +1,14 @@
 ---
-title: 'Sentirse bajo el agua'
-description: 'Apuntes sobre mí y sobre el libro y la película *Submarine* de Joe Dunthorne.'
-pubDate: '2026-05-30'
-heroImage: ./hero.webp
-affiliation: 'Anónimo'
-category: 'Columna de opinión'
-tags: ['Cultura', 'Salud Mental']
+title: Sentirse bajo el agua
+description: Apuntes sobre mí y sobre el libro y la película *Submarine* de Joe Dunthorne.
+pubDate: 2026-05-30
+author: ignacio-navas-granizo
+affiliation: Universidad de Chile
+category: Columna de opinión
+tags:
+  - Cultura
+  - Salud Mental
 ---
-
 **Adolezco de una pena que no se va; fluye funcionalmente y la oculto, igual que Lloyd Tate, con una dosis de antidepresivos tricíclicos todas las mañanas. Una dosis que dejo de tomar cuando me siento bien, bajo la falsa ilusión de que ya mejoré. Es un sentimiento de angustia constante, una autoexigencia por tener que cumplir con mis estudios y con cada cosa que me propongo, una presión que termina nublando toda la felicidad que me da el haber cumplido.**
 
 A veces no me siento buen pololo, ni buen amigo, ni buen hijo. **Llevo años sintiéndome bajo el agua, donde el tiempo se distorsiona: todo pasa demasiado lento cuando se trata de las penas, y demasiado rápido con las felicidades.**
@@ -102,9 +103,9 @@ La tristeza ha heredado una forma.
 
 El hijo termina ocupando el mismo espacio emocional que el padre:
 
-* La misma inmovilidad.
-* La misma distancia.
-* La misma incapacidad de responder al mundo.
+- La misma inmovilidad.
+- La misma distancia.
+- La misma incapacidad de responder al mundo.
 
 Y encima a la misma edad en que él dijo que comenzó su depresión.
 
