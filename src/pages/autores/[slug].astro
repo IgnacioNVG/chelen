@@ -15,41 +15,58 @@ export async function getStaticPaths() {
 		getCollection('columnistas'),
 	]);
 
-	// Recolectar todos los autores únicos (de artículos + cartas)
-	const authorNames = new Set<string>();
-	articulos.forEach((a) => {
-		const authorId = resolveAuthorRef(a.data.author);
-		if (authorId) authorNames.add(authorId);
-	});
-	cartas.forEach((c) => {
-		const authorId = resolveAuthorRef(c.data.author);
-		if (authorId) authorNames.add(authorId);
-	});
-	// Agregar también los columnistas que quizás no tengan artículos todavía
+	// Usamos un Map para agrupar por el slug del autor y garantizar unicidad absoluta
+	const authorMap = new Map<string, { name: string; isProfile: boolean }>();
+
+	// 1. Agregar columnistas registrados
 	columnistas.forEach((c) => {
-		if (c.data.name) {
-			authorNames.add(c.data.name);
-		} else if (c.id !== 'ejemplo-autor') {
-			authorNames.add(c.id);
+		if (c.id !== 'ejemplo-autor') {
+			// El id de la colección ya es el slug en formato kebab-case (ej: "celeste-leiva")
+			const slug = c.id;
+			authorMap.set(slug, { name: c.data.name || c.id, isProfile: true });
 		}
 	});
 
-	// Filtrar "Anónimo" u otras variantes que no deban tener perfil
-	const filteredNames = Array.from(authorNames).filter(name => 
-		name.toLowerCase() !== 'anónimo' && name.toLowerCase() !== 'anonimo'
+	// 2. Agregar autores de artículos
+	articulos.forEach((a) => {
+		const authorRef = resolveAuthorRef(a.data.author);
+		if (authorRef) {
+			const slug = authorSlug(authorRef);
+			if (!authorMap.has(slug)) {
+				authorMap.set(slug, { name: authorRef, isProfile: false });
+			}
+		}
+	});
+
+	// 3. Agregar autores de cartas
+	cartas.forEach((c) => {
+		const authorRef = resolveAuthorRef(c.data.author);
+		if (authorRef) {
+			const slug = authorSlug(authorRef);
+			if (!authorMap.has(slug)) {
+				authorMap.set(slug, { name: authorRef, isProfile: false });
+			}
+		}
+	});
+
+	// 4. Filtrar slugs que representen "Anónimo"
+	const filteredSlugs = Array.from(authorMap.entries()).filter(([slug]) => 
+		slug !== 'anonimo' && slug !== 'anonimo'
 	);
 
-	return filteredNames.map((name) => {
-		const slug = authorSlug(name);
+	return filteredSlugs.map(([slug, { name }]) => {
 		// Buscar si existe un perfil registrado
 		const profile = columnistas.find((c) => c.id === slug || authorSlug(c.data.name) === slug) ?? null;
+		
 		// Juntar artículos y cartas de este autor
-		const authorArticulos = articulos.filter(
-			(a) => resolveAuthorRef(a.data.author) === slug,
-		);
-		const authorCartas = cartas.filter(
-			(c) => resolveAuthorRef(c.data.author) === slug,
-		);
+		const authorArticulos = articulos.filter((a) => {
+			const aRef = resolveAuthorRef(a.data.author);
+			return aRef && authorSlug(aRef) === slug;
+		});
+		const authorCartas = cartas.filter((c) => {
+			const cRef = resolveAuthorRef(c.data.author);
+			return cRef && authorSlug(cRef) === slug;
+		});
 
 		return {
 			params: { slug },

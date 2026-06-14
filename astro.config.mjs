@@ -10,11 +10,9 @@ export default defineConfig({
   site: "https://revistachelen.com",
   output: "static", // Esto es lo correcto ahora
   adapter: cloudflare({
-    imageService: "passthrough",
+    imageService: "compile",
+    prerenderEnvironment: "node",
   }),
-  image: {
-    service: passthroughImageService(),
-  },
   integrations: [mdx(), sitemap(), react(), keystatic()],
   vite: {
     optimizeDeps: {
