@@ -1,10 +1,8 @@
 ---
 name: Vicente Espinoza
 role: Columnista
-affiliation: Universidad de Chile
+affiliation: Instituto Nacional
 summary: Columnista en Revista Chelén.
-email: ""
-instagram: ""
 tags: []
 featured: false
 ---

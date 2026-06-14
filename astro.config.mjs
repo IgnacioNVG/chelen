@@ -7,26 +7,25 @@ import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
 
+// Magia: Detectamos si estamos subiendo a producción o desarrollando en local
+const isProd = process.env.NODE_ENV === "production";
+
 // https://astro.build/config
 export default defineConfig({
-  site: "https://revistachelen.com",
+  site: "https://example.com",
   output: "static",
+
   image: {
     layout: "constrained",
   },
-  // Optimiza con sharp en build (prerender); Cloudflare no ejecuta sharp en runtime.
   imageService: "compile",
   integrations: [mdx(), sitemap(), react(), keystatic()],
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-  }),
 
-  // ¡NUEVO: Instrucciones para que Vite no rompa la compilación!
+  // Condición: Si es producción usamos Cloudflare, si es local usamos Node estándar
+  adapter: isProd ? cloudflare() : undefined,
+
   vite: {
     optimizeDeps: {
-      // Excluimos Keystatic y el preset de Cloudflare de la pre-optimización
       exclude: ["@keystatic/astro", "@cloudflare/unenv-preset"],
     },
   },

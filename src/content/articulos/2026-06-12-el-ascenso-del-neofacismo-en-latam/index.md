@@ -5,7 +5,7 @@ description: >-
   estrategias de manipulación mediática y el impacto directo en las
   instituciones democráticas de la región.
 pubDate: 2026-06-12
-heroImage: ./2026-06-12-el-ascenso-del-neofacismo-en-latam/heroImage.webp
+heroImage: ./hero.webp
 author: tito-riera
 affiliation: Universidad De Chile
 category: Columna de opinión
