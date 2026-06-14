@@ -2,8 +2,6 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-
-import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
 
@@ -15,15 +13,11 @@ export default defineConfig({
     layout: "constrained",
   },
   integrations: [mdx(), sitemap(), react(), keystatic()],
-  adapter: cloudflare({
-    imageService: "compile",
-  }),
 
-  // ¡NUEVO: Instrucciones para que Vite no rompa la compilación!
+  // Vite mantiene la configuración necesaria para Keystatic
   vite: {
     optimizeDeps: {
-      // Excluimos Keystatic y el preset de Cloudflare de la pre-optimización
-      exclude: ["@keystatic/astro", "@cloudflare/unenv-preset"],
+      exclude: ["@keystatic/astro"],
     },
   },
 });
