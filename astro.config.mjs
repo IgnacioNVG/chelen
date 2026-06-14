@@ -14,13 +14,9 @@ export default defineConfig({
   image: {
     layout: "constrained",
   },
-  // Optimiza con sharp en build (prerender); Cloudflare no ejecuta sharp en runtime.
-  imageService: "compile",
   integrations: [mdx(), sitemap(), react(), keystatic()],
   adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
+    imageService: "compile",
   }),
 
   // ¡NUEVO: Instrucciones para que Vite no rompa la compilación!
