@@ -8,12 +8,7 @@ const normalizedPathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isHome = normalizedPathname === '/';
 
 // Leer el SVG del logotipo dinámicamente en tiempo de construcción para inlinearlo y evitar parpadeos
-const faviconPath = path.resolve('public/favicon.svg');
-const rawSvg = fs.readFileSync(faviconPath, 'utf-8');
-const svgContent = rawSvg
-    .replace(/<\?xml.*?\?>/i, '')
-    .replace(/<!DOCTYPE.*?>/i, '')
-    .trim();
+import svgContent from '../../public/favicon.svg?raw';
 ---
 
 <header class={isHome ? "is-home" : ""}>
