@@ -1,5 +1,5 @@
 ---
-title: Divididos vivimos eternamente vencidos
+title: Divididos viviremos eternamente vencidos
 description: Una reflexión crítica sobre la fragmentación histórica y estructural de los movimientos sociales y la izquierda en Chile bajo el modelo neoliberal, y el imperativo de la unidad frente al auge de la ultraderecha.
 pubDate: 2026-06-15
 heroImage: ./hero.webp
