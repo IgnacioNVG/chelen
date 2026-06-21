@@ -1,7 +1,7 @@
 ---
 import ContentImage from '../ContentImage.astro';
 import FormattedDate from '../FormattedDate.astro';
-import { resolveAuthorRef } from '../../lib/authorSlug'; // Asegúrate de importar la utilidad
+import AuthorLink from '../AuthorLink.astro';
 import type { FeedItem } from '../../lib/homeFeed';
 
 interface Props {
@@ -10,9 +10,6 @@ interface Props {
 }
 
 const { item, variant = 'compact' } = Astro.props;
-
-// RESOLUCIÓN: Obtenemos el nombre legible a partir del slug
-const authorName = item.author ? resolveAuthorRef(item.author) : null;
 
 const priority = variant === 'hero';
 const aboveFold = variant === 'hero' || variant === 'featured';
@@ -48,7 +45,7 @@ const loading = aboveFold ? 'eager' : 'lazy';
 				))}
 			</div>
 
-			<h3 class:list={['feed-title', variant === 'hero' && 'feed-title--hero']}>
+			<h3 class:list={['feed-title', variant === 'hero' && 'feed-title--hero', variant === 'hero' && 'sr-only']}>
 				{item.title}
 			</h3>
 
@@ -57,7 +54,7 @@ const loading = aboveFold ? 'eager' : 'lazy';
 			)}
 
 			<footer class="feed-meta">
-				{authorName && <span class="feed-author">{authorName}</span>}
+				{item.author && <AuthorLink name={item.author} class="feed-author" />}
 
 				{item.affiliation && variant !== 'compact' && (
 					<span class="feed-affiliation">{item.affiliation}</span>

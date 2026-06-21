@@ -1,0 +1,41 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('articulos'))
+    .filter((post) => post.data.category.includes('Columna'))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Columnas | ${SITE_TITLE}`} description="Columnas de opinion y reflexion de Revista Chelen" />
+        <style>
+            main { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
+            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
+            .intro { max-width: 720px; color: #333; font-size: 1rem; line-height: 1.55; }
+            ul { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; list-style: none; margin: 0; padding: 0; }
+            li:first-child { grid-column: span 2; }
+            .empty { font-family: monospace; color: #777; }
+            @media (max-width: 720px) { ul { grid-template-columns: 1fr; } li:first-child { grid-column: span 1; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <header class="page-header">
+                <h1>Columnas</h1>
+                <p class="intro">Textos breves de opinion o reflexion, pensados para lectura agil dentro de la produccion escrita de la revista.</p>
+            </header>
+            {posts.length === 0 && <p class="empty">No hay columnas publicadas aun.</p>}
+            {posts.length > 0 && <ul>{posts.map((post, index) => <li class={index === 0 ? 'featured-item' : ''}><PostCard post={post} /></li>)}</ul>}
+        </main>
+        <Footer />
+    </body>
+</html>

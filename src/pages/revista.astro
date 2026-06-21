@@ -1,0 +1,86 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FeedCard from '../components/home/FeedCard.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { buildArticuloItems, buildCartaItems, mergeEditorialFeed } from '../lib/homeFeed';
+
+const articulos = await getCollection('articulos');
+const cartas = await getCollection('cartas');
+const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(cartas));
+const columnas = feed.filter((item) => item.kind === 'articulo' && item.category.includes('Columna'));
+const articulosLargos = feed.filter((item) => item.kind === 'articulo' && !item.category.includes('Columna'));
+const cartasItems = feed.filter((item) => item.kind === 'carta');
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Revista | ${SITE_TITLE}`} description="Produccion escrita de Revista Chelen" />
+        <style>
+            main { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
+            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
+            .intro { max-width: 760px; color: #333; font-size: 1rem; line-height: 1.55; }
+            .section-band { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; border-top: 0.45rem solid #111; padding-top: 0.5rem; margin: 2.5rem 0 1.5rem; }
+            .section-band h2 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); text-transform: uppercase; margin: 0; }
+            .section-band a { font-family: monospace; font-size: 0.72rem; text-transform: uppercase; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+            .subnav { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+            .subnav a { border: 2px solid #111; color: #111; background: #fff; text-decoration: none; font-family: monospace; font-size: 0.75rem; text-transform: uppercase; padding: 0.35rem 0.6rem; }
+            .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+            .feed-grid :global(.feed-card) { background: #fff; border: 2px solid #111; border-radius: 8px; box-shadow: 4px 4px 0 #111; overflow: hidden; }
+            .feed-grid :global(.feed-card-link) { color: inherit; text-decoration: none; display: flex; flex-direction: column; height: 100%; }
+            .feed-grid :global(.feed-media--landscape), .feed-grid :global(.feed-media--portrait) { aspect-ratio: 2 / 1; border-bottom: 2px solid #111; overflow: hidden; }
+            .feed-grid :global(img) { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+            .feed-grid :global(.feed-body) { padding: 1.1rem; display: flex; flex-direction: column; flex-grow: 1; }
+            .feed-grid :global(.feed-tags) { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+            .feed-grid :global(.feed-tag) { font-family: monospace; font-size: 0.6rem; text-transform: uppercase; background: #eee; color: #333; padding: 0.15rem 0.4rem; }
+            .feed-grid :global(.feed-tag--section) { background: #111; color: #fff; }
+            .feed-grid :global(.feed-title) { font-size: 1.15rem; line-height: 1.1; text-transform: uppercase; margin: 0 0 0.6rem; }
+            .feed-grid :global(.feed-meta) { margin-top: auto; padding-top: 0.6rem; border-top: 1px solid #111; font-family: monospace; font-size: 0.65rem; color: #777; display: flex; flex-wrap: wrap; gap: 0.55rem; }
+            @media (max-width: 900px) { .feed-grid { grid-template-columns: repeat(2, 1fr); } }
+            @media (max-width: 640px) { .feed-grid { grid-template-columns: 1fr; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <header class="page-header">
+                <h1>Revista</h1>
+                <p class="intro">Toda la produccion escrita: articulos extensos, columnas de opinion y cartas al director, reunidas bajo una misma logica editorial.</p>
+                <nav class="subnav" aria-label="Subsecciones de revista">
+                    <a href="/articulos">Articulos</a>
+                    <a href="/columnas">Columnas</a>
+                    <a href="/cartas">Cartas al director</a>
+                </nav>
+            </header>
+
+            <div class="section-band"><h2>Ultimas publicaciones</h2><a href="/buscar">Buscar archivo -></a></div>
+            <div class="feed-grid">{feed.slice(0, 6).map((item) => <FeedCard item={item} />)}</div>
+
+            {columnas.length > 0 && (
+                <>
+                    <div class="section-band"><h2>Columnas</h2><a href="/columnas">Ver columnas -></a></div>
+                    <div class="feed-grid">{columnas.slice(0, 3).map((item) => <FeedCard item={item} />)}</div>
+                </>
+            )}
+
+            {articulosLargos.length > 0 && (
+                <>
+                    <div class="section-band"><h2>Articulos</h2><a href="/articulos">Ver articulos -></a></div>
+                    <div class="feed-grid">{articulosLargos.slice(0, 3).map((item) => <FeedCard item={item} />)}</div>
+                </>
+            )}
+
+            {cartasItems.length > 0 && (
+                <>
+                    <div class="section-band"><h2>Cartas al director</h2><a href="/cartas">Ver cartas -></a></div>
+                    <div class="feed-grid">{cartasItems.slice(0, 3).map((item) => <FeedCard item={item} />)}</div>
+                </>
+            )}
+        </main>
+        <Footer />
+    </body>
+</html>

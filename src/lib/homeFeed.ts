@@ -2,7 +2,7 @@ import { resolveAuthorRef } from '../lib/authorSlug';
 import type { ImageMetadata } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
-export type FeedKind = 'articulo' | 'carta' | 'antologia';
+export type FeedKind = 'articulo' | 'carta' | 'antologia' | 'poema';
 
 export type FeedItem = {
 	id: string;
@@ -52,6 +52,23 @@ export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[]
 		image: carta.data.heroImage,
 		imageLayout: carta.data.heroImage ? 'portrait' : 'none',
 	}));
+}
+
+export function buildPoemaItems(poemas: CollectionEntry<'poemas'>[]): FeedItem[] {
+	return poemas
+		.filter((poema) => !poema.data.antologia)
+		.map((poema) => ({
+			id: `poema-${poema.id}`,
+			kind: 'poema',
+			title: poema.data.title,
+			pubDate: poema.data.pubDate,
+			author: poema.data.author,
+			category: poema.data.category,
+			tags: poema.data.tags,
+			href: `/poemas/${poema.id}`,
+			image: poema.data.heroImage,
+			imageLayout: poema.data.heroImage ? 'portrait' : 'none',
+		}));
 }
 
 export function buildAntologiaItems(

@@ -1,0 +1,46 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Cuadernillos | ${SITE_TITLE}`} description="Publicaciones especiales de Revista Chelen" />
+        <style>
+            main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
+            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
+            .intro { max-width: 760px; color: #333; font-size: 1rem; line-height: 1.55; }
+            .schema { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 2rem; background: #fff; border: 2px solid #111; border-radius: 8px; box-shadow: 4px 4px 0 #111; padding: 1.5rem; }
+            .cover { aspect-ratio: 4 / 5; border: 2px dashed #111; display: grid; place-items: center; font-family: monospace; font-size: 0.75rem; text-transform: uppercase; color: #555; }
+            .meta { display: grid; gap: 0.8rem; align-content: start; }
+            .meta span { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 0.35rem; }
+            @media (max-width: 720px) { .schema { grid-template-columns: 1fr; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <header class="page-header">
+                <h1>Cuadernillos</h1>
+                <p class="intro">Publicaciones especiales de la revista. Cada cuadernillo queda pensado para reunir portada, descripcion, autores, fecha, descarga PDF y lectura online.</p>
+            </header>
+            <section class="schema" aria-label="Modelo editorial de cuadernillo">
+                <div class="cover">Portada</div>
+                <div class="meta">
+                    <span>Titulo</span>
+                    <span>Descripcion</span>
+                    <span>Autores</span>
+                    <span>Fecha</span>
+                    <span>Descarga PDF</span>
+                    <span>Lectura online</span>
+                    <span>Articulos incluidos</span>
+                </div>
+            </section>
+        </main>
+        <Footer />
+    </body>
+</html>

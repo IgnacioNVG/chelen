@@ -1,15 +1,20 @@
 ---
 import type { HTMLAttributes } from 'astro:types';
 
-type Props = HTMLAttributes<'a'>;
+type Props = HTMLAttributes<'a'> & {
+    activeFor?: string[];
+};
 
-const { href, class: className, ...props } = Astro.props;
+const { href, class: className, activeFor = [], ...props } = Astro.props;
 const { pathname } = Astro.url;
 
 // Lógica de detección limpia
 const normalizedPath = pathname.replace(/\/$/, "") || "/";
 const normalizedHref = (href as string).replace(/\/$/, "") || "/";
-const isActive = normalizedPath === normalizedHref || (normalizedHref !== '/' && normalizedPath.startsWith(normalizedHref));
+const activePaths = [normalizedHref, ...activeFor.map((path) => path.replace(/\/$/, "") || "/")];
+const isActive = activePaths.some((path) =>
+    normalizedPath === path || (path !== '/' && normalizedPath.startsWith(path))
+);
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>

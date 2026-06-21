@@ -1,0 +1,102 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { resolveAuthorRef } from '../lib/authorSlug';
+
+const articulos = await getCollection('articulos');
+const cartas = await getCollection('cartas');
+const poemas = await getCollection('poemas');
+const antologias = await getCollection('antologias');
+
+const items = [
+    ...articulos.map((post) => ({
+        title: post.data.title,
+        type: post.data.category,
+        href: `/articulos/${post.id}`,
+        author: resolveAuthorRef(post.data.author),
+        date: post.data.pubDate.toISOString(),
+    })),
+    ...cartas.map((post) => ({
+        title: post.data.title,
+        type: 'Cartas al Director',
+        href: `/cartas/${post.id}`,
+        author: resolveAuthorRef(post.data.author),
+        date: post.data.pubDate.toISOString(),
+    })),
+    ...poemas.map((post) => ({
+        title: post.data.title,
+        type: post.data.category,
+        href: `/poemas/${post.id}`,
+        author: post.data.author,
+        date: post.data.pubDate.toISOString(),
+    })),
+    ...antologias.map((post) => ({
+        title: post.data.title,
+        type: post.data.category,
+        href: `/poemas/antologia/${post.id}`,
+        author: post.data.editor ?? 'Revista Chelen',
+        date: post.data.pubDate.toISOString(),
+    })),
+].sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Buscar | ${SITE_TITLE}`} description="Buscar en el archivo de Revista Chelen" />
+        <style>
+            main { width: min(980px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
+            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
+            .search-box { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; margin-bottom: 2rem; }
+            input { border: 2px solid #111; background: #fff; padding: 0.7rem 0.8rem; font-family: monospace; font-size: 0.9rem; }
+            .count { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; align-self: center; color: #555; }
+            .results { display: grid; gap: 1rem; }
+            .result { display: block; background: #fff; border: 2px solid #111; border-radius: 8px; box-shadow: 3px 3px 0 #111; padding: 1rem; color: #111; text-decoration: none; }
+            .result:hover { border-color: #ff0000; box-shadow: 4px 4px 0 #ff0000; }
+            .result h2 { font-size: 1.15rem; line-height: 1.1; text-transform: uppercase; margin-bottom: 0.5rem; }
+            .result p { margin: 0; font-family: monospace; font-size: 0.72rem; color: #666; text-transform: uppercase; }
+            @media (max-width: 640px) { .search-box { grid-template-columns: 1fr; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <header class="page-header">
+                <h1>Buscar</h1>
+            </header>
+            <div class="search-box">
+                <input id="search" type="search" placeholder="Buscar por titulo, autor o seccion" autocomplete="off" />
+                <span class="count" id="count">{items.length} resultados</span>
+            </div>
+            <section class="results" id="results">
+                {items.map((item) => (
+                    <a class="result" href={item.href} data-search={`${item.title} ${item.type} ${item.author}`.toLowerCase()}>
+                        <h2>{item.title}</h2>
+                        <p>{item.type} / {item.author}</p>
+                    </a>
+                ))}
+            </section>
+        </main>
+        <Footer />
+        <script>
+            const input = document.getElementById('search') as HTMLInputElement;
+            const count = document.getElementById('count')!;
+            const results = Array.from(document.querySelectorAll('.result')) as HTMLElement[];
+            function updateResults() {
+                const query = input.value.trim().toLowerCase();
+                let visible = 0;
+                results.forEach((result) => {
+                    const matches = !query || result.dataset.search?.includes(query);
+                    result.hidden = !matches;
+                    if (matches) visible += 1;
+                });
+                count.textContent = `${visible} resultado${visible === 1 ? '' : 's'}`;
+            }
+            input.addEventListener('input', updateResults);
+        </script>
+    </body>
+</html>

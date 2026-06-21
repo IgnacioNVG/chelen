@@ -10,6 +10,7 @@ import {
     buildAntologiaItems,
     buildArticuloItems,
     buildCartaItems,
+    buildPoemaItems,
     mergeEditorialFeed,
     editionLabel,
 } from '../lib/homeFeed';
@@ -22,6 +23,7 @@ const poemas = await getCollection('poemas');
 const editorialFeed = mergeEditorialFeed(
     buildArticuloItems(articulos),
     buildCartaItems(cartas),
+    buildPoemaItems(poemas),
     buildAntologiaItems(antologias, poemas),
 );
 
@@ -32,12 +34,15 @@ const hero =
     editorialFeed[0];
 
 const feedSinHero = editorialFeed.filter((item) => item.id !== hero?.id);
-const destacados = feedSinHero.filter((item) => item.kind === 'articulo').slice(0, 2);
-const restoIds = new Set([...destacados.map((d) => d.id), hero?.id].filter(Boolean));
-const cronologiaResto = feedSinHero.filter((item) => !restoIds.has(item.id));
-
-const retrato = cronologiaResto.filter((item) => item.kind === 'carta' || item.kind === 'antologia');
-const articulosResto = cronologiaResto.filter((item) => item.kind === 'articulo');
+const publicacionesRecientes = feedSinHero.slice(0, 6);
+const recientesIds = new Set([...publicacionesRecientes.map((d) => d.id), hero?.id].filter(Boolean));
+const columnasRecientes = feedSinHero
+    .filter((item) => item.kind === 'articulo' && !recientesIds.has(item.id))
+    .slice(0, 3);
+const cartasRecientes = feedSinHero.filter((item) => item.kind === 'carta').slice(0, 3);
+const arteReciente = feedSinHero
+    .filter((item) => item.kind === 'poema' || item.kind === 'antologia')
+    .slice(0, 3);
 
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>(
     '../assets/grafica-*.{webp,png,jpg,jpeg}',
@@ -392,6 +397,24 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 margin-top: 0.35rem;
             }
 
+            .editorial-note {
+                border: 2px solid #111;
+                background: #fff;
+                padding: clamp(1rem, 2vw, 1.5rem);
+                max-width: 760px;
+            }
+
+            .editorial-note p {
+                margin: 0;
+                font-size: 0.95rem;
+                line-height: 1.55;
+                color: #333;
+            }
+
+            .editorial-note--compact {
+                max-width: 620px;
+            }
+
             /* --- RESPONSIVIDAD --- */
             @media (max-width: 1024px) {
                 .feed-grid--articulos :global(.feed-card),
@@ -429,7 +452,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
         <Header />
         <main class="home">
             <header class="masthead">
-                <p class="masthead-kicker">"Nunca más una linea correcta"</p>
+                <p class="masthead-kicker">"Organizar la Esperanza"</p>
                 <h1 class="masthead-title">{SITE_TITLE}</h1>
                 <p class="masthead-edition">
                     {SITE_DESCRIPTION}
@@ -443,46 +466,42 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 </section>
             )}
 
-            {destacados.length > 0 && (
+            {publicacionesRecientes.length > 0 && (
                 <>
                     <div class="section-band">
-                        <h2>En portada</h2>
-                        <a href="/articulos">Ver artículos →</a>
+                        <h2>Publicaciones recientes</h2>
+                        <a href="/revista">Ver revista -></a>
                     </div>
                     <div class="feed-grid feed-grid--articulos">
-                        {destacados.map((item) => (
+                        {publicacionesRecientes.map((item) => (
                             <FeedCard item={item} variant="featured" />
                         ))}
                     </div>
                 </>
             )}
 
-            {retrato.length > 0 && (
+            {columnasRecientes.length > 0 && (
                 <>
                     <div class="section-band">
-                        <h2>Cartas, antologías y poemas</h2>
-                        <div>
-                            <a href="/cartas">Cartas →</a>
-                            {' '}
-                            <a href="/poemas">Poemas →</a>
-                        </div>
+                        <h2>Columnas recientes</h2>
+                        <a href="/columnas">Ver columnas -></a>
                     </div>
-                    <div class="feed-grid feed-grid--retrato">
-                        {retrato.map((item) => (
+                    <div class="feed-grid feed-grid--articulos">
+                        {columnasRecientes.map((item) => (
                             <FeedCard item={item} />
                         ))}
                     </div>
                 </>
             )}
 
-            {articulosResto.length > 0 && (
+            {arteReciente.length > 0 && (
                 <>
                     <div class="section-band">
-                        <h2>Artículos anteriores</h2>
-                        <a href="/articulos">Archivo completo →</a>
+                        <h2>Arte socialista destacado</h2>
+                        <a href="/arte">Ver arte -></a>
                     </div>
-                    <div class="feed-grid feed-grid--articulos">
-                        {articulosResto.map((item) => (
+                    <div class="feed-grid feed-grid--retrato">
+                        {arteReciente.map((item) => (
                             <FeedCard item={item} />
                         ))}
                     </div>
@@ -492,8 +511,8 @@ const graficaDestacada = graphics.slice(-3).reverse();
             {graficaDestacada.length > 0 && (
                 <>
                     <div class="section-band">
-                        <h2>Archivo gráfico</h2>
-                        <a href="/grafica">Ver todo →</a>
+                        <h2>Grafica destacada</h2>
+                        <a href="/grafica">Ver todo -></a>
                     </div>
                     <div class="graphics-strip">
                         {graficaDestacada.map((g) => (
@@ -503,13 +522,43 @@ const graficaDestacada = graphics.slice(-3).reverse();
                                 </div>
                                 <div class="graphics-content">
                                     <h4>{g.title}</h4>
-                                    <span>Formato 4:5 · Archivo visual</span>
+                                    <span>Formato 4:5 / Archivo visual</span>
                                 </div>
                             </a>
                         ))}
                     </div>
                 </>
             )}
+
+            <div class="section-band">
+                <h2>Produccion audiovisual reciente</h2>
+                <a href="/audiovisual">Ver audiovisual -></a>
+            </div>
+            <section class="editorial-note">
+                <p>Podcast, conversatorios y paneles se agrupan en una seccion propia, preparada para incorporar nuevas categorias audiovisuales.</p>
+            </section>
+
+            {cartasRecientes.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>Cartas al director</h2>
+                        <a href="/cartas">Ver cartas -></a>
+                    </div>
+                    <div class="feed-grid feed-grid--retrato">
+                        {cartasRecientes.map((item) => (
+                            <FeedCard item={item} />
+                        ))}
+                    </div>
+                </>
+            )}
+
+            <div class="section-band">
+                <h2>Cuadernillos</h2>
+                <a href="/cuadernillos">Ver cuadernillos -></a>
+            </div>
+            <section class="editorial-note editorial-note--compact">
+                <p>Publicaciones especiales con portada, autores, fecha, descarga PDF y lectura online.</p>
+            </section>
         </main>
         <Footer />
     </body>

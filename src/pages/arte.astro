@@ -1,0 +1,94 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FeedCard from '../components/home/FeedCard.astro';
+import { Image } from 'astro:assets';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { buildAntologiaItems, buildPoemaItems, mergeEditorialFeed } from '../lib/homeFeed';
+
+const poemas = await getCollection('poemas');
+const antologias = await getCollection('antologias');
+const arteFeed = mergeEditorialFeed(buildPoemaItems(poemas), buildAntologiaItems(antologias, poemas));
+
+const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/grafica-*.{webp,png,jpg,jpeg}');
+const graphics = (
+    await Promise.all(Object.keys(graphicFiles).map(async (path) => {
+        const img = await graphicFiles[path]();
+        const fileName = path.split('/').pop()?.replace(/\.[^.]+$/, '') ?? '';
+        const order = Number.parseInt(fileName.replace('grafica-', ''), 10) || 0;
+        return { title: fileName.replace('grafica-', 'Pieza ').replace(/-/g, ' '), src: img.default, order };
+    }))
+).sort((a, b) => b.order - a.order);
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Arte | ${SITE_TITLE}`} description="Produccion artistica de Revista Chelen" />
+        <style>
+            main { width: min(1220px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
+            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
+            .intro { max-width: 760px; color: #333; font-size: 1rem; line-height: 1.55; }
+            .subnav { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+            .subnav a { border: 2px solid #111; color: #111; background: #fff; text-decoration: none; font-family: monospace; font-size: 0.75rem; text-transform: uppercase; padding: 0.35rem 0.6rem; }
+            .section-band { display: flex; justify-content: space-between; align-items: baseline; border-top: 0.45rem solid #111; padding-top: 0.5rem; margin: 2.5rem 0 1.5rem; }
+            .section-band h2 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); text-transform: uppercase; margin: 0; }
+            .section-band a { font-family: monospace; font-size: 0.72rem; text-transform: uppercase; color: #111; text-decoration: none; border-bottom: 1px solid #111; }
+            .visual-grid, .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+            .visual-card, .feed-grid :global(.feed-card) { background: #fff; border: 2px solid #111; border-radius: 8px; box-shadow: 4px 4px 0 #111; overflow: hidden; text-decoration: none; color: #111; }
+            .visual-frame { aspect-ratio: 4 / 5; border-bottom: 2px solid #111; overflow: hidden; }
+            .visual-frame :global(img) { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+            .visual-card h3 { font-size: 1rem; text-transform: uppercase; padding: 1rem; margin: 0; }
+            .feed-grid :global(.feed-card-link) { color: inherit; text-decoration: none; display: flex; flex-direction: column; height: 100%; }
+            .feed-grid :global(.feed-media--portrait), .feed-grid :global(.feed-media--landscape) { aspect-ratio: 4 / 5; border-bottom: 2px solid #111; overflow: hidden; }
+            .feed-grid :global(img) { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+            .feed-grid :global(.feed-body) { padding: 1.1rem; }
+            .feed-grid :global(.feed-tags), .feed-grid :global(.feed-meta) { font-family: monospace; font-size: 0.65rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+            .feed-grid :global(.feed-tag) { background: #eee; color: #333; padding: 0.15rem 0.4rem; text-transform: uppercase; }
+            .feed-grid :global(.feed-tag--section) { background: #111; color: #fff; }
+            .feed-grid :global(.feed-title) { font-size: 1.15rem; line-height: 1.1; text-transform: uppercase; margin-top: 0.65rem; }
+            @media (max-width: 900px) { .visual-grid, .feed-grid { grid-template-columns: repeat(2, 1fr); } }
+            @media (max-width: 640px) { .visual-grid, .feed-grid { grid-template-columns: 1fr; } }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <header class="page-header">
+                <h1>Arte</h1>
+                <p class="intro">Produccion grafica, poesia, antologias, escritos y otros formatos artisticos, con una presentacion mas visual que academica.</p>
+                <nav class="subnav" aria-label="Subsecciones de arte">
+                    <a href="/grafica">Grafica</a>
+                    <a href="/poemas">Poesia</a>
+                    <a href="/poemas">Antologias</a>
+                    <a href="/revista">Escritos</a>
+                </nav>
+            </header>
+
+            {graphics.length > 0 && (
+                <>
+                    <div class="section-band"><h2>Grafica</h2><a href="/grafica">Ver archivo grafico -></a></div>
+                    <div class="visual-grid">
+                        {graphics.slice(0, 6).map((item) => (
+                            <a class="visual-card" href="/grafica">
+                                <div class="visual-frame"><Image src={item.src} alt={item.title} width={520} /></div>
+                                <h3>{item.title}</h3>
+                            </a>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {arteFeed.length > 0 && (
+                <>
+                    <div class="section-band"><h2>Poesia y antologias</h2><a href="/poemas">Ver poesia -></a></div>
+                    <div class="feed-grid">{arteFeed.slice(0, 6).map((item) => <FeedCard item={item} />)}</div>
+                </>
+            )}
+        </main>
+        <Footer />
+    </body>
+</html>

@@ -23,11 +23,12 @@ import svgContent from '../../public/favicon.svg?raw';
         <div class="internal-links-container">
             <div class="internal-links">
                 <HeaderLink href="/" class="nav-item home-link-btn" data-home-btn>Inicio</HeaderLink>
-                <HeaderLink href="/grafica" class="nav-item">Grafica</HeaderLink>
-                <HeaderLink href="/poemas" class="nav-item">Poemas</HeaderLink>
-                <HeaderLink href="/cartas" class="nav-item">Cartas al Director</HeaderLink>
-                <HeaderLink href="/articulos" class="nav-item">Artículos</HeaderLink>
+                <HeaderLink href="/revista" class="nav-item" activeFor={['/articulos', '/columnas', '/cartas']}>Revista</HeaderLink>
+                <HeaderLink href="/arte" class="nav-item" activeFor={['/grafica', '/poemas']}>Arte</HeaderLink>
+                <HeaderLink href="/audiovisual" class="nav-item">Audiovisual</HeaderLink>
+                <HeaderLink href="/cuadernillos" class="nav-item">Cuadernillos</HeaderLink>
                 <HeaderLink href="/nosotros" class="nav-item">Nosotros</HeaderLink>
+                <HeaderLink href="/buscar" class="nav-item">Buscar</HeaderLink>
             </div>
             <div class="nav-indicator"></div>
         </div>
