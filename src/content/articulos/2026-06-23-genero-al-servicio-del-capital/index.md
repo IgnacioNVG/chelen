@@ -2,7 +2,7 @@
 title: GÉNERO al servicio del capital
 description: Mientras las grandes marcas de moda llenan sus campañas de mensajes sobre **empoderamiento femenino, diversidad e igualdad**, existe una realidad mucho menos visible que sostiene gran parte de la industria textil global. Millones de mujeres trabajan diariamente en fábricas de confección bajo condiciones laborales precarias y salarios insuficientes para mantener la vida humana. 
 pubDate: 2026-06-23
-heroImage: ./genero-al-servicio-del-capital/heroImage.webp
+heroImage: ./hero.webp
 affiliation: UCh
 category: Columna de opinión
 tags: [Feminismo Anticapitalista, Marxismo, Industria Textil, Globalización, División Sexual del Trabajo]
