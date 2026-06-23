@@ -468,7 +468,7 @@ const allPosts = [...articulos, ...poemas, ...cartas]
             renderResultados(sugerenciasPredeterminadas, "Sugerencias para ti");
 
             input.addEventListener("input", (e) => {
-                const query = e.target.value.toLowerCase().trim();
+                const query = e.target.value.toLowerCaseude().trim();
 
                 if (!query) {
                     actualizarUIHistorial();
