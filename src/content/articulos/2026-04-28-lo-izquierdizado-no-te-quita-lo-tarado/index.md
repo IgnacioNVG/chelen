@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: celeste-leiva
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
+temas: ['Feminismos', 'Izquierda y socialismo']
 tags: ['Feminismo', 'Clase obrera', 'Doble militancia']
 ---
 

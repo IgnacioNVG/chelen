@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: ignacio-navas-granizo
 affiliation: Universidad de Chile
 category: Columna de opinión
+temas: ['Salud', 'Cultura']
 tags:
   - Cultura
   - Salud Mental

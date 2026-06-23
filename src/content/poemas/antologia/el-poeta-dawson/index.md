@@ -5,6 +5,7 @@ pubDate: 2026-05-23
 heroImage: ./hero.webp
 editor: "Redacción Chelén"
 category: "Antología"
+temas: ['Historia y memoria']
 tags: ["Isla Dawson", "Aristóteles España", "Prisión política"]
 ---
 

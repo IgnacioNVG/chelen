@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: vania-gaete
 affiliation: Universidad Diego Portales
 category: Columna de opinión
+temas: ['Política']
 tags:
   - Kast
   - Gobierno

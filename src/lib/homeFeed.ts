@@ -14,7 +14,9 @@ export type FeedItem = {
 	affiliation?: string;
 	/** Tipo de pieza (se muestra como etiqueta principal). */
 	category: string;
-	/** Temas; no deben repetir `category`. */
+	/** Ejes temáticos amplios (vocabulario controlado, ver lib/taxonomy.ts). */
+	temas: string[];
+	/** Descriptores específicos (cola larga). No deben repetir `category`. */
 	tags: string[];
 	href: string;
 	image?: ImageMetadata;
@@ -31,6 +33,7 @@ export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): F
 		author: resolveAuthorRef(post.data.author),
 		affiliation: post.data.affiliation,
 		category: post.data.category,
+		temas: post.data.temas,
 		tags: post.data.tags,
 		href: `/articulos/${post.id}`,
 		image: post.data.heroImage,
@@ -47,6 +50,7 @@ export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[]
 		author: resolveAuthorRef(carta.data.author),
 		affiliation: carta.data.affiliation,
 		category: carta.data.category,
+		temas: carta.data.temas,
 		tags: carta.data.tags,
 		href: `/cartas/${carta.id}`,
 		image: carta.data.heroImage,
@@ -64,6 +68,7 @@ export function buildPoemaItems(poemas: CollectionEntry<'poemas'>[]): FeedItem[]
 			pubDate: poema.data.pubDate,
 			author: poema.data.author,
 			category: poema.data.category,
+			temas: poema.data.temas,
 			tags: poema.data.tags,
 			href: `/poemas/${poema.id}`,
 			image: poema.data.heroImage,
@@ -85,6 +90,7 @@ export function buildAntologiaItems(
 			pubDate: antologia.data.pubDate,
 			author: antologia.data.editor,
 			category: antologia.data.category,
+			temas: antologia.data.temas,
 			tags: antologia.data.tags,
 			href: `/poemas/antologia/${antologia.id}`,
 			image: antologia.data.heroImage,

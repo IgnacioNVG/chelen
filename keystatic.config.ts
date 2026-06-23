@@ -1,8 +1,19 @@
 import { collection, config, fields } from "@keystatic/core";
+import { TEMAS } from "./src/lib/taxonomy";
 
 const tagsField = fields.array(fields.text({ label: "Etiqueta" }), {
   label: "Etiquetas",
   itemLabel: (props) => props.value,
+});
+
+// Nivel superior controlado del sistema de etiquetas. Lista canónica
+// compartida con src/content.config.ts (ver src/lib/taxonomy.ts).
+const temasField = fields.multiselect({
+  label: "Temas",
+  description:
+    "Ejes temáticos amplios para descubrir contenido entre secciones. " +
+    "Usa «Etiquetas» para descriptores específicos (nombres propios, hechos puntuales).",
+  options: TEMAS.map((t) => ({ label: t, value: t })),
 });
 
 const bodyField = () =>
@@ -64,10 +75,16 @@ export default config({
           defaultValue: "UCh",
           validation: { isRequired: true },
         }),
-        category: fields.text({
+        category: fields.select({
           label: "Categoría",
+          // Debe coincidir con el enum de src/content.config.ts (articulos).
+          options: [
+            { label: "Columna de opinión", value: "Columna de opinión" },
+            { label: "Entrevista", value: "Entrevista" },
+          ],
           defaultValue: "Columna de opinión",
         }),
+        temas: temasField,
         tags: tagsField,
         content: bodyField(),
       },
@@ -104,10 +121,15 @@ export default config({
           label: "Afiliación",
           validation: { isRequired: true },
         }),
-        category: fields.text({
+        category: fields.select({
           label: "Categoría",
+          // Coincide con el literal de src/content.config.ts (cartas).
+          options: [
+            { label: "Cartas al Director", value: "Cartas al Director" },
+          ],
           defaultValue: "Cartas al Director",
         }),
+        temas: temasField,
         tags: tagsField,
         content: bodyField(),
       },
@@ -140,10 +162,13 @@ export default config({
           defaultValue: "Anónimo",
           validation: { isRequired: true },
         }),
-        category: fields.text({
+        category: fields.select({
           label: "Categoría",
+          // Coincide con el literal de src/content.config.ts (poemas).
+          options: [{ label: "Poesía", value: "Poesía" }],
           defaultValue: "Poesía",
         }),
+        temas: temasField,
         tags: tagsField,
         antologia: fields.text({
           label: "Antología",
@@ -185,10 +210,13 @@ export default config({
           label: "Editor",
           defaultValue: "Redacción Chelén",
         }),
-        category: fields.text({
+        category: fields.select({
           label: "Categoría",
+          // Coincide con el literal de src/content.config.ts (antologias).
+          options: [{ label: "Antología", value: "Antología" }],
           defaultValue: "Antología",
         }),
+        temas: temasField,
         tags: tagsField,
         content: bodyField(),
       },

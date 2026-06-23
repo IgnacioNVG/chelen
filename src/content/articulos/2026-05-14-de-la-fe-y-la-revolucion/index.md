@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: joaquin-friz
 affiliation: 'Externo'
 category: 'Columna de opinión'
+temas: ['Filosofía e ideas', 'Economía']
 tags: ['Catolicismo', 'Materialismo histórico', 'Neoliberalismo']
 ---
 

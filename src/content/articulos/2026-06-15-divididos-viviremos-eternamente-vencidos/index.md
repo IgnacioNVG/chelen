@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: martin-valencia-vasquez
 affiliation: Universidad de Concepción
 category: Columna de opinión
+temas: ['Izquierda y socialismo', 'Política', 'Movimientos sociales']
 tags:
   - Política chilena
   - Neoliberalismo

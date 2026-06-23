@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: francisco-saba
 affiliation: Universidad De Chile
 category: Columna de opinión
+temas: ['Política', 'Ultraderecha y democracia']
 tags:
   - Kast
   - Gobierno

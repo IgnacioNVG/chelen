@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: martin-olate
 affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
+temas: ['Historia y memoria', 'Ultraderecha y democracia']
 tags: ['Mayo del 68', 'Historia', 'Ultraderecha']
 ---
 

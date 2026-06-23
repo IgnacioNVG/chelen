@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: vicente-espinoza
 affiliation: 'Externo'
 category: 'Columna de opinión'
+temas: ['Educación', 'Movimientos sociales']
 tags: ['Movimiento secundario', 'Violencia política', 'Tomas', 'Educación']
 ---
 

@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: vicente-espinoza
 affiliation: 'Instituto Nacional'
 category: 'Entrevista'
+temas: ['Izquierda y socialismo', 'Internacional', 'Economía']
 tags: ['Suecia', 'Socialdemocracia', 'Anticapitalismo']
 ---
 

@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: franchesca-munoz-v
 affiliation: 'Universidad Alberto Hurtado'
 category: 'Columna de opinión'
+temas: ['Cultura', 'Ultraderecha y democracia']
 tags: ['Fútbol', 'Migración', 'Fascismo', 'Deporte']
 ---
 

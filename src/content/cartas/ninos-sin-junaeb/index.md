@@ -5,6 +5,7 @@ author: claudio-valenzuela-ceballos
 affiliation: "Estudiante de Agronomía e Ing. Forestal UC"
 heroImage: ./hero.webp
 category: "Cartas al Director"
+temas: ['Educación', 'Política']
 tags: ["Junaeb", "Política educacional", "Alimentación escolar"]
 ---
 

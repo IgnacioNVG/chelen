@@ -1,0 +1,147 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { TEMAS, temaSlug } from '../lib/taxonomy';
+import {
+	buildAntologiaItems,
+	buildArticuloItems,
+	buildCartaItems,
+	buildPoemaItems,
+	mergeEditorialFeed,
+} from '../lib/homeFeed';
+
+const [articulos, cartas, antologias, poemas] = await Promise.all([
+	getCollection('articulos'),
+	getCollection('cartas'),
+	getCollection('antologias'),
+	getCollection('poemas'),
+]);
+
+const feed = mergeEditorialFeed(
+	buildArticuloItems(articulos),
+	buildCartaItems(cartas),
+	buildPoemaItems(poemas),
+	buildAntologiaItems(antologias, poemas),
+);
+
+const temas = TEMAS.map((tema) => ({
+	tema,
+	slug: temaSlug(tema),
+	count: feed.filter((item) => item.temas.includes(tema)).length,
+})).sort((a, b) => b.count - a.count);
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead
+			title={`Temas — ${SITE_TITLE}`}
+			description="Explora Revista Chelén por ejes temáticos: cruza columnas, cartas, poesía y arte alrededor de una misma idea."
+		/>
+		<style>
+			main {
+				width: min(1080px, calc(100% - 2rem));
+				margin: 0 auto;
+				padding: 2rem 0 4rem;
+			}
+
+			.page-header {
+				border-bottom: 4px solid #111;
+				padding-bottom: 1.25rem;
+				margin-bottom: 2.5rem;
+			}
+
+			.page-header h1 {
+				font-family: 'Sifonn', sans-serif;
+				font-size: clamp(2.2rem, 6vw, 4rem);
+				text-transform: uppercase;
+				line-height: 0.95;
+				margin: 0 0 0.5rem;
+				color: #111;
+			}
+
+			.page-header p {
+				font-family: monospace;
+				font-size: 0.8rem;
+				color: #444;
+				margin: 0;
+				max-width: 48ch;
+			}
+
+			.tema-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				gap: 1.25rem;
+			}
+
+			.tema-card {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 0.75rem;
+				border: 2px solid #111;
+				border-radius: 8px;
+				box-shadow: 4px 4px 0px 0px #111;
+				background: #fff;
+				padding: 1rem 1.1rem;
+				text-decoration: none;
+				color: inherit;
+				transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			}
+
+			.tema-card:hover {
+				transform: translate(-3px, -3px);
+				box-shadow: 6px 6px 0px 0px #ff0000;
+				border-color: #ff0000;
+			}
+
+			.tema-card[data-empty='true'] {
+				opacity: 0.5;
+				box-shadow: 2px 2px 0px 0px #111;
+			}
+
+			.tema-name {
+				font-family: 'Sifonn', sans-serif;
+				font-size: 1.05rem;
+				text-transform: uppercase;
+				line-height: 1.05;
+				color: #111;
+			}
+
+			.tema-badge {
+				flex-shrink: 0;
+				font-family: monospace;
+				font-size: 0.7rem;
+				font-weight: bold;
+				background: #111;
+				color: #fff;
+				border-radius: 999px;
+				padding: 0.2rem 0.55rem;
+			}
+
+			.tema-card:hover .tema-badge { background: #ff0000; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<header class="page-header">
+				<h1>Temas</h1>
+				<p>Cruza columnas, cartas, poesía y arte alrededor de una misma idea.</p>
+			</header>
+
+			<div class="tema-grid">
+				{temas.map(({ tema, slug, count }) => (
+					<a class="tema-card" href={`/tema/${slug}`} data-empty={count === 0}>
+						<span class="tema-name">{tema}</span>
+						<span class="tema-badge">{count}</span>
+					</a>
+				))}
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

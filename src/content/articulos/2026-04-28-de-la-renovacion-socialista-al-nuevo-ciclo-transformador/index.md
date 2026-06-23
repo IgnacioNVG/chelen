@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: rodrigo-belmar
 affiliation: 'Facultad de Derecho'
 category: 'Entrevista'
+temas: ['Izquierda y socialismo', 'Historia y memoria']
 tags: ['Socialismo chileno', 'Unidad Popular', 'Renovación socialista']
 ---
 

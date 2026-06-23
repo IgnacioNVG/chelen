@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: sofia-fuentealba
 affiliation: 'Externo'
 category: 'Columna de opinión'
+temas: ['Salud', 'Feminismos']
 tags: ['Feminismo', 'Corporalidad', 'Ciencia', 'Salud']
 ---
 

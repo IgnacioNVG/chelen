@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: ignacio-navas-granizo
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
+temas: ['Izquierda y socialismo', 'Economía', 'Historia y memoria']
 tags: ['Neoliberalismo', 'Chile', 'Estallido Social', 'Izquierda', 'Materialismo']
 ---
 

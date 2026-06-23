@@ -6,6 +6,7 @@ heroImage: ./hero.webp
 author: vicente-mora
 affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
+temas: ['Movimientos sociales', 'Educación']
 tags: ['Movimiento estudiantil', 'Organización', 'Espectáculo']
 ---
 

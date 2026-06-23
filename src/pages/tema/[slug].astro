@@ -1,0 +1,277 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FeedCard from '../../components/home/FeedCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+import { TEMAS, temaSlug } from '../../lib/taxonomy';
+import {
+	buildAntologiaItems,
+	buildArticuloItems,
+	buildCartaItems,
+	buildPoemaItems,
+	mergeEditorialFeed,
+} from '../../lib/homeFeed';
+
+// Una ruta estática por cada tema del vocabulario controlado.
+export async function getStaticPaths() {
+	const [articulos, cartas, antologias, poemas] = await Promise.all([
+		getCollection('articulos'),
+		getCollection('cartas'),
+		getCollection('antologias'),
+		getCollection('poemas'),
+	]);
+
+	const feed = mergeEditorialFeed(
+		buildArticuloItems(articulos),
+		buildCartaItems(cartas),
+		buildPoemaItems(poemas),
+		buildAntologiaItems(antologias, poemas),
+	);
+
+	return TEMAS.map((tema) => ({
+		params: { slug: temaSlug(tema) },
+		props: { tema, items: feed.filter((item) => item.temas.includes(tema)) },
+	}));
+}
+
+const { tema, items } = Astro.props;
+const titulo = `Tema · ${tema}`;
+const descripcion = `Todo el contenido de Revista Chelén sobre ${tema}: columnas, cartas, poesía y más.`;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`${tema} — ${SITE_TITLE}`} description={descripcion} />
+		<style>
+			main {
+				width: min(1280px, calc(100% - 2rem));
+				margin: 0 auto;
+				padding: 2rem 0 4rem;
+			}
+
+			.tema-header {
+				border-bottom: 4px solid #111;
+				padding-bottom: 1.25rem;
+				margin-bottom: 2.5rem;
+			}
+
+			.tema-kicker {
+				font-family: monospace;
+				font-size: 0.72rem;
+				text-transform: uppercase;
+				letter-spacing: 0.2em;
+				color: #666;
+				margin: 0 0 0.5rem;
+			}
+
+			.tema-title {
+				font-family: 'Sifonn', sans-serif;
+				font-size: clamp(2.2rem, 6vw, 4rem);
+				text-transform: uppercase;
+				line-height: 0.95;
+				margin: 0 0 0.35rem;
+				color: #111;
+			}
+
+			.tema-count {
+				font-family: monospace;
+				font-size: 0.8rem;
+				color: #444;
+				margin: 0;
+			}
+
+			.tema-back {
+				display: inline-block;
+				margin-top: 1rem;
+				font-family: monospace;
+				font-size: 0.7rem;
+				text-transform: uppercase;
+				color: #111;
+				text-decoration: none;
+				border-bottom: 1px solid #111;
+			}
+
+			.tema-back:hover { color: #ff1321; border-color: #ff1321; }
+
+			.empty {
+				border: 2px solid #111;
+				background: #fff;
+				padding: clamp(1rem, 2vw, 1.5rem);
+				font-size: 0.95rem;
+				color: #333;
+			}
+
+			/* --- Grilla y marco de tarjeta (consistente con la portada) --- */
+			.feed-grid {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 2rem;
+			}
+
+			.feed-grid :global(.feed-card) {
+				grid-column: span 4;
+				background-color: #fff;
+				border: 2px solid #111;
+				border-radius: 8px;
+				box-shadow: 4px 4px 0px 0px #111;
+				overflow: hidden;
+				-webkit-mask-image: -webkit-radial-gradient(white, black);
+				transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+				display: flex;
+				flex-direction: column;
+			}
+
+			.feed-grid :global(.feed-card:hover) {
+				transform: translate(-3px, -3px);
+				box-shadow: 6px 6px 0px 0px #ff0000;
+				border-color: #ff0000;
+			}
+
+			.feed-grid :global(.feed-card-link) {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				text-decoration: none;
+				color: inherit;
+			}
+
+			.feed-grid :global(.feed-media--landscape) {
+				aspect-ratio: 2 / 1;
+				background: #f0f0f0;
+				overflow: hidden;
+				border-bottom: 2px solid #111;
+			}
+
+			.feed-grid :global(.feed-media--portrait) {
+				aspect-ratio: 4 / 5;
+				background: #f5f5f5;
+				overflow: hidden;
+				border-bottom: 2px solid #111;
+			}
+
+			.feed-grid :global(.feed-media--landscape img),
+			.feed-grid :global(.feed-media--portrait img) {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+				transform: scale(1.01);
+				transition: transform 0.3s ease;
+			}
+
+			.feed-grid :global(.feed-card:hover .feed-media--landscape img),
+			.feed-grid :global(.feed-card:hover .feed-media--portrait img) {
+				transform: scale(1.06);
+			}
+
+			.feed-grid :global(.feed-body) {
+				padding: 1.25rem;
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+			}
+
+			.feed-grid :global(.feed-title) {
+				font-family: 'Sifonn', sans-serif;
+				font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+				text-transform: uppercase;
+				line-height: 1.1;
+				margin: 0 0 0.5rem;
+				color: #111;
+			}
+
+			.feed-grid :global(.feed-desc) {
+				font-size: 0.85rem;
+				line-height: 1.45;
+				color: #444;
+				margin: 0 0 0.75rem;
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				flex-grow: 1;
+			}
+
+			.feed-grid :global(.feed-tags) {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.35rem;
+				margin-bottom: 0.6rem;
+			}
+
+			.feed-grid :global(.feed-tag) {
+				font-family: monospace;
+				font-size: 0.6rem;
+				text-transform: uppercase;
+				background: #eee;
+				color: #333;
+				padding: 0.15rem 0.4rem;
+				transition: background 0.2s, color 0.2s;
+			}
+
+			.feed-grid :global(.feed-tag--section) {
+				background: #111;
+				color: #fff;
+			}
+
+			.feed-grid :global(.feed-card:hover .feed-tag) {
+				background: #ff0000;
+				color: #fff;
+			}
+
+			.feed-grid :global(.feed-meta) {
+				margin-top: auto;
+				font-family: monospace;
+				font-size: 0.65rem;
+				color: #777;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+				padding-top: 0.6rem;
+				border-top: 1px solid #111;
+			}
+
+			.feed-grid :global(.feed-author) {
+				font-weight: bold;
+				color: #111;
+				border-left: 3px solid #ff1321;
+				padding-left: 0.4rem;
+			}
+
+			@media (max-width: 1024px) {
+				.feed-grid :global(.feed-card) { grid-column: span 6; }
+			}
+
+			@media (max-width: 720px) {
+				.feed-grid :global(.feed-card) { grid-column: span 12; }
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<header class="tema-header">
+				<p class="tema-kicker">Tema</p>
+				<h1 class="tema-title">{tema}</h1>
+				<p class="tema-count">
+					{items.length} publicaci{items.length === 1 ? 'ón' : 'ones'} en todas las secciones
+				</p>
+				<a class="tema-back" href="/temas">&larr; Todos los temas</a>
+			</header>
+
+			{items.length > 0 ? (
+				<div class="feed-grid">
+					{items.map((item) => (
+						<FeedCard item={item} variant="featured" />
+					))}
+				</div>
+			) : (
+				<p class="empty">Aún no hay publicaciones bajo este tema.</p>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>

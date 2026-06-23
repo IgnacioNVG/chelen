@@ -8,6 +8,7 @@ import ContentImage from "../components/ContentImage.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import AuthorLink from "../components/AuthorLink.astro";
 import { resolveAuthorRef } from "../lib/authorSlug";
+import { temaSlug } from "../lib/taxonomy";
 import type { ImageMetadata } from "astro";
 
 type Props = Omit<
@@ -18,7 +19,7 @@ type Props = Omit<
     author?: string | { id: string };
 };
 
-const { title, description, heroImage, author, affiliation, category } =
+const { title, description, heroImage, author, affiliation, category, temas } =
     Astro.props;
 const authorId = resolveAuthorRef(author);
 const currentArticleId = decodeURIComponent(
@@ -147,6 +148,34 @@ const posts = (await getCollection("articulos"))
                 line-height: 1.35;
                 color: #333;
                 max-width: 42rem;
+            }
+
+            .article-temas {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .article-tema {
+                font-family: monospace;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: #111;
+                text-decoration: none;
+                background: #eee;
+                border: 1px solid #111;
+                padding: 0.25rem 0.6rem;
+                transition:
+                    background 0.2s,
+                    color 0.2s;
+            }
+
+            .article-tema:hover {
+                background: #ff0000;
+                color: #fff;
+                border-color: #ff0000;
             }
 
             .prose {
@@ -413,6 +442,20 @@ const posts = (await getCollection("articulos"))
                         <span class="article-affiliation">{affiliation}</span>
                     </div>
                     <p class="article-description">{description}</p>
+                    {
+                        temas && temas.length > 0 && (
+                            <nav class="article-temas" aria-label="Temas">
+                                {temas.map((tema) => (
+                                    <a
+                                        class="article-tema"
+                                        href={`/tema/${temaSlug(tema)}`}
+                                    >
+                                        {tema}
+                                    </a>
+                                ))}
+                            </nav>
+                        )
+                    }
                 </header>
 
                 <div class="prose">

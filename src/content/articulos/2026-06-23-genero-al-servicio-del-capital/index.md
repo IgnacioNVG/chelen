@@ -5,6 +5,7 @@ pubDate: 2026-06-23
 heroImage: ./hero.webp
 affiliation: UCh
 category: Columna de opinión
+temas: ['Feminismos', 'Economía']
 tags: [Feminismo Anticapitalista, Marxismo, Industria Textil, Globalización, División Sexual del Trabajo]
 ---
 
