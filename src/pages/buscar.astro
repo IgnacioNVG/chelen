@@ -1,102 +1,496 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE } from '../consts';
-import { getCollection } from 'astro:content';
-import { resolveAuthorRef } from '../lib/authorSlug';
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE } from "../consts";
+import { resolveAuthorRef } from "../lib/authorSlug";
 
-const articulos = await getCollection('articulos');
-const cartas = await getCollection('cartas');
-const poemas = await getCollection('poemas');
-const antologias = await getCollection('antologias');
+const articulos = await getCollection("articulos");
+const poemas = await getCollection("poemas");
+const cartas = await getCollection("cartas");
 
-const items = [
-    ...articulos.map((post) => ({
-        title: post.data.title,
-        type: post.data.category,
-        href: `/articulos/${post.id}`,
-        author: resolveAuthorRef(post.data.author),
-        date: post.data.pubDate.toISOString(),
-    })),
-    ...cartas.map((post) => ({
-        title: post.data.title,
-        type: 'Cartas al Director',
-        href: `/cartas/${post.id}`,
-        author: resolveAuthorRef(post.data.author),
-        date: post.data.pubDate.toISOString(),
-    })),
-    ...poemas.map((post) => ({
-        title: post.data.title,
-        type: post.data.category,
-        href: `/poemas/${post.id}`,
-        author: post.data.author,
-        date: post.data.pubDate.toISOString(),
-    })),
-    ...antologias.map((post) => ({
-        title: post.data.title,
-        type: post.data.category,
-        href: `/poemas/antologia/${post.id}`,
-        author: post.data.editor ?? 'Revista Chelen',
-        date: post.data.pubDate.toISOString(),
-    })),
-].sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+const allPosts = [...articulos, ...poemas, ...cartas]
+    .sort((a, b) => {
+        const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
+        const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
+        return dateB - dateA;
+    })
+    .map((post) => {
+        // Extraer la ruta de la imagen adecuadamente para usarla del lado del cliente
+        let imageSrc = null;
+        if (post.data.heroImage) {
+            imageSrc =
+                typeof post.data.heroImage === "string"
+                    ? post.data.heroImage
+                    : post.data.heroImage.src;
+        }
+
+        return {
+            id: post.id,
+            collection: post.collection,
+            title: post.data.title,
+            author: resolveAuthorRef(post.data.author) || "Redacción Chelén",
+            description: post.data.description || "",
+            category: post.data.category || post.collection,
+            image: imageSrc,
+        };
+    });
 ---
 
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={`Buscar | ${SITE_TITLE}`} description="Buscar en el archivo de Revista Chelen" />
+        <BaseHead
+            title={`Buscar - ${SITE_TITLE}`}
+            description="Buscador de publicaciones"
+        />
         <style>
-            main { width: min(980px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
-            .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
-            h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
-            .search-box { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; margin-bottom: 2rem; }
-            input { border: 2px solid #111; background: #fff; padding: 0.7rem 0.8rem; font-family: monospace; font-size: 0.9rem; }
-            .count { font-family: monospace; font-size: 0.75rem; text-transform: uppercase; align-self: center; color: #555; }
-            .results { display: grid; gap: 1rem; }
-            .result { display: block; background: #fff; border: 2px solid #111; border-radius: 8px; box-shadow: 3px 3px 0 #111; padding: 1rem; color: #111; text-decoration: none; }
-            .result:hover { border-color: #ff0000; box-shadow: 4px 4px 0 #ff0000; }
-            .result h2 { font-size: 1.15rem; line-height: 1.1; text-transform: uppercase; margin-bottom: 0.5rem; }
-            .result p { margin: 0; font-family: monospace; font-size: 0.72rem; color: #666; text-transform: uppercase; }
-            @media (max-width: 640px) { .search-box { grid-template-columns: 1fr; } }
+            :global(body) {
+                overflow-x: hidden;
+            }
+
+            main {
+                width: min(1100px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: clamp(1.5rem, 4vw, 3rem) 0 4rem;
+                min-height: 70vh;
+            }
+
+            .header-content {
+                border-top: 0.45rem solid #111;
+                border-bottom: 2px solid #111;
+                padding: 0.75rem 0 1.5rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .page-title {
+                font-family: "Sifonn", sans-serif;
+                font-size: clamp(2.2rem, 5vw, 4.2rem);
+                text-transform: uppercase;
+                line-height: 0.9;
+                margin: 0;
+                color: #111;
+            }
+
+            /* Buscador */
+            .search-input {
+                width: 100%;
+                padding: 1.25rem 1.5rem;
+                font-family: monospace;
+                font-size: 1.1rem;
+                text-transform: uppercase;
+                background: #f5f5f5;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px 0px #111;
+                color: #111;
+                outline: none;
+                transition:
+                    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    box-shadow 0.3s;
+                margin-bottom: 1.5rem;
+                box-sizing: border-box;
+            }
+
+            .search-input::placeholder {
+                color: #888;
+                text-transform: none;
+            }
+
+            .search-input:focus {
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0px 0px #ff0000;
+                border-color: #ff0000;
+                background: #fff;
+            }
+
+            /* Búsquedas recientes */
+            .recent-searches-container {
+                display: none;
+                margin-bottom: 3rem;
+            }
+
+            .section-label {
+                font-family: monospace;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                font-weight: bold;
+                color: #555;
+                margin-bottom: 0.75rem;
+                display: block;
+            }
+
+            .recent-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.6rem;
+            }
+
+            .tag-btn {
+                background: #fff;
+                border: 2px solid #111;
+                font-family: monospace;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                padding: 0.4rem 0.8rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .tag-btn:hover {
+                background: #111;
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 2px 2px 0px 0px #ff0000;
+                border-color: #ff0000;
+            }
+
+            /* Encabezado de la cuadrícula */
+            .results-header {
+                font-family: "Sifonn", sans-serif;
+                font-size: 1.5rem;
+                text-transform: uppercase;
+                border-bottom: 2px solid #111;
+                padding-bottom: 0.5rem;
+                margin-bottom: 2rem;
+                color: #111;
+            }
+
+            /* Grid y Estructura de Cards */
+            .results-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 2.5rem 2rem;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .result-card {
+                display: flex;
+                flex-direction: column;
+                text-decoration: none;
+                color: inherit;
+                border: 2px solid #111;
+                border-radius: 8px;
+                background: #fff;
+                box-shadow: 4px 4px 0px 0px #111;
+                overflow: hidden;
+                height: 100%;
+                transition:
+                    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    box-shadow 0.3s,
+                    border-color 0.3s;
+            }
+
+            .result-card:hover {
+                transform: translate(-4px, -4px);
+                box-shadow: 8px 8px 0px 0px #ff0000;
+                border-color: #ff0000;
+            }
+
+            /* Caja de imagen y categoría superpuesta */
+            .card-image-box {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                border-bottom: 2px solid #111;
+                background: #f5f5f5;
+                overflow: hidden;
+            }
+
+            .card-image-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.4s ease;
+            }
+
+            .result-card:hover .card-image-box img {
+                transform: scale(1.05);
+            }
+
+            .card-placeholder {
+                width: 100%;
+                height: 100%;
+                background: repeating-linear-gradient(
+                    45deg,
+                    #eee,
+                    #eee 10px,
+                    #e4e4e4 10px,
+                    #e4e4e4 20px
+                );
+            }
+
+            .result-category {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: #111;
+                color: #fff;
+                padding: 0.3rem 0.8rem;
+                font-family: monospace;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                font-weight: bold;
+                border-left: 2px solid #111;
+                border-bottom: 2px solid #111;
+                border-bottom-left-radius: 4px;
+                transition: background 0.3s;
+                z-index: 2;
+            }
+
+            .result-card:hover .result-category {
+                background: #ff0000;
+            }
+
+            /* Contenido y metadatos de la tarjeta */
+            .card-content {
+                padding: 1.5rem;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .result-title {
+                font-family: "Sifonn", sans-serif;
+                font-size: 1.4rem;
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin: 0;
+                color: #111;
+            }
+
+            .result-desc {
+                font-size: 1rem;
+                color: #444;
+                line-height: 1.4;
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .result-meta {
+                padding: 1rem 1.5rem;
+                font-family: monospace;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                color: #555;
+                border-top: 2px solid #111;
+                background: #fdfdfd;
+            }
+
+            .result-author {
+                color: #ff0000;
+                font-weight: bold;
+            }
+
+            /* Animaciones Fluidas */
+            .animate-enter {
+                animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+                    forwards;
+                opacity: 0;
+            }
+
+            .animate-exit {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+                transition:
+                    opacity 0.2s ease,
+                    transform 0.2s ease;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px) scale(0.98);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .empty-state {
+                grid-column: 1 / -1;
+                font-family: monospace;
+                font-size: 1.1rem;
+                text-align: center;
+                color: #666;
+                padding: 4rem 2rem;
+                border: 2px dashed #111;
+                border-radius: 8px;
+                text-transform: uppercase;
+                background: #f5f5f5;
+            }
         </style>
     </head>
+
     <body>
         <Header />
         <main>
-            <header class="page-header">
-                <h1>Buscar</h1>
+            <header class="header-content">
+                <h1 class="page-title">Buscador</h1>
             </header>
-            <div class="search-box">
-                <input id="search" type="search" placeholder="Buscar por titulo, autor o seccion" autocomplete="off" />
-                <span class="count" id="count">{items.length} resultados</span>
+
+            <input
+                type="text"
+                id="input-buscador"
+                class="search-input"
+                placeholder="Escribe para buscar artículos, poemas o autores..."
+                autocomplete="off"
+            />
+
+            <div id="busquedas-recientes" class="recent-searches-container">
+                <span class="section-label">Búsquedas recientes:</span>
+                <div id="tags-recientes" class="recent-tags"></div>
             </div>
-            <section class="results" id="results">
-                {items.map((item) => (
-                    <a class="result" href={item.href} data-search={`${item.title} ${item.type} ${item.author}`.toLowerCase()}>
-                        <h2>{item.title}</h2>
-                        <p>{item.type} / {item.author}</p>
-                    </a>
-                ))}
-            </section>
+
+            <h3 id="titulo-resultados" class="results-header">
+                Sugerencias para ti
+            </h3>
+            <ul id="contenedor-resultados" class="results-grid"></ul>
         </main>
         <Footer />
-        <script>
-            const input = document.getElementById('search') as HTMLInputElement;
-            const count = document.getElementById('count')!;
-            const results = Array.from(document.querySelectorAll('.result')) as HTMLElement[];
-            function updateResults() {
-                const query = input.value.trim().toLowerCase();
-                let visible = 0;
-                results.forEach((result) => {
-                    const matches = !query || result.dataset.search?.includes(query);
-                    result.hidden = !matches;
-                    if (matches) visible += 1;
-                });
-                count.textContent = `${visible} resultado${visible === 1 ? '' : 's'}`;
+
+        <script define:vars={{ allPosts }}>
+            const input = document.getElementById("input-buscador");
+            const contenedor = document.getElementById("contenedor-resultados");
+            const recientesContenedor = document.getElementById(
+                "busquedas-recientes",
+            );
+            const tagsContenedor = document.getElementById("tags-recientes");
+            const tituloResultados =
+                document.getElementById("titulo-resultados");
+
+            const sugerenciasPredeterminadas = allPosts.slice(0, 6);
+            let historicoBusquedas = JSON.parse(
+                localStorage.getItem("chelen_busquedas_recientes") || "[]",
+            );
+
+            function actualizarUIHistorial() {
+                if (historicoBusquedas.length === 0) {
+                    recientesContenedor.style.display = "none";
+                    return;
+                }
+                recientesContenedor.style.display = "block";
+                tagsContenedor.innerHTML = historicoBusquedas
+                    .map(
+                        (termino) =>
+                            `<button class="tag-btn" data-term="${termino}">${termino}</button>`,
+                    )
+                    .join("");
             }
-            input.addEventListener('input', updateResults);
+
+            function registrarBusqueda(termino) {
+                if (!termino) return;
+                historicoBusquedas = historicoBusquedas.filter(
+                    (t) => t !== termino,
+                );
+                historicoBusquedas.unshift(termino);
+                if (historicoBusquedas.length > 5) historicoBusquedas.pop();
+                localStorage.setItem(
+                    "chelen_busquedas_recientes",
+                    JSON.stringify(historicoBusquedas),
+                );
+            }
+
+            // Click en tags o links
+            document.addEventListener("click", (e) => {
+                const btnTag = e.target.closest(".tag-btn");
+                if (btnTag) {
+                    input.value = btnTag.dataset.term;
+                    input.dispatchEvent(new Event("input"));
+                }
+
+                const cardLink = e.target.closest(".result-card");
+                if (cardLink) {
+                    const busquedaActual = input.value.trim().toLowerCase();
+                    if (busquedaActual) registrarBusqueda(busquedaActual);
+                }
+            });
+
+            // Función de renderizado con Inyección de HTML y variables de imagen
+            function renderResultados(resultados, titulo) {
+                const tarjetasActuales = Array.from(contenedor.children);
+                tarjetasActuales.forEach((nodo) =>
+                    nodo.classList.add("animate-exit"),
+                );
+
+                const tiempoEspera = tarjetasActuales.length > 0 ? 200 : 0;
+
+                setTimeout(() => {
+                    tituloResultados.textContent = titulo;
+
+                    if (resultados.length === 0) {
+                        contenedor.innerHTML = `
+                            <li class="empty-state animate-enter">
+                                No hay resultados para tu búsqueda.
+                            </li>
+                        `;
+                        return;
+                    }
+
+                    contenedor.innerHTML = resultados
+                        .map(
+                            (post, index) => `
+                        <li class="animate-enter" style="animation-delay: ${index * 0.05}s">
+                            <a href="/${post.collection}/${post.id}/" class="result-card">
+                                <div class="card-image-box">
+                                    ${
+                                        post.image
+                                            ? `<img src="${post.image}" alt="" loading="lazy" />`
+                                            : `<div class="card-placeholder"></div>`
+                                    }
+                                    <span class="result-category">${post.category}</span>
+                                </div>
+                                <div class="card-content">
+                                    <h2 class="result-title">${post.title}</h2>
+                                    ${post.description ? `<p class="result-desc">${post.description}</p>` : ""}
+                                </div>
+                                <div class="result-meta">
+                                    <span>Por <span class="result-author">${post.author}</span></span>
+                                </div>
+                            </a>
+                        </li>
+                    `,
+                        )
+                        .join("");
+                }, tiempoEspera);
+            }
+
+            actualizarUIHistorial();
+            renderResultados(sugerenciasPredeterminadas, "Sugerencias para ti");
+
+            input.addEventListener("input", (e) => {
+                const query = e.target.value.toLowerCase().trim();
+
+                if (!query) {
+                    actualizarUIHistorial();
+                    renderResultados(
+                        sugerenciasPredeterminadas,
+                        "Sugerencias para ti",
+                    );
+                    return;
+                }
+
+                recientesContenedor.style.display = "none";
+
+                const filtrados = allPosts.filter(
+                    (post) =>
+                        post.title.toLowerCase().includes(query) ||
+                        post.author.toLowerCase().includes(query) ||
+                        post.description.toLowerCase().includes(query) ||
+                        post.category.toLowerCase().includes(query),
+                );
+
+                renderResultados(filtrados, "Resultados de búsqueda");
+            });
         </script>
     </body>
 </html>
