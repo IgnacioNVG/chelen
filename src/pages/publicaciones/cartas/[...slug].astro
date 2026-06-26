@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import CartaLayout from '../../layouts/CartaLayout.astro';
+import CartaLayout from '../../../layouts/CartaLayout.astro';
 
 export async function getStaticPaths() {
     const cartas = await getCollection('cartas');

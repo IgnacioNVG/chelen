@@ -1,0 +1,119 @@
+---
+import SectionLayout from '../../../layouts/SectionLayout.astro';
+import ItemCard from '../../../components/ItemCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('articulos'))
+    .filter(post => post.data.category === 'Artículo')
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [...new Set(posts.map(post => post.data.category || 'Artículo'))];
+---
+
+<SectionLayout 
+    title={`Artículos | ${SITE_TITLE}`} 
+    description={SITE_DESCRIPTION}
+    pageTitle="Artículos"
+>
+    <Fragment slot="controls">
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            {categories.map(cat => (
+                <button class="filter-btn" data-filter={cat}>{cat}</button>
+            ))}
+        </div>
+        <select id="sort-select">
+            <option value="newest">Recientes primero</option>
+            <option value="oldest">Antiguos primero</option>
+        </select>
+    </Fragment>
+
+    {posts.length === 0 ? (
+        <div class="estado-vacio">
+            <h2>Próximamente</h2>
+            <p>Aún no hemos publicado artículos en esta sección. Vuelve pronto.</p>
+        </div>
+    ) : (
+        <ul id="post-list" class="grid-list cols-2">
+            {posts.map((post, index) => (
+                <li
+                    class={`post-item${index === 0 ? ' featured-item' : ''}`}
+                    data-category={post.data.category || 'Artículo'}
+                    data-date={post.data.pubDate.valueOf()}>
+                    <ItemCard 
+                        title={post.data.title}
+                        href={`/publicaciones/articulos/${post.id}`}
+                        heroImage={post.data.heroImage}
+                        category={post.data.category || 'Artículo'}
+                        author={post.data.author || 'Redacción'}
+                        date={post.data.pubDate}
+                        tags={post.data.tags}
+                        format="landscape"
+                        isFeatured={index === 0}
+                    />
+                </li>
+            ))}
+        </ul>
+    )}
+</SectionLayout>
+
+<style>
+    .filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    button, select {
+        background: #fff;
+        border: 2px solid #000;
+        padding: 0.4rem 0.8rem;
+        font-family: monospace;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+    button.active { background: #000; color: #fff; }
+</style>
+
+<script>
+    const postList = document.getElementById('post-list');
+    const items = Array.from(document.querySelectorAll('.post-item'));
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+
+    function update() {
+        const filter = document.querySelector('.filter-btn.active')?.getAttribute('data-filter');
+        const sort = sortSelect.value;
+
+        items.forEach(el => {
+            const cat = el.getAttribute('data-category');
+            el.classList.toggle('hidden', filter !== 'all' && cat !== filter);
+            el.classList.remove('featured-item'); 
+            const card = el.querySelector('.item-card');
+            if (card) card.classList.remove('featured');
+        });
+
+        const visible = items.filter(el => !el.classList.contains('hidden'));
+        visible.sort((a, b) => {
+            const da = parseInt(a.getAttribute('data-date')!);
+            const db = parseInt(b.getAttribute('data-date')!);
+            return sort === 'newest' ? db - da : da - db;
+        });
+
+        visible.forEach(el => postList?.appendChild(el));
+
+        postList?.getBoundingClientRect();
+        if (visible[0]) {
+            visible[0].classList.add('featured-item');
+            const card = visible[0].querySelector('.item-card');
+            if (card) card.classList.add('featured');
+        }
+    }
+
+    filterBtns.forEach(btn => btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        update();
+    }));
+
+    sortSelect?.addEventListener('change', update);
+    if (postList) update();
+</script>

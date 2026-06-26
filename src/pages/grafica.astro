@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SectionLayout from '../layouts/SectionLayout.astro';
 import { Image } from 'astro:assets';
 import { SITE_TITLE } from '../consts';
 
@@ -42,22 +43,16 @@ graphics.sort((a, b) => a.order - b.order);
 const description = "Registro Visual / Revista Chelén";
 ---
 
-<!doctype html>
-<html lang="es">
-    <head>
-        <BaseHead title={`Material Gráfico | ${SITE_TITLE}`} description={description} />
-        <!-- PRECARGA: link preload para todas las imágenes full-size -->
-        {graphics.map((img) => (
-            <link rel="preload" as="image" href={img.src.src} />
-        ))}
+<SectionLayout 
+    title={`Material Gráfico | ${SITE_TITLE}`} 
+    description={description}
+    pageTitle="Material Gráfico"
+>
+    <!-- PRECARGA: link preload para todas las imágenes full-size -->
+    {graphics.map((img) => (
+        <link rel="preload" as="image" href={img.src.src} slot="head" />
+    ))}
         <style>
-            main {
-                width: 100%; max-width: 1440px; margin: 0 auto; padding: 2rem 2.5%; box-sizing: border-box;
-            }
-
-            .page-header { border-bottom: 4px solid #111; margin-bottom: 3rem; padding-bottom: 1rem; margin-left: 2.5%; margin-right: 2.5%; }
-            .page-header h1 { font-family: 'Sifonn', sans-serif; font-size: clamp(2rem, 8vw, 4.5rem); text-transform: uppercase; margin: 0; letter-spacing: -0.02em; line-height: 0.9; }
-
             /* MASONRY GRID */
             .masonry-grid { 
                 display: grid; 
@@ -71,9 +66,10 @@ const description = "Registro Visual / Revista Chelén";
                 border: 2px solid #111; box-shadow: 4px 4px 0px 0px #111; border-radius: 8px; 
                 overflow: hidden; -webkit-mask-image: -webkit-radial-gradient(white, black);
                 transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                aspect-ratio: 4 / 5;
             }
 
-            .grid-item img { width: 100%; height: auto; display: block; filter: saturate(1.1); border-radius: inherit; transform: scale(1.01); transition: transform 0.3s ease; }
+            .grid-item img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(1.1); border-radius: inherit; transform: scale(1.01); transition: transform 0.3s ease; }
             .grid-item:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0px 0px #ff0000; border-color: #ff0000; }
             .grid-item:hover img { transform: scale(1.06); }
 
@@ -259,15 +255,7 @@ const description = "Registro Visual / Revista Chelén";
                     border-radius: 50%;
                 }
             }
-        </style>
-    </head>
-    <body>
-        <Header />
-        <main>
-            <header class="page-header">
-                <h1>Material Gráfico</h1>
-            </header>
-
+    </style>
             <section class="masonry-grid">
                 {graphics.map((img) => (
                     <div class="grid-item" 
@@ -429,5 +417,4 @@ const description = "Registro Visual / Revista Chelén";
             lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox(); });
         </script>
-    </body>
-</html>
+</SectionLayout>

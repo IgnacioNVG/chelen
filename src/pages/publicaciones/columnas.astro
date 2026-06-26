@@ -1,0 +1,42 @@
+---
+import SectionLayout from '../../layouts/SectionLayout.astro';
+import ItemCard from '../../components/ItemCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('articulos'))
+    .filter((post) => post.data.category.includes('Columna'))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<SectionLayout 
+    title={`Columnas | ${SITE_TITLE}`} 
+    description="Columnas de opinion y reflexion de Revista Chelen"
+    pageTitle="Columnas"
+    introText="Textos breves de opinion o reflexion, pensados para lectura agil dentro de la produccion escrita de la revista."
+>
+    {posts.length === 0 ? (
+        <div class="estado-vacio">
+            <h2>Próximamente</h2>
+            <p>No hay columnas publicadas aún.</p>
+        </div>
+    ) : (
+        <ul class="grid-list cols-2">
+            {posts.map((post, index) => (
+                <li class={index === 0 ? 'featured-item' : ''}>
+                    <ItemCard 
+                        title={post.data.title}
+                        href={`/publicaciones/articulos/${post.id}`}
+                        heroImage={post.data.heroImage}
+                        category={post.data.category || 'Columna'}
+                        author={post.data.author || 'Redacción'}
+                        date={post.data.pubDate}
+                        tags={post.data.tags}
+                        format="landscape"
+                        isFeatured={index === 0}
+                    />
+                </li>
+            ))}
+        </ul>
+    )}
+</SectionLayout>

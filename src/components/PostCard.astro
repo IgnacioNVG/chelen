@@ -6,8 +6,8 @@ import AuthorLink from './AuthorLink.astro';
 const { post, isFeatured } = Astro.props;
 ---
 
-<article class={`post-card ${isFeatured ? 'featured' : ''}`}>
-    <a href={`/articulos/${post.id}/`} class="post-link">
+<article class={`post-card ${isFeatured ? 'featured' : ''} ${!post.data.heroImage ? 'no-image' : ''}`}>
+    <a href={`/publicaciones/articulos/${post.id}/`} class="post-link">
         {post.data.heroImage && (
             <div class="img-container">
                 <ContentImage src={post.data.heroImage} alt="" width={800} />
@@ -18,7 +18,6 @@ const { post, isFeatured } = Astro.props;
             <h4 class="title">{post.data.title}</h4>
             <div class="post-author-row">
                 <AuthorLink name={post.data.author || 'Redacción'} />
-                <span class="affiliation">{post.data.affiliation || 'UCh'}</span>
             </div>
         </div>
     </a>
@@ -87,10 +86,22 @@ const { post, isFeatured } = Astro.props;
 
     .content-wrapper { 
         padding: 1.25rem; 
-        /* El wrapper exige su espacio de forma estricta (no se encoge) */
-        flex: 0 0 auto; 
+        flex: 1 1 auto; 
         display: flex; 
         flex-direction: column; 
+    }
+    
+    .post-card.no-image .content-wrapper {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .post-card.no-image .post-author-row {
+        margin-top: 2rem;
+    }
+    
+    .post-card.no-image .title {
+        font-size: 1.5rem;
     }
     
     .title {
@@ -100,12 +111,11 @@ const { post, isFeatured } = Astro.props;
         text-transform: uppercase;
         color: #111;
         
-        max-height: 0;
-        margin: 0;
+        margin: 0.75rem 0 0.25rem 0;
         padding: 0;
-        opacity: 0;
-        transform: translateY(8px);
-        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        opacity: 1;
+        transform: translateY(0);
+        transition: color 0.3s ease;
     }
     
     .post-card.featured .title,
@@ -114,10 +124,7 @@ const { post, isFeatured } = Astro.props;
     }
 
     .post-card:hover .title { 
-        max-height: 100px; 
-        margin: 0.75rem 0 0.25rem 0; 
-        opacity: 1; 
-        transform: translateY(0);
+        color: #ff0000;
     }
     
     .post-category { 

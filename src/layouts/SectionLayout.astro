@@ -1,0 +1,190 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	pageTitle: string;
+	introText?: string;
+}
+
+const { title, description, pageTitle, introText } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={title} description={description} />
+        <style is:global>
+            main {
+                width: 100%;
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 3rem 2rem 4rem;
+                box-sizing: border-box;
+            }
+
+            .page-header {
+                border-bottom: 4px solid #111;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+            }
+
+            .page-header h1 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2rem, 8vw, 4.5rem);
+                text-transform: uppercase;
+                margin: 0;
+                letter-spacing: -0.02em;
+                line-height: 0.9;
+            }
+            
+            .intro {
+                max-width: 760px;
+                color: #333;
+                font-size: 1rem;
+                line-height: 1.55;
+                margin-top: 1rem;
+                margin-bottom: 0;
+            }
+
+            .subnav-container {
+                margin-top: 1.5rem;
+            }
+            
+            /* --- Subnav styling estandarizado --- */
+            .subnav-container :global(a) { 
+                border: 2px solid #111; 
+                color: #111; 
+                background: #fff; 
+                text-decoration: none; 
+                font-family: monospace; 
+                font-size: 0.75rem; 
+                text-transform: uppercase; 
+                padding: 0.35rem 0.6rem; 
+                display: inline-block;
+                margin-right: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+            .subnav-container :global(a:hover) {
+                background: #111;
+                color: #fff;
+            }
+
+            .controls-container {
+                margin-bottom: 3rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #000;
+                padding-bottom: 1.5rem;
+            }
+
+            .section-band { 
+                display: flex; 
+                justify-content: space-between; 
+                gap: 1rem; 
+                align-items: baseline; 
+                border-top: 0.45rem solid #111; 
+                padding-top: 0.5rem; 
+                margin: 2.5rem 0 1.5rem; 
+            }
+            .section-band h2 { 
+                font-size: clamp(1.2rem, 2.5vw, 1.8rem); 
+                text-transform: uppercase; 
+                margin: 0; 
+            }
+            .section-band a { 
+                font-family: monospace; 
+                font-size: 0.72rem; 
+                text-transform: uppercase; 
+                color: #111; 
+                text-decoration: none; 
+                border-bottom: 1px solid #111; 
+            }
+            
+            /* --- Grilla Estandarizada --- */
+            .grid-list {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            
+            /* Variante de 2 columnas para artículos */
+            .grid-list.cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grid-list :global(li.hidden) { display: none !important; }
+            
+            .grid-list :global(li.featured-item) {
+                grid-column: span 2;
+            }
+            
+            .estado-vacio {
+                text-align: center;
+                padding: 4rem 1rem;
+                background: #f9f9f9;
+                border: 2px dashed #111;
+                border-radius: 8px;
+            }
+            .estado-vacio h2 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 2rem;
+                text-transform: uppercase;
+                margin-bottom: 1rem;
+            }
+
+            @media (max-width: 1024px) {
+                .grid-list { grid-template-columns: repeat(2, 1fr); }
+            }
+
+            @media (max-width: 720px) {
+                main { padding: 2rem 1rem 3rem; }
+                .grid-list, .grid-list.cols-2 { grid-template-columns: 1fr; }
+                .grid-list :global(li.featured-item) { grid-column: span 1; }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            {Astro.slots.has('hero') ? (
+                <slot name="hero" />
+            ) : (
+                <header class="page-header">
+                    <h1>{pageTitle}</h1>
+                    {introText && <p class="intro">{introText}</p>}
+                    
+                    {Astro.slots.has('subnav') && (
+                        <div class="subnav-container">
+                            <slot name="subnav" />
+                        </div>
+                    )}
+                </header>
+            )}
+            
+            {Astro.slots.has('controls') && (
+                <div class="controls-container">
+                    <slot name="controls" />
+                </div>
+            )}
+            
+            {Astro.slots.has('band') && (
+                <div class="section-band">
+                    <slot name="band" />
+                </div>
+            )}
+
+            <slot />
+        </main>
+        <Footer />
+    </body>
+</html>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import SectionLayout from '../../../layouts/SectionLayout.astro';
+import ItemCard from '../../../components/ItemCard.astro';
+import { SITE_TITLE } from '../../../consts';
+
+const cartas = (await getCollection('cartas')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<SectionLayout 
+    title={`Cartas al Director | ${SITE_TITLE}`} 
+    description="Espacio de debate y opinión ciudadana"
+    pageTitle="Cartas al Director"
+>
+    {cartas.length === 0 ? (
+        <div class="estado-vacio">
+            <h2>Próximamente</h2>
+            <p>No hay cartas publicadas aún.</p>
+        </div>
+    ) : (
+        <ul class="grid-list">
+            {cartas.map((carta) => (
+                <li>
+                    <ItemCard 
+                        title={carta.data.title}
+                        href={`/publicaciones/cartas/${carta.id}`}
+                        heroImage={carta.data.heroImage}
+                        category={carta.data.category || 'Carta al Director'}
+                        author={carta.data.author}
+                        date={carta.data.pubDate}
+                        tags={carta.data.tags}
+                        format="portrait"
+                    />
+                </li>
+            ))}
+        </ul>
+    )}
+</SectionLayout>

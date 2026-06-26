@@ -1,10 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import ContentImage from '../../components/ContentImage.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
+import SectionLayout from '../../layouts/SectionLayout.astro';
+import ItemCard from '../../components/ItemCard.astro';
 import { SITE_TITLE } from '../../consts';
 
 const antologias = (await getCollection('antologias')).sort(
@@ -21,304 +18,33 @@ const poemasEnAntologia = (slug: string) =>
 const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
 ---
 
-<!doctype html>
-<html lang="es">
-    <head>
-        <BaseHead title={`Poemas | ${SITE_TITLE}`} description="Archivo de poesía de Chelén" />
-        <style>
-            main {
-                width: min(1120px, calc(100% - 2rem));
-                margin: 0 auto;
-                padding: 2.5rem 0 4rem;
-            }
-
-            .page-header {
-                border-bottom: 4px solid #111;
-                margin-bottom: 2.5rem;
-                padding-bottom: 1rem;
-            }
-
-            .page-header h1 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(2rem, 8vw, 4.5rem);
-                text-transform: uppercase;
-                margin: 0;
-                letter-spacing: -0.02em;
-                line-height: 0.9;
-            }
-
-            .seccion-header {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(1.2rem, 2.5vw, 1.75rem);
-                text-transform: uppercase;
-                line-height: 1;
-                color: #111;
-                border-top: 0.45rem solid #111;
-                padding-top: 0.5rem;
-                margin: 3rem 0 1.5rem;
-            }
-
-            .seccion-header:first-child { margin-top: 0; }
-
-            .portrait-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 2rem;
-            }
-
-            .portrait-card {
-                background-color: #fff;
-                border: 2px solid #111;
-                border-radius: 8px;
-                box-shadow: 4px 4px 0px 0px #111;
-                overflow: hidden;
-                -webkit-mask-image: -webkit-radial-gradient(white, black);
-                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                display: flex;
-                flex-direction: column;
-                min-height: 100%;
-                text-decoration: none;
-                color: #111;
-            }
-
-            .portrait-card:hover {
-                transform: translate(-3px, -3px);
-                box-shadow: 6px 6px 0px 0px #ff0000;
-                border-color: #ff0000;
-            }
-
-            .portrait-card--feature {
-                display: grid;
-                grid-template-columns: minmax(280px, 0.72fr) 1fr;
-                min-height: 0;
-                margin-bottom: 2rem;
-            }
-
-            .portrait-card--feature .portrait-media {
-                border-right: 2px solid #111;
-                border-bottom: 0;
-            }
-
-            .portrait-media {
-                aspect-ratio: 4 / 5;
-                margin: 0;
-                background: #f5f5f5;
-                border-bottom: 2px solid #111;
-                padding: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-                box-sizing: border-box;
-            }
-
-            .portrait-media :global(img) {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 0;
-                display: block;
-                transform: scale(1.01);
-                transition: transform 0.3s ease;
-            }
-
-            .portrait-card:hover .portrait-media :global(img) {
-                transform: scale(1.06);
-            }
-
-            .portrait-body {
-                padding: 1.25rem;
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
-            }
-
-            .portrait-card--feature .portrait-body {
-                padding: clamp(1.25rem, 3vw, 2.5rem);
-            }
-
-            .portrait-tags {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.35rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .portrait-tag {
-                font-family: monospace;
-                font-size: 0.6rem;
-                text-transform: uppercase;
-                background: #eee;
-                color: #333;
-                padding: 0.15rem 0.4rem;
-                transition: background 0.2s, color 0.2s;
-            }
-
-            .portrait-tag--section {
-                background: #111;
-                color: #fff;
-            }
-
-            .portrait-card:hover .portrait-tag {
-                background: #ff0000;
-                color: #fff;
-            }
-
-            .antologia-badge { display: none; }
-
-            .antologia-titulo {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(1.6rem, 3vw, 2.6rem);
-                text-transform: uppercase;
-                line-height: 0.95;
-                margin: 0 0 0.75rem;
-                color: #111;
-            }
-
-            .antologia-descripcion {
-                font-family: 'Raleway', sans-serif;
-                font-size: 1rem;
-                line-height: 1.6;
-                color: #444;
-                margin: 0 0 1.25rem;
-            }
-
-            .antologia-meta {
-                font-family: monospace;
-                font-size: 0.7rem;
-                color: #777;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.65rem;
-                border-top: 1px solid #111;
-                padding-top: 0.75rem;
-                margin-top: auto;
-            }
-
-            .antologia-poemas-list {
-                margin: 0 0 1.5rem;
-                list-style: none;
-                padding: 0;
-            }
-
-            .antologia-poemas-list li {
-                padding: 0.35rem 0;
-                border-bottom: 1px dashed #ddd;
-                font-family: 'Raleway', sans-serif;
-                font-size: 0.9rem;
-                line-height: 1.35;
-            }
-
-            .antologia-poemas-list li:last-child { border-bottom: none; }
-
-            .ver-antologia-link,
-            .leer-link {
-                display: inline-block;
-                font-family: monospace;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                letter-spacing: 0.1em;
-                color: #111;
-                border-bottom: 2px solid #111;
-                text-decoration: none;
-                padding-bottom: 1px;
-                margin-top: 1rem;
-                align-self: flex-start;
-                transition: color 0.2s, border-color 0.2s;
-            }
-
-            .poema-titulo {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-                text-transform: uppercase;
-                line-height: 1.1;
-                margin: 0 0 0.75rem;
-                color: #111;
-            }
-
-            .poema-meta {
-                font-family: monospace;
-                font-size: 0.65rem;
-                color: #777;
-                margin-top: auto;
-                padding-top: 0.65rem;
-                border-top: 1px solid #111;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.6rem;
-            }
-
-            .portrait-card:hover .leer-link,
-            .portrait-card:hover .ver-antologia-link {
-                color: #ff0000;
-                border-color: #ff0000;
-            }
-
-            .estado-vacio {
-                text-align: center;
-                padding: 3rem 0;
-                font-family: monospace;
-                color: #aaa;
-                font-size: 0.9rem;
-            }
-
-            @media (max-width: 1024px) {
-                .portrait-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-
-            @media (max-width: 720px) {
-                .portrait-grid,
-                .portrait-card--feature {
-                    grid-template-columns: 1fr;
-                }
-
-                .portrait-card--feature .portrait-media {
-                    border-right: 0;
-                    border-bottom: 2px solid #111;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <Header />
-        <main>
-            <header class="page-header">
-                <h1>Poemas</h1>
-            </header>
-
-            {antologias.length > 0 && (
-                <>
-                    <p class="seccion-header">// Antologías</p>
-
-                    {antologias.map((antologia) => {
-                        const poemas = poemasEnAntologia(antologia.id);
-                        return (
-                            <a
-                                class="portrait-card portrait-card--feature"
+<SectionLayout 
+    title={`Poemas | ${SITE_TITLE}`} 
+    description="Archivo de poesía de Chelén"
+    pageTitle="Poemas"
+>
+    {antologias.length > 0 && (
+        <div class="antologias-section">
+            <h2 class="seccion-header">// Antologías</h2>
+            
+            <ul class="antologias-list">
+                {antologias.map((antologia) => {
+                    const poemas = poemasEnAntologia(antologia.id);
+                    return (
+                        <li class="featured-item">
+                            <ItemCard 
+                                title={antologia.data.title}
                                 href={`/poemas/antologia/${antologia.id}`}
+                                heroImage={antologia.data.heroImage}
+                                category={antologia.data.category || 'Antología'}
+                                date={antologia.data.pubDate}
+                                tags={antologia.data.tags}
+                                format="portrait"
+                                isFeatured={true}
                             >
-                                {antologia.data.heroImage && (
-                                    <figure class="portrait-media">
-                                        <ContentImage
-                                            src={antologia.data.heroImage}
-                                            alt={antologia.data.title}
-                                            width={480}
-                                        />
-                                    </figure>
-                                )}
-                                <div class="portrait-body">
-                                    <div class="portrait-tags">
-                                        <span class="portrait-tag portrait-tag--section">{antologia.data.category}</span>
-                                        {antologia.data.tags.slice(0, 2).map((tag) => (
-                                            <span class="portrait-tag">{tag}</span>
-                                        ))}
-                                    </div>
-                                    <span class="antologia-badge">Antología</span>
-                                    <h2 class="antologia-titulo">{antologia.data.title}</h2>
+                                <div class="antologia-extra">
                                     <p class="antologia-descripcion">{antologia.data.description}</p>
-
+                                    
                                     {poemas.length > 0 && (
                                         <ul class="antologia-poemas-list">
                                             {poemas.map((poema) => (
@@ -326,61 +52,141 @@ const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
                                             ))}
                                         </ul>
                                     )}
-
-                                    <div class="antologia-meta">
+                                    
+                                    <div class="curador">
                                         {antologia.data.editor && (
                                             <span>Curada por: {antologia.data.editor}</span>
                                         )}
-                                        <span>
-                                            <FormattedDate date={antologia.data.pubDate} />
-                                        </span>
                                         <span>{poemas.length} poema{poemas.length !== 1 ? 's' : ''}</span>
                                     </div>
-
-                                    <span class="ver-antologia-link">Leer antología →</span>
                                 </div>
-                            </a>
-                        );
-                    })}
-                </>
-            )}
+                            </ItemCard>
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
+    )}
 
-            <p class="seccion-header">
-                {antologias.length > 0 ? '// Poemas sueltos' : '// Poemas'}
-            </p>
+    <h2 class="seccion-header">
+        {antologias.length > 0 ? '// Poemas sueltos' : '// Poemas'}
+    </h2>
 
-            {poemasLibres.length === 0 && (
-                <p class="estado-vacio">No hay poemas sueltos aún.</p>
-            )}
+    {poemasLibres.length === 0 ? (
+        <div class="estado-vacio">
+            <p>No hay poemas sueltos aún.</p>
+        </div>
+    ) : (
+        <ul class="grid-list">
+            {poemasLibres.map((poema) => (
+                <li>
+                    <ItemCard 
+                        title={poema.data.title}
+                        href={`/poemas/${poema.id}`}
+                        heroImage={poema.data.heroImage}
+                        category={poema.data.category || 'Poema'}
+                        author={poema.data.author}
+                        date={poema.data.pubDate}
+                        tags={poema.data.tags}
+                        format="portrait"
+                    />
+                </li>
+            ))}
+        </ul>
+    )}
+</SectionLayout>
 
-            {poemasLibres.length > 0 && (
-                <div class="portrait-grid">
-                    {poemasLibres.map((poema) => (
-                <a class="portrait-card" href={`/poemas/${poema.id}`}>
-                    {poema.data.heroImage && (
-                        <figure class="portrait-media">
-                            <ContentImage src={poema.data.heroImage} alt={poema.data.title} width={480} />
-                        </figure>
-                    )}
-                    <div class="portrait-body">
-                        <div class="portrait-tags">
-                            <span class="portrait-tag portrait-tag--section">{poema.data.category}</span>
-                            {poema.data.tags.slice(0, 2).map((tag) => (
-                                <span class="portrait-tag">{tag}</span>
-                            ))}
-                        </div>
-                        <h2 class="poema-titulo">{poema.data.title}</h2>
-                        <div class="poema-meta">
-                            <span>{poema.data.author}</span>
-                            <span><FormattedDate date={poema.data.pubDate} /></span>
-                        </div>
-                        <span class="leer-link">Leer poema →</span>
-                    </div>
-                </a>
-                    ))}
-                </div>
-            )}
-        </main>
-        <Footer />
-    </body>
-</html>
+<style>
+    .seccion-header {
+        font-family: 'Sifonn', sans-serif;
+        font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+        text-transform: uppercase;
+        line-height: 1;
+        color: #111;
+        border-top: 0.45rem solid #111;
+        padding-top: 0.5rem;
+        margin: 3rem 0 1.5rem;
+    }
+    
+    .antologias-section .seccion-header {
+        margin-top: 0;
+    }
+
+    .antologias-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Transform ItemCard into a horizontal layout for featured Antologías */
+    .antologias-list :global(.item-card.featured) {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.72fr) 1fr;
+        min-height: 0;
+    }
+    
+    .antologias-list :global(.item-card.featured .item-media) {
+        border-right: 2px solid #111;
+        border-bottom: 0;
+        height: 100%;
+    }
+    
+    .antologias-list :global(.item-card.featured .item-body) {
+        padding: clamp(1.25rem, 3vw, 2.5rem);
+    }
+    
+    /* Extra content inside slot */
+    .antologia-extra {
+        margin-top: 1rem;
+        border-top: 1px dashed #ddd;
+        padding-top: 1rem;
+    }
+
+    .antologia-descripcion {
+        font-family: 'Raleway', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #444;
+        margin: 0 0 1.25rem;
+    }
+
+    .antologia-poemas-list {
+        margin: 0 0 1.5rem;
+        list-style: none;
+        padding: 0;
+    }
+
+    .antologia-poemas-list li {
+        padding: 0.35rem 0;
+        border-bottom: 1px dashed #ddd;
+        font-family: 'Raleway', sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.35;
+    }
+
+    .antologia-poemas-list li:last-child { 
+        border-bottom: none; 
+    }
+    
+    .curador {
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: #666;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 720px) {
+        .antologias-list :global(.item-card.featured) { 
+            grid-template-columns: 1fr; 
+        }
+        .antologias-list :global(.item-card.featured .item-media) { 
+            border-right: 0; 
+            border-bottom: 2px solid #111; 
+        }
+    }
+</style>

@@ -1,0 +1,241 @@
+---
+import ContentImage from './ContentImage.astro';
+import FormattedDate from './FormattedDate.astro';
+import AuthorLink from './AuthorLink.astro';
+
+interface Props {
+    title: string;
+    href: string;
+    heroImage?: any;
+    category: string;
+    author?: string;
+    date?: Date;
+    tags?: string[];
+    format?: 'landscape' | 'portrait';
+    isFeatured?: boolean;
+}
+
+const { 
+    title, 
+    href, 
+    heroImage, 
+    category, 
+    author, 
+    date, 
+    tags = [], 
+    format = 'landscape',
+    isFeatured = false
+} = Astro.props;
+---
+
+<article class={`item-card format-${format} ${isFeatured ? 'featured' : ''} ${!heroImage ? 'no-image' : ''}`}>
+    <a href={href} class="item-link">
+        {heroImage && (
+            <figure class="item-media">
+                <ContentImage src={heroImage} alt={title} width={800} />
+            </figure>
+        )}
+        <div class="item-body">
+            <div class="item-tags">
+                <span class="item-tag tag-category">{category}</span>
+                {tags.slice(0, 2).map((tag) => (
+                    <span class="item-tag">{tag}</span>
+                ))}
+            </div>
+            
+            <h3 class="item-title">{title}</h3>
+            
+            <div class="item-meta">
+                {author && <span><AuthorLink name={author} /></span>}
+                {date && <span><FormattedDate date={date} /></span>}
+            </div>
+            
+            <slot />
+            
+            <span class="read-more">Leer más →</span>
+        </div>
+    </a>
+</article>
+
+<style>
+    .item-card {
+        background-color: #fff;
+        border: 2px solid #111;
+        border-radius: 8px;
+        box-shadow: 4px 4px 0px 0px #111;
+        overflow: hidden;
+        -webkit-mask-image: -webkit-radial-gradient(white, black);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+    }
+    
+    .item-card:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 6px 6px 0px 0px #ff0000;
+        border-color: #ff0000;
+    }
+
+    .item-link {
+        text-decoration: none;
+        color: #111;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .item-media {
+        margin: 0;
+        padding: 0;
+        background: #f5f5f5;
+        border-bottom: 2px solid #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    /* --- REGLAS DE ASPECT RATIO GLOBALES --- */
+    /* Formato apaisado para artículos, entrevistas, columnas */
+    .item-card.format-landscape .item-media {
+        aspect-ratio: 2 / 1;
+    }
+    
+    /* Formato vertical para cartas, poemas, gráficas */
+    .item-card.format-portrait .item-media {
+        aspect-ratio: 4 / 5;
+    }
+
+    /* Imagen interna */
+    .item-media :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0;
+        transform: scale(1.01);
+        transition: transform 0.4s ease;
+    }
+
+    .item-card:hover .item-media :global(img) {
+        transform: scale(1.06);
+    }
+
+    .item-body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    
+    /* Fallback cuando no hay imagen: el texto llena y se centra orgánicamente */
+    .item-card.no-image .item-body {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .item-card.no-image .item-meta {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .item-card.no-image .read-more {
+        align-self: center;
+        margin-top: 1.5rem;
+    }
+
+    .item-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .item-card.no-image .item-tags {
+        justify-content: center;
+    }
+
+    .item-tag {
+        font-family: monospace;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        background: #eee;
+        color: #333;
+        padding: 0.15rem 0.4rem;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .tag-category {
+        background: #111;
+        color: #fff;
+    }
+
+    .item-card:hover .item-tag:not(.tag-category) {
+        background: #111;
+        color: #fff;
+    }
+    
+    .item-card:hover .tag-category {
+        background: #ff0000;
+    }
+
+    .item-title {
+        font-family: 'Sifonn', sans-serif;
+        font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+        text-transform: uppercase;
+        line-height: 1.1;
+        margin: 0 0 0.75rem;
+        color: #111;
+        transition: color 0.3s ease;
+    }
+    
+    .item-card.no-image .item-title {
+        font-size: clamp(1.4rem, 2vw, 1.8rem);
+    }
+    
+    .item-card.featured .item-title,
+    :global(.featured-item) .item-card .item-title {
+        font-size: clamp(1.5rem, 2.5vw, 2rem);
+    }
+
+    .item-card:hover .item-title {
+        color: #ff0000;
+    }
+
+    .item-meta {
+        font-family: monospace;
+        font-size: 0.65rem;
+        color: #777;
+        margin-top: auto;
+        padding-top: 0.65rem;
+        border-top: 1px solid #111;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+    
+    .item-card.no-image .item-meta {
+        margin-top: 1.5rem;
+    }
+
+    .read-more {
+        display: inline-block;
+        margin-top: 1rem;
+        font-family: monospace;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #111;
+        border-bottom: 2px solid #111;
+        padding-bottom: 1px;
+        align-self: flex-start;
+        transition: color 0.2s, border-color 0.2s;
+    }
+
+    .item-card:hover .read-more {
+        color: #ff0000;
+        border-color: #ff0000;
+    }
+</style>

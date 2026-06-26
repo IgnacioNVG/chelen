@@ -1,0 +1,162 @@
+---
+import SectionLayout from '../../layouts/SectionLayout.astro';
+import ItemCard from '../../components/ItemCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+import { buildArticuloItems, buildCartaItems, mergeEditorialFeed } from '../../lib/homeFeed';
+
+const articulos = await getCollection('articulos');
+const cartas = await getCollection('cartas');
+const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(cartas));
+---
+
+<SectionLayout 
+    title={`Publicaciones | ${SITE_TITLE}`} 
+    description="Produccion escrita de Revista Chelen"
+    pageTitle="Publicaciones"
+    introText="Toda la produccion escrita: articulos extensos, columnas de opinion y cartas al director, reunidas bajo una misma logica editorial."
+>
+    <Fragment slot="hero">
+        <header class="publicaciones-hero">
+            <div class="hero-content">
+                <h1>PUBLICACIONES</h1>
+                <p class="hero-intro">Explora nuestra colección de ensayos, reseñas, columnas de opinión y cartas al director. Un ecosistema de ideas agrupado bajo una sola visión.</p>
+                
+                <div class="hero-nav">
+                    <a href="/publicaciones/articulos">Artículos</a>
+                    <a href="/publicaciones/entrevistas">Entrevistas</a>
+                    <a href="/publicaciones/columnas">Columnas</a>
+                    <a href="/publicaciones/cartas">Cartas al Director</a>
+                </div>
+            </div>
+            <div class="hero-decoration">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <polygon points="0,0 100,0 100,100" fill="#111" />
+                    <polygon points="0,0 100,100 0,100" fill="#ff0000" />
+                </svg>
+            </div>
+        </header>
+    </Fragment>
+
+    <Fragment slot="band">
+        <h2>Todas las publicaciones</h2>
+        <a href="/buscar">Buscar archivo -></a>
+    </Fragment>
+
+    <ul class="grid-list">
+        {feed.map((item) => {
+            // Determine format based on kind
+            const format = item.kind === 'carta' ? 'portrait' : 'landscape';
+            
+            return (
+                <li>
+                    <ItemCard 
+                        title={item.title}
+                        href={item.href}
+                        heroImage={item.image}
+                        category={item.category}
+                        author={item.author}
+                        date={item.pubDate}
+                        tags={item.tags}
+                        format={format}
+                    />
+                </li>
+            );
+        })}
+    </ul>
+</SectionLayout>
+
+<style>
+    .publicaciones-hero {
+        display: flex;
+        flex-direction: column;
+        border: 4px solid #111;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        background: #fdfdfd;
+        box-shadow: 8px 8px 0px 0px #111;
+        position: relative;
+    }
+
+    @media (min-width: 768px) {
+        .publicaciones-hero {
+            flex-direction: row;
+            min-height: 350px;
+        }
+    }
+
+    .hero-content {
+        padding: 3rem 2rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    .hero-content h1 {
+        font-family: 'Sifonn', sans-serif;
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        text-transform: uppercase;
+        margin: 0 0 1rem 0;
+        line-height: 0.9;
+        color: #111;
+    }
+
+    .hero-intro {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+        max-width: 600px;
+        margin: 0 0 2rem 0;
+    }
+
+    .hero-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .hero-nav a {
+        border: 2px solid #111;
+        background: #fff;
+        color: #111;
+        text-decoration: none;
+        font-family: monospace;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .hero-nav a:hover {
+        background: #111;
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 3px 3px 0px 0px #ff0000;
+        border-color: #ff0000;
+    }
+
+    .hero-decoration {
+        flex: 0 0 35%;
+        background: #ff0000;
+        position: relative;
+        min-height: 150px;
+    }
+
+    .hero-decoration svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    @media (max-width: 767px) {
+        .hero-decoration {
+            display: none;
+        }
+    }
+</style>

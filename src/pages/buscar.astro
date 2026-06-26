@@ -1,30 +1,36 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import SectionLayout from "../layouts/SectionLayout.astro";
+import ItemCard from "../components/ItemCard.astro";
 import { SITE_TITLE } from "../consts";
 import { resolveAuthorRef } from "../lib/authorSlug";
 
+// 1. Incluimos todas las colecciones para que no quede nada por fuera (Entrevistas, columnas, etc.)
 const articulos = await getCollection("articulos");
 const poemas = await getCollection("poemas");
 const cartas = await getCollection("cartas");
+const entrevistas = await getCollection("entrevistas");
+const columnas = await getCollection("columnas");
 
-const allPosts = [...articulos, ...poemas, ...cartas]
+const allPosts = [...articulos, ...poemas, ...cartas, ...entrevistas, ...columnas]
     .sort((a, b) => {
         const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
         const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
         return dateB - dateA;
     })
     .map((post) => {
-        // Extraer la ruta de la imagen adecuadamente para usarla del lado del cliente
         let imageSrc = null;
         if (post.data.heroImage) {
-            imageSrc =
-                typeof post.data.heroImage === "string"
-                    ? post.data.heroImage
-                    : post.data.heroImage.src;
+            imageSrc = typeof post.data.heroImage === "string"
+                ? post.data.heroImage
+                : post.data.heroImage.src;
         }
+
+        // Lógica condicional de proporciones (Aspect Ratio) centralizada
+        const isPortrait = post.collection === 'cartas' || post.collection === 'poemas';
+        const linkPrefix = ['articulos', 'cartas', 'columnas', 'entrevistas'].includes(post.collection)
+            ? '/publicaciones'
+            : '';
 
         return {
             id: post.id,
@@ -34,463 +40,269 @@ const allPosts = [...articulos, ...poemas, ...cartas]
             description: post.data.description || "",
             category: post.data.category || post.collection,
             image: imageSrc,
+            url: `${linkPrefix}/${post.collection}/${post.id}/`,
+            formatClass: isPortrait ? 'format-portrait' : 'format-landscape'
         };
     });
+
+// Tomamos los primeros 6 para sugerencias iniciales
+const sugerenciasPredeterminadas = allPosts.slice(0, 6);
 ---
 
-<!doctype html>
-<html lang="es">
-    <head>
-        <BaseHead
-            title={`Buscar - ${SITE_TITLE}`}
-            description="Buscador de publicaciones"
-        />
-        <style>
-            :global(body) {
-                overflow-x: hidden;
+<SectionLayout
+    title={`Buscar - ${SITE_TITLE}`}
+    description="Buscador de publicaciones"
+    pageTitle="Buscador"
+>
+    <style>
+        :global(body) {
+            overflow-x: hidden;
+        }
+
+        /* 2. Sistema unificado de Paddings y Contenedores */
+        .search-container {
+            /* Padding horizontal armónico y responsivo similar al que debería tener Publicaciones */
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-inline: clamp(1.5rem, 5vw, 4rem);
+            padding-top: 2rem;
+            padding-bottom: 6rem;
+        }
+
+        /* 3. Sección de Presentación (Hero) */
+        .search-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .search-hero h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .search-hero p {
+            color: #666;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Controles de Búsqueda */
+        .search-controls {
+            max-width: 800px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #eaeaea;
+            border-radius: 12px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #111;
+        }
+
+        /* 4. Restauración del Grid Responsivo */
+        .publications-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .publications-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
+        }
 
-            main {
-                width: min(1100px, calc(100% - 2rem));
-                margin: 0 auto;
-                padding: clamp(1.5rem, 4vw, 3rem) 0 4rem;
-                min-height: 70vh;
+        @media (min-width: 1024px) {
+            .publications-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
+        }
 
-            .header-content {
-                border-top: 0.45rem solid #111;
-                border-bottom: 2px solid #111;
-                padding: 0.75rem 0 1.5rem;
-                margin-bottom: 2.5rem;
-            }
+        /* Estados y Utilidades */
+        .hidden {
+            display: none !important;
+        }
 
-            .page-title {
-                font-family: "Sifonn", sans-serif;
-                font-size: clamp(2.2rem, 5vw, 4.2rem);
-                text-transform: uppercase;
-                line-height: 0.9;
-                margin: 0;
-                color: #111;
-            }
+        .empty-state {
+            grid-column: 1 / -1;
+            font-family: monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            color: #666;
+            padding: 4rem 2rem;
+            border: 2px dashed #111;
+            border-radius: 8px;
+            text-transform: uppercase;
+            background: #f5f5f5;
+        }
 
-            /* Buscador */
-            .search-input {
-                width: 100%;
-                padding: 1.25rem 1.5rem;
-                font-family: monospace;
-                font-size: 1.1rem;
-                text-transform: uppercase;
-                background: #f5f5f5;
-                border: 2px solid #111;
-                border-radius: 8px;
-                box-shadow: 4px 4px 0px 0px #111;
-                color: #111;
-                outline: none;
-                transition:
-                    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    box-shadow 0.3s;
-                margin-bottom: 1.5rem;
-                box-sizing: border-box;
-            }
+        .results-header {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 0.5rem;
+        }
+    </style>
 
-            .search-input::placeholder {
-                color: #888;
-                text-transform: none;
-            }
+    <div class="search-container">
+        <!-- Presentación -->
+        <header class="search-hero">
+            <h1>Explora el Archivo</h1>
+            <p>Encuentra artículos, columnas, poemas, cartas y entrevistas publicadas en nuestra revista.</p>
+        </header>
 
-            .search-input:focus {
-                transform: translate(-3px, -3px);
-                box-shadow: 6px 6px 0px 0px #ff0000;
-                border-color: #ff0000;
-                background: #fff;
-            }
-
-            /* Búsquedas recientes */
-            .recent-searches-container {
-                display: none;
-                margin-bottom: 3rem;
-            }
-
-            .section-label {
-                font-family: monospace;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                font-weight: bold;
-                color: #555;
-                margin-bottom: 0.75rem;
-                display: block;
-            }
-
-            .recent-tags {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.6rem;
-            }
-
-            .tag-btn {
-                background: #fff;
-                border: 2px solid #111;
-                font-family: monospace;
-                font-size: 0.8rem;
-                text-transform: uppercase;
-                padding: 0.4rem 0.8rem;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-
-            .tag-btn:hover {
-                background: #111;
-                color: #fff;
-                transform: translateY(-2px);
-                box-shadow: 2px 2px 0px 0px #ff0000;
-                border-color: #ff0000;
-            }
-
-            /* Encabezado de la cuadrícula */
-            .results-header {
-                font-family: "Sifonn", sans-serif;
-                font-size: 1.5rem;
-                text-transform: uppercase;
-                border-bottom: 2px solid #111;
-                padding-bottom: 0.5rem;
-                margin-bottom: 2rem;
-                color: #111;
-            }
-
-            /* Grid y Estructura de Cards */
-            .results-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                gap: 2.5rem 2rem;
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-
-            .result-card {
-                display: flex;
-                flex-direction: column;
-                text-decoration: none;
-                color: inherit;
-                border: 2px solid #111;
-                border-radius: 8px;
-                background: #fff;
-                box-shadow: 4px 4px 0px 0px #111;
-                overflow: hidden;
-                height: 100%;
-                transition:
-                    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    box-shadow 0.3s,
-                    border-color 0.3s;
-            }
-
-            .result-card:hover {
-                transform: translate(-4px, -4px);
-                box-shadow: 8px 8px 0px 0px #ff0000;
-                border-color: #ff0000;
-            }
-
-            /* Caja de imagen y categoría superpuesta */
-            .card-image-box {
-                position: relative;
-                width: 100%;
-                aspect-ratio: 16 / 9;
-                border-bottom: 2px solid #111;
-                background: #f5f5f5;
-                overflow: hidden;
-            }
-
-            .card-image-box img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-                transition: transform 0.4s ease;
-            }
-
-            .result-card:hover .card-image-box img {
-                transform: scale(1.05);
-            }
-
-            .card-placeholder {
-                width: 100%;
-                height: 100%;
-                background: repeating-linear-gradient(
-                    45deg,
-                    #eee,
-                    #eee 10px,
-                    #e4e4e4 10px,
-                    #e4e4e4 20px
-                );
-            }
-
-            .result-category {
-                position: absolute;
-                top: 0;
-                right: 0;
-                background: #111;
-                color: #fff;
-                padding: 0.3rem 0.8rem;
-                font-family: monospace;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                font-weight: bold;
-                border-left: 2px solid #111;
-                border-bottom: 2px solid #111;
-                border-bottom-left-radius: 4px;
-                transition: background 0.3s;
-                z-index: 2;
-            }
-
-            .result-card:hover .result-category {
-                background: #ff0000;
-            }
-
-            /* Contenido y metadatos de la tarjeta */
-            .card-content {
-                padding: 1.5rem;
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .result-title {
-                font-family: "Sifonn", sans-serif;
-                font-size: 1.4rem;
-                text-transform: uppercase;
-                line-height: 1.1;
-                margin: 0;
-                color: #111;
-            }
-
-            .result-desc {
-                font-size: 1rem;
-                color: #444;
-                line-height: 1.4;
-                margin: 0;
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-
-            .result-meta {
-                padding: 1rem 1.5rem;
-                font-family: monospace;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                color: #555;
-                border-top: 2px solid #111;
-                background: #fdfdfd;
-            }
-
-            .result-author {
-                color: #ff0000;
-                font-weight: bold;
-            }
-
-            /* Animaciones Fluidas */
-            .animate-enter {
-                animation: fadeInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)
-                    forwards;
-                opacity: 0;
-            }
-
-            .animate-exit {
-                opacity: 0;
-                transform: scale(0.95) translateY(10px);
-                transition:
-                    opacity 0.2s ease,
-                    transform 0.2s ease;
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px) scale(0.98);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
-            }
-
-            .empty-state {
-                grid-column: 1 / -1;
-                font-family: monospace;
-                font-size: 1.1rem;
-                text-align: center;
-                color: #666;
-                padding: 4rem 2rem;
-                border: 2px dashed #111;
-                border-radius: 8px;
-                text-transform: uppercase;
-                background: #f5f5f5;
-            }
-        </style>
-    </head>
-
-    <body>
-        <Header />
-        <main>
-            <header class="header-content">
-                <h1 class="page-title">Buscador</h1>
-            </header>
-
+        <!-- Controles -->
+        <div class="search-controls">
             <input
                 type="text"
                 id="input-buscador"
                 class="search-input"
-                placeholder="Escribe para buscar artículos, poemas o autores..."
+                placeholder="Escribe para buscar (ej. título, autor o categoría)..."
                 autocomplete="off"
             />
 
-            <div id="busquedas-recientes" class="recent-searches-container">
-                <span class="section-label">Búsquedas recientes:</span>
-                <div id="tags-recientes" class="recent-tags"></div>
+            <div id="busquedas-recientes" class="recent-searches-container" style="display: none; margin-top: 1rem;">
+                <span class="section-label text-sm text-gray-500">Búsquedas recientes:</span>
+                <div id="tags-recientes" class="recent-tags flex gap-2 mt-2 flex-wrap"></div>
             </div>
+        </div>
 
-            <h3 id="titulo-resultados" class="results-header">
-                Sugerencias para ti
-            </h3>
-            <ul id="contenedor-resultados" class="results-grid"></ul>
-        </main>
-        <Footer />
+        <h3 id="titulo-resultados" class="results-header">Sugerencias para ti</h3>
 
-        <script define:vars={{ allPosts }}>
-            const input = document.getElementById("input-buscador");
-            const contenedor = document.getElementById("contenedor-resultados");
-            const recientesContenedor = document.getElementById(
-                "busquedas-recientes",
-            );
-            const tagsContenedor = document.getElementById("tags-recientes");
-            const tituloResultados =
-                document.getElementById("titulo-resultados");
+        <!-- Grid de Resultados (Renderizado del lado del servidor para usar el componente REAL) -->
+        <ul id="contenedor-resultados" class="publications-grid">
+            <li id="mensaje-vacio" class="empty-state hidden">
+                No hay resultados para tu búsqueda.
+            </li>
 
-            const sugerenciasPredeterminadas = allPosts.slice(0, 6);
-            let historicoBusquedas = JSON.parse(
-                localStorage.getItem("chelen_busquedas_recientes") || "[]",
-            );
+            {allPosts.map((post, index) => (
+                <li
+                    class={`search-item ${index >= 6 ? 'hidden not-suggestion' : 'is-suggestion'}`}
+                    data-title={post.title.toLowerCase()}
+                    data-author={post.author.toLowerCase()}
+                    data-category={post.category.toLowerCase()}
+                    data-desc={post.description.toLowerCase()}
+                >
+                    <!-- Aquí utilizamos el componente REAL de Astro, asegurando consistencia visual -->
+                    <ItemCard
+                        href={post.url}
+                        title={post.title}
+                        category={post.category}
+                        author={post.author}
+                        image={post.image}
+                        formatClass={post.formatClass}
+                    />
+                </li>
+            ))}
+        </ul>
+    </div>
 
-            function actualizarUIHistorial() {
-                if (historicoBusquedas.length === 0) {
-                    recientesContenedor.style.display = "none";
-                    return;
-                }
-                recientesContenedor.style.display = "block";
-                tagsContenedor.innerHTML = historicoBusquedas
-                    .map(
-                        (termino) =>
-                            `<button class="tag-btn" data-term="${termino}">${termino}</button>`,
-                    )
-                    .join("");
-            }
+    <!-- Script simplificado: Solo se encarga de filtrar, no de renderizar HTML -->
+    <script>
+        const input = document.getElementById("input-buscador");
+        const items = document.querySelectorAll(".search-item");
+        const mensajeVacio = document.getElementById("mensaje-vacio");
+        const tituloResultados = document.getElementById("titulo-resultados");
 
-            function registrarBusqueda(termino) {
-                if (!termino) return;
-                historicoBusquedas = historicoBusquedas.filter(
-                    (t) => t !== termino,
-                );
-                historicoBusquedas.unshift(termino);
-                if (historicoBusquedas.length > 5) historicoBusquedas.pop();
-                localStorage.setItem(
-                    "chelen_busquedas_recientes",
-                    JSON.stringify(historicoBusquedas),
-                );
-            }
+        const recientesContenedor = document.getElementById("busquedas-recientes");
+        const tagsContenedor = document.getElementById("tags-recientes");
 
-            // Click en tags o links
-            document.addEventListener("click", (e) => {
-                const btnTag = e.target.closest(".tag-btn");
-                if (btnTag) {
-                    input.value = btnTag.dataset.term;
-                    input.dispatchEvent(new Event("input"));
-                }
+        let historicoBusquedas = JSON.parse(localStorage.getItem("chelen_busquedas_recientes") || "[]");
 
-                const cardLink = e.target.closest(".result-card");
-                if (cardLink) {
-                    const busquedaActual = input.value.trim().toLowerCase();
-                    if (busquedaActual) registrarBusqueda(busquedaActual);
-                }
-            });
-
-            // Función de renderizado con Inyección de HTML y variables de imagen
-            function renderResultados(resultados, titulo) {
-                const tarjetasActuales = Array.from(contenedor.children);
-                tarjetasActuales.forEach((nodo) =>
-                    nodo.classList.add("animate-exit"),
-                );
-
-                const tiempoEspera = tarjetasActuales.length > 0 ? 200 : 0;
-
-                setTimeout(() => {
-                    tituloResultados.textContent = titulo;
-
-                    if (resultados.length === 0) {
-                        contenedor.innerHTML = `
-                            <li class="empty-state animate-enter">
-                                No hay resultados para tu búsqueda.
-                            </li>
-                        `;
-                        return;
-                    }
-
-                    contenedor.innerHTML = resultados
-                        .map(
-                            (post, index) => `
-                        <li class="animate-enter" style="animation-delay: ${index * 0.05}s">
-                            <a href="/${post.collection}/${post.id}/" class="result-card">
-                                <div class="card-image-box">
-                                    ${
-                                        post.image
-                                            ? `<img src="${post.image}" alt="" loading="lazy" />`
-                                            : `<div class="card-placeholder"></div>`
-                                    }
-                                    <span class="result-category">${post.category}</span>
-                                </div>
-                                <div class="card-content">
-                                    <h2 class="result-title">${post.title}</h2>
-                                    ${post.description ? `<p class="result-desc">${post.description}</p>` : ""}
-                                </div>
-                                <div class="result-meta">
-                                    <span>Por <span class="result-author">${post.author}</span></span>
-                                </div>
-                            </a>
-                        </li>
-                    `,
-                        )
-                        .join("");
-                }, tiempoEspera);
-            }
-
-            actualizarUIHistorial();
-            renderResultados(sugerenciasPredeterminadas, "Sugerencias para ti");
-
-            input.addEventListener("input", (e) => {
-                const query = e.target.value.toLowerCaseude().trim();
-
-                if (!query) {
-                    actualizarUIHistorial();
-                    renderResultados(
-                        sugerenciasPredeterminadas,
-                        "Sugerencias para ti",
-                    );
-                    return;
-                }
-
+        function actualizarUIHistorial() {
+            if (historicoBusquedas.length === 0) {
                 recientesContenedor.style.display = "none";
+                return;
+            }
+            recientesContenedor.style.display = "block";
+            tagsContenedor.innerHTML = historicoBusquedas
+                .map((termino) => `<button class="tag-btn badge" data-term="${termino}">${termino}</button>`)
+                .join("");
+        }
 
-                const filtrados = allPosts.filter(
-                    (post) =>
-                        post.title.toLowerCase().includes(query) ||
-                        post.author.toLowerCase().includes(query) ||
-                        post.description.toLowerCase().includes(query) ||
-                        post.category.toLowerCase().includes(query),
-                );
+        function registrarBusqueda(termino) {
+            if (!termino) return;
+            historicoBusquedas = historicoBusquedas.filter((t) => t !== termino);
+            historicoBusquedas.unshift(termino);
+            if (historicoBusquedas.length > 5) historicoBusquedas.pop();
+            localStorage.setItem("chelen_busquedas_recientes", JSON.stringify(historicoBusquedas));
+        }
 
-                renderResultados(filtrados, "Resultados de búsqueda");
+        // Lógica de filtrado en tiempo real
+        input.addEventListener("input", (e) => {
+            const query = (e.target as HTMLInputElement).value.toLowerCase().trim();
+            let matches = 0;
+
+            if (!query) {
+                tituloResultados.textContent = "Sugerencias para ti";
+                mensajeVacio.classList.add("hidden");
+                actualizarUIHistorial();
+
+                // Mostrar solo sugerencias iniciales
+                items.forEach(item => {
+                    if (item.classList.contains('is-suggestion')) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                return;
+            }
+
+            tituloResultados.textContent = "Resultados de búsqueda";
+            recientesContenedor.style.display = "none";
+
+            items.forEach(item => {
+                const dataset = (item as HTMLElement).dataset;
+                const match =
+                    dataset.title?.includes(query) ||
+                    dataset.author?.includes(query) ||
+                    dataset.category?.includes(query) ||
+                    dataset.desc?.includes(query);
+
+                if (match) {
+                    item.classList.remove('hidden');
+                    matches++;
+                } else {
+                    item.classList.add('hidden');
+                }
             });
-        </script>
-    </body>
-</html>
+
+            if (matches === 0) {
+                mensajeVacio.classList.remove("hidden");
+            } else {
+                mensajeVacio.classList.add("hidden");
+            }
+        });
+
+        // Click listeners para tags e historial
+        document.addEventListener("click", (e) => {
+            const btnTag = (e.target as HTMLElement).closest(".tag-btn");
+            if (btnTag) {
+                input.value = (btnTag as HTMLElement).dataset.term || "";
+                input.dispatchEvent(new Event("input"));
+            }
+
+            const cardLink = (e.target as HTMLElement).closest(".item-link, .item-card a");
+            if (cardLink) {
+                const busquedaActual = input.value.trim().toLowerCase();
+                if (busquedaActual) registrarBusqueda(busquedaActual);
+            }
+        });
+
+        actualizarUIHistorial();
+    </script>
+</SectionLayout>

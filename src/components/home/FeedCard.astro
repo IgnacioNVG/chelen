@@ -45,7 +45,7 @@ const loading = aboveFold ? 'eager' : 'lazy';
 				))}
 			</div>
 
-			<h3 class:list={['feed-title', variant === 'hero' && 'feed-title--hero', variant === 'hero' && 'sr-only']}>
+			<h3 class:list={['feed-title', variant === 'hero' && 'feed-title--hero']}>
 				{item.title}
 			</h3>
 
@@ -55,10 +55,6 @@ const loading = aboveFold ? 'eager' : 'lazy';
 
 			<footer class="feed-meta">
 				{item.author && <AuthorLink name={item.author} class="feed-author" />}
-
-				{item.affiliation && variant !== 'compact' && (
-					<span class="feed-affiliation">{item.affiliation}</span>
-				)}
 				<time class="feed-date">
 					<FormattedDate date={item.pubDate} />
 				</time>

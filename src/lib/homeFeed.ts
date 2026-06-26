@@ -11,7 +11,6 @@ export type FeedItem = {
 	description?: string;
 	pubDate: Date;
 	author?: string;
-	affiliation?: string;
 	/** Tipo de pieza (se muestra como etiqueta principal). */
 	category: string;
 	/** Ejes temáticos amplios (vocabulario controlado, ver lib/taxonomy.ts). */
@@ -31,11 +30,10 @@ export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): F
 		description: post.data.description,
 		pubDate: post.data.pubDate,
 		author: resolveAuthorRef(post.data.author),
-		affiliation: post.data.affiliation,
 		category: post.data.category,
 		temas: post.data.temas,
 		tags: post.data.tags,
-		href: `/articulos/${post.id}`,
+		href: `/publicaciones/articulos/${post.id}`,
 		image: post.data.heroImage,
 		imageLayout: post.data.heroImage ? 'landscape' : 'none',
 	}));
@@ -48,11 +46,10 @@ export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[]
 		title: carta.data.title,
 		pubDate: carta.data.pubDate,
 		author: resolveAuthorRef(carta.data.author),
-		affiliation: carta.data.affiliation,
 		category: carta.data.category,
 		temas: carta.data.temas,
 		tags: carta.data.tags,
-		href: `/cartas/${carta.id}`,
+		href: `/publicaciones/cartas/${carta.id}`,
 		image: carta.data.heroImage,
 		imageLayout: carta.data.heroImage ? 'portrait' : 'none',
 	}));
