@@ -1,6 +1,6 @@
 ---
 import HeaderLink from './HeaderLink.astro';
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE } from '../../consts';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -8,7 +8,7 @@ const normalizedPathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isHome = normalizedPathname === '/';
 
 // Leer el SVG del logotipo dinámicamente en tiempo de construcción para inlinearlo y evitar parpadeos
-import svgContent from '../../public/favicon.svg?raw';
+import svgContent from '../../../public/favicon.svg?raw';
 ---
 
 <header class={isHome ? "is-home" : ""}>
@@ -24,10 +24,10 @@ import svgContent from '../../public/favicon.svg?raw';
             <div class="internal-links">
                 <HeaderLink href="/" class="nav-item home-link-btn" data-home-btn>Inicio</HeaderLink>
                 <HeaderLink href="/revista" class="nav-item" activeFor={['/articulos', '/columnas', '/cartas']}>Revista</HeaderLink>
-                <HeaderLink href="/arte" class="nav-item" activeFor={['/grafica', '/poemas']}>Arte</HeaderLink>
-                <HeaderLink href="/audiovisual" class="nav-item">Audiovisual</HeaderLink>
-                <HeaderLink href="/cuadernillos" class="nav-item">Cuadernillos</HeaderLink>
-                <HeaderLink href="/nosotros" class="nav-item">Nosotros</HeaderLink>
+                <HeaderLink href="/multimedia/arte" class="nav-item" activeFor={['/grafica', '/poemas']}>Arte</HeaderLink>
+                <HeaderLink href="/multimedia/audiovisual" class="nav-item">Audiovisual</HeaderLink>
+                <HeaderLink href="/publicaciones/cuadernillos" class="nav-item">Cuadernillos</HeaderLink>
+                <HeaderLink href="/acerca/nosotros" class="nav-item">Nosotros</HeaderLink>
                 <HeaderLink href="/buscar" class="nav-item">Buscar</HeaderLink>
             </div>
             <div class="nav-indicator"></div>

@@ -1,5 +1,5 @@
 import { defineCollection, reference, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { glob, file } from 'astro/loaders';
 import { TEMAS } from './lib/taxonomy';
 
 const stripExtension = ({ entry }: { entry: string }) =>
@@ -109,4 +109,17 @@ const columnistas = defineCollection({
 		}),
 });
 
-export const collections = { articulos, cartas, poemas, antologias, columnistas };
+const nosotros = defineCollection({
+	loader: glob({ pattern: 'index.json', base: './src/content/nosotros' }),
+	schema: z.object({
+		origen_titulo: z.string(),
+		origen_texto: z.string(),
+		highlight_box: z.string(),
+		teoria_titulo: z.string(),
+		teoria_texto: z.string(),
+		repensar_titulo: z.string(),
+		repensar_texto: z.string(),
+	}),
+});
+
+export const collections = { articulos, cartas, poemas, antologias, columnistas, nosotros };

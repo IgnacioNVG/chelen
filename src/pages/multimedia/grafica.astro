@@ -1,14 +1,14 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import SectionLayout from '../layouts/SectionLayout.astro';
+import BaseHead from '../../components/layout/BaseHead.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import SectionLayout from '../../layouts/SectionLayout.astro';
 import { Image } from 'astro:assets';
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE } from '../../consts';
 
 // 1. CARGA DINÁMICA DE RECURSOS
-const imageFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/grafica-*.{webp,png,jpg,jpeg}');
-const textFiles = import.meta.glob('../assets/grafica-*.txt', {
+const imageFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/grafica-*.{webp,png,jpg,jpeg}');
+const textFiles = import.meta.glob('../../assets/grafica-*.txt', {
 	query: '?raw',
 	import: 'default',
 	eager: true,

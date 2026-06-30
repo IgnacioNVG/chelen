@@ -1,18 +1,18 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import FeedCard from '../components/home/FeedCard.astro';
+import BaseHead from '../../components/layout/BaseHead.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import FeedCard from '../../components/home/FeedCard.astro';
 import { Image } from 'astro:assets';
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE } from '../../consts';
 import { getCollection } from 'astro:content';
-import { buildAntologiaItems, buildPoemaItems, mergeEditorialFeed } from '../lib/homeFeed';
+import { buildAntologiaItems, buildPoemaItems, mergeEditorialFeed } from '../../lib/homeFeed';
 
 const poemas = await getCollection('poemas');
 const antologias = await getCollection('antologias');
 const arteFeed = mergeEditorialFeed(buildPoemaItems(poemas), buildAntologiaItems(antologias, poemas));
 
-const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/grafica-*.{webp,png,jpg,jpeg}');
+const graphicFiles = import.meta.glob<{ default: ImageMetadata }>('../../assets/grafica-*.{webp,png,jpg,jpeg}');
 const graphics = (
     await Promise.all(Object.keys(graphicFiles).map(async (path) => {
         const img = await graphicFiles[path]();
@@ -61,7 +61,7 @@ const graphics = (
                 <h1>Arte</h1>
                 <p class="intro">Produccion grafica, poesia, antologias, escritos y otros formatos artisticos, con una presentacion mas visual que academica.</p>
                 <nav class="subnav" aria-label="Subsecciones de arte">
-                    <a href="/grafica">Grafica</a>
+                    <a href="/multimedia/grafica">Grafica</a>
                     <a href="/poemas">Poesia</a>
                     <a href="/poemas">Antologias</a>
                     <a href="/revista">Escritos</a>
@@ -70,10 +70,10 @@ const graphics = (
 
             {graphics.length > 0 && (
                 <>
-                    <div class="section-band"><h2>Grafica</h2><a href="/grafica">Ver archivo grafico -></a></div>
+                    <div class="section-band"><h2>Grafica</h2><a href="/multimedia/grafica">Ver archivo grafico -></a></div>
                     <div class="visual-grid">
                         {graphics.slice(0, 6).map((item) => (
-                            <a class="visual-card" href="/grafica">
+                            <a class="visual-card" href="/multimedia/grafica">
                                 <div class="visual-frame"><Image src={item.src} alt={item.title} width={520} /></div>
                                 <h3>{item.title}</h3>
                             </a>

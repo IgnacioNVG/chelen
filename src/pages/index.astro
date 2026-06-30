@@ -1,7 +1,7 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import BaseHead from '../components/layout/BaseHead.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
 import FeedCard from '../components/home/FeedCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
@@ -498,7 +498,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 <>
                     <div class="section-band">
                         <h2>Arte socialista destacado</h2>
-                        <a href="/arte">Ver arte -></a>
+                        <a href="/multimedia/arte">Ver arte -></a>
                     </div>
                     <div class="feed-grid feed-grid--retrato">
                         {arteReciente.map((item) => (
@@ -512,11 +512,11 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 <>
                     <div class="section-band">
                         <h2>Grafica destacada</h2>
-                        <a href="/grafica">Ver todo -></a>
+                        <a href="/multimedia/grafica">Ver todo -></a>
                     </div>
                     <div class="graphics-strip">
                         {graficaDestacada.map((g) => (
-                            <a href="/grafica">
+                            <a href="/multimedia/grafica">
                                 <div class="graphics-frame">
                                     <Image src={g.src} alt={g.title} width={500} />
                                 </div>
@@ -532,7 +532,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
 
             <div class="section-band">
                 <h2>Produccion audiovisual reciente</h2>
-                <a href="/audiovisual">Ver audiovisual -></a>
+                <a href="/multimedia/audiovisual">Ver audiovisual -></a>
             </div>
             <section class="editorial-note">
                 <p>Podcast, conversatorios y paneles se agrupan en una seccion propia, preparada para incorporar nuevas categorias audiovisuales.</p>
@@ -554,7 +554,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
 
             <div class="section-band">
                 <h2>Cuadernillos</h2>
-                <a href="/cuadernillos">Ver cuadernillos -></a>
+                <a href="/publicaciones/cuadernillos">Ver cuadernillos -></a>
             </div>
             <section class="editorial-note editorial-note--compact">
                 <p>Publicaciones especiales con portada, autores, fecha, descarga PDF y lectura online.</p>

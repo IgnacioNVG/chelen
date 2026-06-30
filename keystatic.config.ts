@@ -1,4 +1,4 @@
-import { collection, config, fields } from "@keystatic/core";
+import { collection, config, fields, singleton } from "@keystatic/core";
 import { TEMAS } from "./src/lib/taxonomy";
 
 const tagsField = fields.array(fields.text({ label: "Etiqueta" }), {
@@ -32,9 +32,26 @@ export default config({
   ui: {
     brand: { name: "Panel de Administración" },
     navigation: {
+      Páginas: ["nosotros"],
       Contenido: ["articulos", "cartas", "poemas", "antologias"],
       Autores: ["columnistas"],
     },
+  },
+  singletons: {
+    nosotros: singleton({
+      label: "Página: Nosotros",
+      path: "src/content/nosotros/index",
+      format: { data: "json" },
+      schema: {
+        origen_titulo: fields.text({ label: "Título: El Origen", defaultValue: "El Origen" }),
+        origen_texto: fields.text({ label: "Texto: El Origen", multiline: true }),
+        highlight_box: fields.text({ label: "Caja Destacada", defaultValue: "CHELÉN ES VERIFICAR LA CONVICCIÓN Y PROBAR LA PRÁCTICA" }),
+        teoria_titulo: fields.text({ label: "Título: Teoría y Crítica", defaultValue: "Teoría y Crítica" }),
+        teoria_texto: fields.text({ label: "Texto: Teoría y Crítica", multiline: true }),
+        repensar_titulo: fields.text({ label: "Título: (Re)Pensar(nos)", defaultValue: "(Re)Pensar(nos)" }),
+        repensar_texto: fields.text({ label: "Texto: (Re)Pensar(nos)", multiline: true }),
+      }
+    }),
   },
   collections: {
     articulos: collection({
