@@ -25,7 +25,7 @@ const cartas = (await getCollection('cartas')).sort(
                 <li>
                     <ItemCard 
                         title={carta.data.title}
-                        href={`/publicaciones/cartas/${carta.id}`}
+                        href={`/revista/cartas/${carta.id}`}
                         heroImage={carta.data.heroImage}
                         category={carta.data.category || 'Carta al Director'}
                         author={carta.data.author}

@@ -1,0 +1,331 @@
+---
+import SectionLayout from '../../layouts/SectionLayout.astro';
+import ItemCard from '../../components/ItemCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
+import { buildArticuloItems, buildCartaItems, mergeEditorialFeed } from '../../lib/homeFeed';
+
+const articulos = await getCollection('articulos');
+const cartas = await getCollection('cartas');
+const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(cartas));
+---
+
+<SectionLayout 
+    title={`Revista | ${SITE_TITLE}`} 
+    description="Producción escrita de Revista Chelén"
+    pageTitle="Revista"
+    introText=""
+>
+    <Fragment slot="hero">
+        <header class="revista-hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Revista<br><span class="hero-title-highlight">Chelén</span></h1>
+                <p class="hero-intro">
+                    Explora nuestra colección de ensayos, reseñas, columnas de opinión y cartas al director. Un ecosistema de ideas agrupado bajo una sola visión.
+                </p>
+                
+                <div class="hero-nav">
+                    <a href="/revista/articulos" class="nav-pill">
+                        <span class="nav-text">Artículos</span>
+                        <span class="nav-icon">→</span>
+                    </a>
+                    <a href="/revista/entrevistas" class="nav-pill">
+                        <span class="nav-text">Entrevistas</span>
+                        <span class="nav-icon">→</span>
+                    </a>
+                    <a href="/revista/columnas" class="nav-pill">
+                        <span class="nav-text">Columnas</span>
+                        <span class="nav-icon">→</span>
+                    </a>
+                    <a href="/revista/cartas" class="nav-pill">
+                        <span class="nav-text">Cartas al Director</span>
+                        <span class="nav-icon">→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-decoration">
+                <div class="glass-orb orb-1"></div>
+                <div class="glass-orb orb-2"></div>
+                <div class="glass-orb orb-3"></div>
+            </div>
+        </header>
+    </Fragment>
+
+    <Fragment slot="band">
+        <div class="section-band-modern">
+            <h2 class="band-title">Archivo <span>Completo</span></h2>
+            <a href="/buscar" class="band-action">
+                <span>Buscar en el archivo</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </a>
+        </div>
+    </Fragment>
+
+    <ul class="revista-grid">
+        {feed.map((item, index) => {
+            const format = item.kind === 'carta' ? 'portrait' : 'landscape';
+            // Alternamos el tamaño para darle dinamismo a la grilla (estilo masonry simulado)
+            const isLarge = index === 0 || index === 5;
+            
+            return (
+                <li class={`grid-item ${isLarge ? 'grid-item-large' : ''} format-${format}`}>
+                    <ItemCard 
+                        title={item.title}
+                        href={item.href}
+                        heroImage={item.image}
+                        category={item.category}
+                        author={item.author}
+                        date={item.pubDate}
+                        tags={item.tags}
+                        format={format}
+                    />
+                </li>
+            );
+        })}
+    </ul>
+</SectionLayout>
+
+<style>
+    /* ========================================================
+       HERO SECTION - PREMIUM DESIGN
+       ======================================================== */
+    .revista-hero {
+        display: flex;
+        flex-direction: column;
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 4rem;
+        background: #0a0a0a;
+        color: #ffffff;
+        position: relative;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    @media (min-width: 992px) {
+        .revista-hero {
+            flex-direction: row;
+            min-height: 450px;
+        }
+    }
+
+    .hero-content {
+        padding: 4rem 3rem;
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        z-index: 10;
+        background: linear-gradient(135deg, rgba(20,20,20,0.95) 0%, rgba(10,10,10,0.8) 100%);
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+        font-family: 'Sifonn', 'Inter', sans-serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        text-transform: uppercase;
+        margin: 0 0 1.5rem 0;
+        line-height: 0.85;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-title-highlight {
+        color: #ff3333;
+        display: block;
+        background: linear-gradient(90deg, #ff3333, #ff8c00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-intro {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: #a0a0a0;
+        max-width: 550px;
+        margin: 0 0 3rem 0;
+        font-weight: 400;
+    }
+
+    /* NAVIGATION PILLS */
+    .hero-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .nav-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        text-decoration: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 100px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-icon {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-pill:hover {
+        background: #ffffff;
+        color: #0a0a0a;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 0 4px rgba(255,255,255,0.1);
+    }
+
+    .nav-pill:hover .nav-icon {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* ABSTRACT DECORATION (Glassmorphism + Orbs) */
+    .hero-decoration {
+        flex: 1;
+        position: relative;
+        min-height: 250px;
+        background: #0f0f0f;
+        overflow: hidden;
+    }
+
+    .glass-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.6;
+        animation: float 15s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+        width: 300px;
+        height: 300px;
+        background: #ff3333;
+        top: -50px;
+        right: -50px;
+        animation-delay: 0s;
+    }
+
+    .orb-2 {
+        width: 250px;
+        height: 250px;
+        background: #ff8c00;
+        bottom: -50px;
+        left: 50px;
+        animation-delay: -5s;
+    }
+
+    .orb-3 {
+        width: 200px;
+        height: 200px;
+        background: #4a00e0;
+        top: 50%;
+        right: 20%;
+        animation-delay: -10s;
+    }
+
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-30px, 20px) scale(1.1); }
+        100% { transform: translate(20px, -30px) scale(0.9); }
+    }
+
+    @media (max-width: 991px) {
+        .hero-decoration {
+            display: none;
+        }
+    }
+
+    /* ========================================================
+       MODERN SECTION BAND
+       ======================================================== */
+    .section-band-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid #eaeaea;
+        padding-bottom: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .band-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin: 0;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .band-title span {
+        color: #888;
+        font-weight: 300;
+    }
+
+    .band-action {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #111;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: color 0.2s ease;
+    }
+
+    .band-action:hover {
+        color: #ff3333;
+    }
+
+    .band-action svg {
+        transition: transform 0.3s ease;
+    }
+
+    .band-action:hover svg {
+        transform: scale(1.1);
+    }
+
+    /* ========================================================
+       DYNAMIC GRID
+       ======================================================== */
+    .revista-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    @media (min-width: 768px) {
+        .revista-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .revista-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        /* Hacemos que el primer item o items destacados ocupen 2 columnas */
+        .grid-item-large.format-landscape {
+            grid-column: span 2;
+        }
+    }
+
+    .grid-item {
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .grid-item:hover {
+        transform: translateY(-5px);
+    }
+</style>

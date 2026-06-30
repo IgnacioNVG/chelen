@@ -26,7 +26,7 @@ const posts = (await getCollection('articulos'))
                 <li class={index === 0 ? 'featured-item' : ''}>
                     <ItemCard 
                         title={post.data.title}
-                        href={`/publicaciones/articulos/${post.id}`}
+                        href={`/revista/articulos/${post.id}`}
                         heroImage={post.data.heroImage}
                         category={post.data.category || 'Columna'}
                         author={post.data.author || 'Redacción'}

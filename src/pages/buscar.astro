@@ -9,10 +9,8 @@ import { resolveAuthorRef } from "../lib/authorSlug";
 const articulos = await getCollection("articulos");
 const poemas = await getCollection("poemas");
 const cartas = await getCollection("cartas");
-const entrevistas = await getCollection("entrevistas");
-const columnas = await getCollection("columnas");
 
-const allPosts = [...articulos, ...poemas, ...cartas, ...entrevistas, ...columnas]
+const allPosts = [...articulos, ...poemas, ...cartas]
     .sort((a, b) => {
         const dateA = a.data.pubDate ? new Date(a.data.pubDate).valueOf() : 0;
         const dateB = b.data.pubDate ? new Date(b.data.pubDate).valueOf() : 0;
@@ -29,7 +27,7 @@ const allPosts = [...articulos, ...poemas, ...cartas, ...entrevistas, ...columna
         // Lógica condicional de proporciones (Aspect Ratio) centralizada
         const isPortrait = post.collection === 'cartas' || post.collection === 'poemas';
         const linkPrefix = ['articulos', 'cartas', 'columnas', 'entrevistas'].includes(post.collection)
-            ? '/publicaciones'
+            ? '/revista'
             : '';
 
         return {

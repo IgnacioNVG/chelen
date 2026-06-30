@@ -7,7 +7,7 @@ const { post, isFeatured } = Astro.props;
 ---
 
 <article class={`post-card ${isFeatured ? 'featured' : ''} ${!post.data.heroImage ? 'no-image' : ''}`}>
-    <a href={`/publicaciones/articulos/${post.id}/`} class="post-link">
+    <a href={`/revista/articulos/${post.id}/`} class="post-link">
         {post.data.heroImage && (
             <div class="img-container">
                 <ContentImage src={post.data.heroImage} alt="" width={800} />

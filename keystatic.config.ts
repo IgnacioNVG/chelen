@@ -79,10 +79,11 @@ export default config({
           label: "Categoría",
           // Debe coincidir con el enum de src/content.config.ts (articulos).
           options: [
+            { label: "Artículo", value: "Artículo" },
             { label: "Columna de opinión", value: "Columna de opinión" },
             { label: "Entrevista", value: "Entrevista" },
           ],
-          defaultValue: "Columna de opinión",
+          defaultValue: "Artículo",
         }),
         temas: temasField,
         tags: tagsField,

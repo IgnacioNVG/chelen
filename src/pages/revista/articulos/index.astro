@@ -5,16 +5,16 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../../../consts';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('articulos'))
-    .filter(post => post.data.category === 'Entrevista')
+    .filter(post => post.data.category === 'Artículo')
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const categories = [...new Set(posts.map(post => post.data.category || 'Entrevista'))];
+const categories = [...new Set(posts.map(post => post.data.category || 'Artículo'))];
 ---
 
 <SectionLayout 
-    title={`Entrevistas | ${SITE_TITLE}`} 
+    title={`Artículos | ${SITE_TITLE}`} 
     description={SITE_DESCRIPTION}
-    pageTitle="Entrevistas"
+    pageTitle="Artículos"
 >
     <Fragment slot="controls">
         <div class="filter-group">
@@ -32,20 +32,20 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Entrevis
     {posts.length === 0 ? (
         <div class="estado-vacio">
             <h2>Próximamente</h2>
-            <p>Aún no hemos publicado entrevistas en esta sección. Vuelve pronto.</p>
+            <p>Aún no hemos publicado artículos en esta sección. Vuelve pronto.</p>
         </div>
     ) : (
         <ul id="post-list" class="grid-list cols-2">
             {posts.map((post, index) => (
                 <li
                     class={`post-item${index === 0 ? ' featured-item' : ''}`}
-                    data-category={post.data.category || 'Entrevista'}
+                    data-category={post.data.category || 'Artículo'}
                     data-date={post.data.pubDate.valueOf()}>
                     <ItemCard 
                         title={post.data.title}
-                        href={`/publicaciones/articulos/${post.id}`}
+                        href={`/revista/articulos/${post.id}`}
                         heroImage={post.data.heroImage}
-                        category={post.data.category || 'Entrevista'}
+                        category={post.data.category || 'Artículo'}
                         author={post.data.author || 'Redacción'}
                         date={post.data.pubDate}
                         tags={post.data.tags}

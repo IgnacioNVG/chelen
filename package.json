@@ -12,6 +12,7 @@
 		"publish": true
 	},
 	"dependencies": {
+		"@astrojs/check": "^0.9.9",
 		"@astrojs/cloudflare": "^13.7.0",
 		"@astrojs/mdx": "^6.0.3",
 		"@astrojs/react": "^5.0.7",
@@ -22,7 +23,7 @@
 		"astro": "^6.4.6",
 		"react": "^19.2.6",
 		"react-dom": "^19.2.6",
-		"typescript": "5.9.3"
+		"typescript": "^5.9.3"
 	},
 	"devDependencies": {
 		"wrangler": "^4.100.0"
