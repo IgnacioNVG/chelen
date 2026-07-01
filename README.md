@@ -1,64 +1,69 @@
-# Astro Starter Kit: Blog
+Aquí tienes una propuesta completa de `README.md` diseñada específicamente para el repositorio de tu proyecto.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/astro-blog-starter-template)
+Este documento explica claramente la arquitectura del sitio, cómo interactúan las herramientas que elegiste y cómo está organizado el contenido editorial de la revista, integrando su identidad visual. Puedes copiar este bloque y reemplazar tu `README.md` actual:
 
-![Astro Template Preview](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+```markdown
+# Revista Chelén - Plataforma Digital
 
-<!-- dash-content-start -->
+## Descripción del Proyecto
+Este repositorio contiene el código fuente de la plataforma digital de la revista **Chelén**. El proyecto está estructurado como un sitio web estático hiper-optimizado, diseñado para gestionar de forma eficiente una publicación editorial que abarca artículos, columnas, cartas y poemas, ofreciendo una experiencia de lectura fluida.
 
-Create a blog with Astro and deploy it on Cloudflare Workers as a [static website](https://developers.cloudflare.com/workers/static-assets/).
+## Arquitectura y Tecnologías Principales
 
-Features:
+El proyecto hace uso de un ecosistema moderno para separar el desarrollo de la interfaz de la gestión diaria de los contenidos:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-- ✅ Built-in Observability logging
+* **[Astro](https://astro.build/)**: Framework principal que actúa como generador del sitio. Permite tener un rendimiento impecable enviando HTML y CSS puro al navegador, procesando componentes de UI rápidamente.
+* **[Keystatic](https://keystatic.com/)**: Un CMS (Content Management System) local basado en Git. Se utiliza para que la creación, edición y estructuración de las publicaciones se pueda realizar desde una interfaz gráfica amigable de administración, escribiendo los datos directamente como archivos Markdown o MDX en el repositorio.
+* **Astro Content Collections**: Sistema de tipado (`src/content.config.ts`) que procesa todo el contenido Markdown de la revista. Esto valida los metadatos de cada post (fecha, autor, imagen principal) garantizando que no haya errores de compilación y generando automáticamente las URLs.
+* **Cloudflare Pages**: La plataforma destino para el despliegue del proyecto (como indica la configuración de `wrangler.json`), optimizada para servir archivos a alta velocidad a nivel global.
 
-<!-- dash-content-end -->
+## Estructura del Contenido (`src/content/`)
 
-## Getting Started
+Todo el material editorial de la revista se centraliza y organiza en colecciones específicas, lo que facilita el mantenimiento y escalabilidad de la publicación:
 
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+* `articulos/`: Contiene los reportajes y ensayos principales de la edición.
+* `columnistas/`: Perfiles detallados de los distintos autores, columnistas y miembros del equipo.
+* `poemas/`: Obras poéticas, incluyendo soporte para divisiones temáticas o de antología.
+* `cartas/`: Correspondencia, editoriales o cartas abiertas.
+* `nosotros/`: Información institucional sobre la organización y la identidad de la revista.
 
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/astro-blog-starter-template
+## Identidad Visual y Diseño
+
+El desarrollo de la interfaz técnica acompaña estrictamente la línea gráfica del proyecto editorial. La plataforma web prioriza una composición gráfica fuertemente cohesiva y ordenada, distanciándose explícitamente de los estilos fragmentados o tipo *collage*. 
+
+Visualmente, el diseño web implementa una estética de clara inspiración arquitectónica, nutriéndose de fundamentos del **constructivismo, el brutalismo y la escuela Bauhaus**. El uso estructurado de las fuentes tipográficas Sifonn y Raleway refuerza esta identidad geométrica, limpia, directa y enfocada primordialmente en la jerarquía del texto impreso adaptado a pantallas.
+
+## Guía de Desarrollo Local
+
+Para trabajar de manera local en este repositorio, se requiere tener **Node.js** instalado (la versión requerida está indicada en los archivos `.node-version` y `.nvmrc`).
+
+1. **Instalación de dependencias**:
+   Instala los paquetes necesarios definidos en el `package.json`.
+   ```bash
+   npm install
+
 ```
 
-A live public deployment of this template is available at [https://astro-blog-starter-template.templates.workers.dev](https://astro-blog-starter-template.templates.workers.dev)
+2. **Ejecutar el entorno de desarrollo**:
+Levanta el servidor local que compila los cambios en tiempo real.
+```bash
+npm run dev
 
-## 🚀 Project Structure
+```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+*La revista estará disponible en tu navegador en `http://localhost:4321`.*
+3. **Gestión de contenido a través del CMS**:
+Con el servidor en ejecución, puedes acceder al panel de administración en **`http://localhost:4321/keystatic`**. Esta interfaz visual te permite redactar o modificar artículos, autores y poemas fácilmente. Cualquier cambio que guardes allí modificará los archivos `.md` correspondientes dentro de la carpeta `src/content/`.
+4. **Compilar para producción**:
+```bash
+npm run build
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
 
-## 🧞 Commands
+Genera la versión optimizada y estática del sitio web lista para ser subida al servidor. Si deseas probar este entorno compilado localmente antes de hacer push, puedes ejecutar `npm run preview`.
 
-All commands are run from the root of the project, from a terminal:
+```
 
-| Command                           | Action                                           |
-| :-------------------------------- | :----------------------------------------------- |
-| `npm install`                     | Installs dependencies                            |
-| `npm run dev`                     | Starts local dev server at `localhost:4321`      |
-| `npm run build`                   | Build your production site to `./dist/`          |
-| `npm run preview`                 | Preview your build locally, before deploying     |
-| `npm run astro ...`               | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help`         | Get help using the Astro CLI                     |
-| `npm run build && npm run deploy` | Deploy your production site to Cloudflare        |
-| `npm wrangler tail`               | View real-time logs for all Workers              |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+```

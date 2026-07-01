@@ -10,20 +10,21 @@ const cartas = await getCollection('cartas');
 const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(cartas));
 ---
 
-<SectionLayout 
-    title={`Revista | ${SITE_TITLE}`} 
+<SectionLayout
+    title={`Revista | ${SITE_TITLE}`}
     description="Producción escrita de Revista Chelén"
     pageTitle="Revista"
     introText=""
 >
     <Fragment slot="hero">
-        <header class="revista-hero">
+        <header class="revista-hero brutalist-hero">
             <div class="hero-content">
+                <span class="hero-kicker">Ecosistema de Ideas</span>
                 <h1 class="hero-title">Revista<br><span class="hero-title-highlight">Chelén</span></h1>
                 <p class="hero-intro">
                     Explora nuestra colección de ensayos, reseñas, columnas de opinión y cartas al director. Un ecosistema de ideas agrupado bajo una sola visión.
                 </p>
-                
+
                 <div class="hero-nav">
                     <a href="/revista/articulos" class="nav-pill">
                         <span class="nav-text">Artículos</span>
@@ -43,34 +44,28 @@ const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(c
                     </a>
                 </div>
             </div>
-            
+
             <div class="hero-decoration">
-                <div class="glass-orb orb-1"></div>
-                <div class="glass-orb orb-2"></div>
-                <div class="glass-orb orb-3"></div>
+                <div class="geo-shape geo-1"></div>
+                <div class="geo-shape geo-2"></div>
+                <div class="geo-shape geo-3"></div>
             </div>
         </header>
     </Fragment>
 
     <Fragment slot="band">
-        <div class="section-band-modern">
+        <div class="section-band brutalist-band">
             <h2 class="band-title">Archivo <span>Completo</span></h2>
-            <a href="/buscar" class="band-action">
-                <span>Buscar en el archivo</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </a>
         </div>
     </Fragment>
 
-    <ul class="revista-grid">
-        {feed.map((item, index) => {
+    <ul class="revista-grid brutalist-masonry">
+        {feed.map((item) => {
             const format = item.kind === 'carta' ? 'portrait' : 'landscape';
-            // Alternamos el tamaño para darle dinamismo a la grilla (estilo masonry simulado)
-            const isLarge = index === 0 || index === 5;
-            
+
             return (
-                <li class={`grid-item ${isLarge ? 'grid-item-large' : ''} format-${format}`}>
-                    <ItemCard 
+                <li class={`masonry-item format-${format}`}>
+                    <ItemCard
                         title={item.title}
                         href={item.href}
                         heroImage={item.image}
@@ -88,66 +83,76 @@ const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(c
 
 <style>
     /* ========================================================
-       HERO SECTION - PREMIUM DESIGN
+       HERO SECTION - BRUTALISTA / CONSTRUCTIVISTA
        ======================================================== */
-    .revista-hero {
+    .brutalist-hero {
         display: flex;
         flex-direction: column;
-        border-radius: 24px;
-        overflow: hidden;
+        border: 4px solid #111;
+        background: #fff;
+        box-shadow: 8px 8px 0px #111;
         margin-bottom: 4rem;
-        background: #0a0a0a;
-        color: #ffffff;
         position: relative;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
     }
 
     @media (min-width: 992px) {
-        .revista-hero {
+        .brutalist-hero {
             flex-direction: row;
             min-height: 450px;
         }
     }
 
     .hero-content {
-        padding: 4rem 3rem;
+        padding: clamp(2rem, 5vw, 4rem);
         flex: 1.2;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        position: relative;
-        z-index: 10;
-        background: linear-gradient(135deg, rgba(20,20,20,0.95) 0%, rgba(10,10,10,0.8) 100%);
-        backdrop-filter: blur(10px);
+        border-right: 4px solid #111;
+        background: #fff;
+        z-index: 2;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        align-self: flex-start;
+        font-family: monospace;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #fff;
+        background-color: #111;
+        padding: 0.35rem 0.85rem;
+        margin-bottom: 1.5rem;
     }
 
     .hero-title {
-        font-family: 'Sifonn', 'Inter', sans-serif;
-        font-size: clamp(3rem, 8vw, 6rem);
+        font-family: 'Sifonn', sans-serif;
+        font-size: clamp(3rem, 8vw, 5.5rem);
         text-transform: uppercase;
         margin: 0 0 1.5rem 0;
-        line-height: 0.85;
-        letter-spacing: -0.02em;
+        line-height: 0.9;
+        color: #111;
     }
 
     .hero-title-highlight {
-        color: #ff3333;
-        display: block;
-        background: linear-gradient(90deg, #ff3333, #ff8c00);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #ff1321;
     }
 
     .hero-intro {
-        font-size: 1.15rem;
-        line-height: 1.7;
-        color: #a0a0a0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        line-height: 1.6;
+        color: #111;
         max-width: 550px;
-        margin: 0 0 3rem 0;
-        font-weight: 400;
+        margin: 0 0 2.5rem 0;
+        border-left: 5px solid #ff1321;
+        padding-left: 1rem;
     }
 
-    /* NAVIGATION PILLS */
+    /* NAVEGACIÓN BRUTALISTA */
     .hero-nav {
         display: flex;
         flex-wrap: wrap;
@@ -158,174 +163,185 @@ const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(c
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #ffffff;
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #111;
+        background-color: #fff;
+        border: 2px solid #111;
+        box-shadow: 4px 4px 0px #111;
+        padding: 0.6rem 1.2rem;
         text-decoration: none;
-        padding: 0.75rem 1.25rem;
-        border-radius: 100px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        letter-spacing: 0.05em;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .nav-icon {
-        opacity: 0;
-        transform: translateX(-10px);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.15s ease-out;
     }
 
     .nav-pill:hover {
-        background: #ffffff;
-        color: #0a0a0a;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 0 4px rgba(255,255,255,0.1);
+        transform: translate(-3px, -3px);
+        box-shadow: 7px 7px 0px #ff1321;
+        border-color: #ff1321;
+        color: #ff1321;
     }
 
-    .nav-pill:hover .nav-icon {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    /* ABSTRACT DECORATION (Glassmorphism + Orbs) */
+    /* DECORACIÓN GEOMÉTRICA */
     .hero-decoration {
-        flex: 1;
+        flex: 0.8;
+        background: #f0f0f0;
         position: relative;
-        min-height: 250px;
-        background: #0f0f0f;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .glass-orb {
+    .geo-shape {
         position: absolute;
+        border: 4px solid #111;
+    }
+
+    .geo-1 {
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
-        filter: blur(60px);
-        opacity: 0.6;
-        animation: float 15s ease-in-out infinite alternate;
+        background: #ff1321;
+        top: 15%;
+        left: 20%;
+        box-shadow: -8px 8px 0px #111;
     }
 
-    .orb-1 {
-        width: 300px;
-        height: 300px;
-        background: #ff3333;
-        top: -50px;
-        right: -50px;
-        animation-delay: 0s;
-    }
-
-    .orb-2 {
+    .geo-2 {
         width: 250px;
-        height: 250px;
-        background: #ff8c00;
-        bottom: -50px;
-        left: 50px;
-        animation-delay: -5s;
+        height: 80px;
+        background: #111;
+        bottom: 25%;
+        right: -10%;
+        transform: rotate(-15deg);
     }
 
-    .orb-3 {
-        width: 200px;
-        height: 200px;
-        background: #4a00e0;
-        top: 50%;
+    .geo-3 {
+        width: 120px;
+        height: 120px;
+        background: #ffea00;
+        top: -20px;
         right: 20%;
-        animation-delay: -10s;
-    }
-
-    @keyframes float {
-        0% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(-30px, 20px) scale(1.1); }
-        100% { transform: translate(20px, -30px) scale(0.9); }
+        transform: rotate(45deg);
+        box-shadow: 6px 6px 0px #111;
     }
 
     @media (max-width: 991px) {
         .hero-decoration {
             display: none;
         }
+        .hero-content {
+            border-right: none;
+        }
     }
 
     /* ========================================================
-       MODERN SECTION BAND
+       SECTION BAND BRUTALISTA
        ======================================================== */
-    .section-band-modern {
+    .brutalist-band {
         display: flex;
         justify-content: space-between;
-        align-items: flex-end;
-        border-bottom: 2px solid #eaeaea;
-        padding-bottom: 1.5rem;
-        margin-bottom: 3rem;
+        align-items: baseline;
+        border-top: 5px solid #111;
+        padding-top: 1rem;
+        margin: 3.5rem 0 2rem;
     }
 
     .band-title {
-        font-size: clamp(2rem, 4vw, 3rem);
+        font-family: 'Sifonn', sans-serif;
+        font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+        text-transform: uppercase;
         margin: 0;
-        line-height: 1;
-        font-weight: 700;
-        letter-spacing: -0.02em;
+        color: #111;
     }
 
     .band-title span {
-        color: #888;
-        font-weight: 300;
-    }
-
-    .band-action {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #111;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: color 0.2s ease;
-    }
-
-    .band-action:hover {
-        color: #ff3333;
-    }
-
-    .band-action svg {
-        transition: transform 0.3s ease;
-    }
-
-    .band-action:hover svg {
-        transform: scale(1.1);
+        color: #ff1321;
     }
 
     /* ========================================================
-       DYNAMIC GRID
+       GRID TIPO MASONRY (PINTEREST)
        ======================================================== */
-    .revista-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 2.5rem;
+    .brutalist-masonry {
+        column-count: 1;
+        column-gap: 2rem;
         list-style: none;
         padding: 0;
         margin: 0;
+        width: 100%;
     }
 
     @media (min-width: 768px) {
-        .revista-grid {
-            grid-template-columns: repeat(2, 1fr);
+        .brutalist-masonry {
+            column-count: 2;
         }
     }
 
     @media (min-width: 1024px) {
-        .revista-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-        
-        /* Hacemos que el primer item o items destacados ocupen 2 columnas */
-        .grid-item-large.format-landscape {
-            grid-column: span 2;
+        .brutalist-masonry {
+            column-count: 3;
         }
     }
 
-    .grid-item {
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Contenedor del item que evita romperse entre columnas */
+    /* Contenedor del item */
+    .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 2rem;
+
+        background: #fff;
+        border: 2px solid #111;
+        border-radius: 16px;      /* mismo radio que el grid */
+        overflow: hidden;         /* imprescindible para que el radius recorte */
+
+        box-shadow: 5px 5px 0 #111;
+        transition:
+            transform .15s ease-out,
+            box-shadow .15s ease-out;
+
+        display: flex;
+        flex-direction: column;
     }
-    
-    .grid-item:hover {
-        transform: translateY(-5px);
+
+    .masonry-item:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 9px 9px 0 #ff1321;
     }
-</style>
+
+    /* El FeedCard interno ocupa todo el ancho */
+    .masonry-item > * {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    /* Contenedor de imagen */
+    .masonry-item :global([class*="feed-media"]) {
+        overflow: hidden;
+        border-bottom: 3px solid #111;
+    }
+
+    /* Imágenes */
+    .masonry-item :global(img) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .4s cubic-bezier(.25,.46,.45,.94), filter .4s;
+        filter: grayscale(20%);
+    }
+
+    .masonry-item:hover :global(img) {
+        transform: scale(1.08);
+        filter: grayscale(0%);
+    }
+
+    /* Proporciones */
+    .masonry-item.format-landscape :global(img) {
+        aspect-ratio: 2 / 1;
+    }
+
+    .masonry-item.format-portrait :global(img) {
+        aspect-ratio: 3 / 4;
+    }
