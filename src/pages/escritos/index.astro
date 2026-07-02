@@ -26,19 +26,19 @@ const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(c
                 </p>
 
                 <div class="hero-nav">
-                    <a href="/revista/articulos" class="nav-pill">
+                    <a href="/escritos/articulos" class="nav-pill">
                         <span class="nav-text">Artículos</span>
                         <span class="nav-icon">→</span>
                     </a>
-                    <a href="/revista/entrevistas" class="nav-pill">
+                    <a href="/escritos/entrevistas" class="nav-pill">
                         <span class="nav-text">Entrevistas</span>
                         <span class="nav-icon">→</span>
                     </a>
-                    <a href="/revista/columnas" class="nav-pill">
+                    <a href="/escritos/columnas" class="nav-pill">
                         <span class="nav-text">Columnas</span>
                         <span class="nav-icon">→</span>
                     </a>
-                    <a href="/revista/cartas" class="nav-pill">
+                    <a href="/escritos/cartas" class="nav-pill">
                         <span class="nav-text">Cartas al Director</span>
                         <span class="nav-icon">→</span>
                     </a>
@@ -286,62 +286,15 @@ const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(c
     }
 
     /* Contenedor del item que evita romperse entre columnas */
-    /* Contenedor del item */
     .masonry-item {
         break-inside: avoid;
         margin-bottom: 2rem;
-
-        background: #fff;
-        border: 2px solid #111;
-        border-radius: 16px;      /* mismo radio que el grid */
-        overflow: hidden;         /* imprescindible para que el radius recorte */
-
-        box-shadow: 5px 5px 0 #111;
-        transition:
-            transform .15s ease-out,
-            box-shadow .15s ease-out;
-
         display: flex;
         flex-direction: column;
-    }
-
-    .masonry-item:hover {
-        transform: translate(-4px, -4px);
-        box-shadow: 9px 9px 0 #ff1321;
     }
 
     /* El FeedCard interno ocupa todo el ancho */
     .masonry-item > * {
         width: 100%;
         margin: 0 !important;
-    }
-
-    /* Contenedor de imagen */
-    .masonry-item :global([class*="feed-media"]) {
-        overflow: hidden;
-        border-bottom: 3px solid #111;
-    }
-
-    /* Imágenes */
-    .masonry-item :global(img) {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform .4s cubic-bezier(.25,.46,.45,.94), filter .4s;
-        filter: grayscale(20%);
-    }
-
-    .masonry-item:hover :global(img) {
-        transform: scale(1.08);
-        filter: grayscale(0%);
-    }
-
-    /* Proporciones */
-    .masonry-item.format-landscape :global(img) {
-        aspect-ratio: 2 / 1;
-    }
-
-    .masonry-item.format-portrait :global(img) {
-        aspect-ratio: 3 / 4;
     }

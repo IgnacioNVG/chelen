@@ -13,6 +13,7 @@ interface Props {
     tags?: string[];
     format?: 'landscape' | 'portrait';
     isFeatured?: boolean;
+    hoverRevealImage?: boolean;
 }
 
 const { 
@@ -24,15 +25,20 @@ const {
     date, 
     tags = [], 
     format = 'landscape',
-    isFeatured = false
+    isFeatured = false,
+    hoverRevealImage = false
 } = Astro.props;
 ---
 
-<article class={`item-card format-${format} ${isFeatured ? 'featured' : ''} ${!heroImage ? 'no-image' : ''}`}>
+<article class={`item-card format-${format} ${isFeatured ? 'featured' : ''} ${!heroImage ? 'no-image' : ''} ${hoverRevealImage ? 'hover-reveal-image' : ''}`}>
     <a href={href} class="item-link">
         {heroImage && (
             <figure class="item-media">
-                <ContentImage src={heroImage} alt={title} width={800} />
+                {typeof heroImage === 'string' ? (
+                    <img src={heroImage} alt={title} loading="lazy" decoding="async" />
+                ) : (
+                    <ContentImage src={heroImage} alt={title} width={800} />
+                )}
             </figure>
         )}
         <div class="item-body">
@@ -122,6 +128,26 @@ const {
         transform: scale(1.06);
     }
 
+    /* Hover Reveal Image Logic */
+    .item-card.hover-reveal-image {
+        position: relative;
+    }
+
+    .item-card.hover-reveal-image .item-media {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border: none;
+        background: transparent;
+        aspect-ratio: auto; /* overrides the format ratios */
+    }
+
+    .item-card.hover-reveal-image:hover .item-media {
+        opacity: 1;
+    }
+
     .item-body {
         padding: 1.25rem;
         display: flex;
@@ -182,7 +208,8 @@ const {
     }
 
     .item-title {
-        font-family: 'Sifonn', sans-serif;
+        font-family: 'Satoshi', sans-serif;
+        font-weight: 800;
         font-size: clamp(1.05rem, 1.6vw, 1.35rem);
         text-transform: uppercase;
         line-height: 1.1;

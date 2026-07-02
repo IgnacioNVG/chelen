@@ -33,7 +33,7 @@ export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): F
 		category: post.data.category,
 		temas: post.data.temas,
 		tags: post.data.tags,
-		href: `/revista/articulos/${post.id}`,
+		href: `/escritos/articulos/${post.id}`,
 		image: post.data.heroImage,
 		imageLayout: post.data.heroImage ? 'landscape' : 'none',
 	}));
@@ -49,7 +49,7 @@ export function buildCartaItems(cartas: CollectionEntry<'cartas'>[]): FeedItem[]
 		category: carta.data.category,
 		temas: carta.data.temas,
 		tags: carta.data.tags,
-		href: `/revista/cartas/${carta.id}`,
+		href: `/escritos/cartas/${carta.id}`,
 		image: carta.data.heroImage,
 		imageLayout: carta.data.heroImage ? 'portrait' : 'none',
 	}));

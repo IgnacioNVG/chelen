@@ -23,25 +23,31 @@ import svgContent from '../../../public/favicon.svg?raw';
         <div class="internal-links-container">
             <div class="internal-links">
                 <HeaderLink href="/" class="nav-item home-link-btn" data-home-btn>Inicio</HeaderLink>
-                <HeaderLink href="/revista" class="nav-item" activeFor={['/articulos', '/columnas', '/cartas']}>Revista</HeaderLink>
+                <HeaderLink href="/escritos" class="nav-item" activeFor={['/articulos', '/columnas', '/cartas']}>Escritos</HeaderLink>
                 <HeaderLink href="/multimedia/arte" class="nav-item" activeFor={['/grafica', '/poemas']}>Arte</HeaderLink>
                 <HeaderLink href="/multimedia/audiovisual" class="nav-item">Audiovisual</HeaderLink>
                 <HeaderLink href="/publicaciones/cuadernillos" class="nav-item">Cuadernillos</HeaderLink>
                 <HeaderLink href="/acerca/nosotros" class="nav-item">Nosotros</HeaderLink>
-                <HeaderLink href="/buscar" class="nav-item">Buscar</HeaderLink>
+
             </div>
             <div class="nav-indicator"></div>
         </div>
 
         <div class="contact-links">
-            <a href="https://instagram.com/revista.chelen" target="_blank" aria-label="Instagram">
+            <HeaderLink href="/buscar" class="nav-item search-icon-link" aria-label="Buscar" style="padding: 0.2rem; display: flex; align-items: center; color: #000;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </HeaderLink>
+            <a href="https://instagram.com/revistachelen" target="_blank" aria-label="Instagram">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
             </a>
-            <a href="mailto:contacto@chelen.cl" aria-label="Enviar Mail">
+            <a href="mailto:contacto@revistachelen.com" aria-label="Enviar Mail">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1 0.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>

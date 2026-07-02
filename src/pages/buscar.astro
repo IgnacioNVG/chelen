@@ -19,15 +19,13 @@ const allPosts = [...articulos, ...poemas, ...cartas]
     .map((post) => {
         let imageSrc = null;
         if (post.data.heroImage) {
-            imageSrc = typeof post.data.heroImage === "string"
-                ? post.data.heroImage
-                : post.data.heroImage.src;
+            imageSrc = post.data.heroImage;
         }
 
         // Lógica condicional de proporciones (Aspect Ratio) centralizada
         const isPortrait = post.collection === 'cartas' || post.collection === 'poemas';
         const linkPrefix = ['articulos', 'cartas', 'columnas', 'entrevistas'].includes(post.collection)
-            ? '/revista'
+            ? '/escritos'
             : '';
 
         return {
@@ -107,26 +105,37 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
             border-color: #111;
         }
 
-        /* 4. Restauración del Grid Responsivo */
         .publications-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 2rem;
+            column-count: 1;
+            column-gap: 2rem;
             list-style: none;
             padding: 0;
             margin: 0;
+            width: 100%;
         }
 
         @media (min-width: 768px) {
             .publications-grid {
-                grid-template-columns: repeat(2, 1fr);
+                column-count: 2;
             }
         }
 
         @media (min-width: 1024px) {
             .publications-grid {
-                grid-template-columns: repeat(3, 1fr);
+                column-count: 3;
             }
+        }
+
+        .search-item {
+            break-inside: avoid;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-item > * {
+            width: 100%;
+            margin: 0 !important;
         }
 
         /* Estados y Utilidades */
@@ -200,8 +209,9 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
                         title={post.title}
                         category={post.category}
                         author={post.author}
-                        image={post.image}
-                        formatClass={post.formatClass}
+                        heroImage={post.image}
+                        format={post.formatClass === 'format-portrait' ? 'portrait' : 'landscape'}
+                        hoverRevealImage={true}
                     />
                 </li>
             ))}
