@@ -1,7 +1,7 @@
 ---
 title: 'Ricardo Núñez: De la Renovación Socialista al nuevo ciclo transformador'
 description: 'Una conversación profunda sobre las raíces del socialismo chileno, las autocríticas pendientes de la UP y la necesidad de una identidad nacional-popular.'
-pubDate: '2026-04-28'
+pubDate: '2026-07-3'
 heroImage: ./hero.webp
 author: rodrigo-belmar
 affiliation: 'Facultad de Derecho'
