@@ -38,6 +38,7 @@ const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
                                 heroImage={antologia.data.heroImage}
                                 category={antologia.data.category || 'Antología'}
                                 date={antologia.data.pubDate}
+                                temas={antologia.data.temas}
                                 tags={antologia.data.tags}
                                 format="portrait"
                                 isFeatured={true}
@@ -87,6 +88,7 @@ const poemasLibres = todosLosPoemas.filter((p) => !p.data.antologia);
                         category={poema.data.category || 'Poema'}
                         author={poema.data.author}
                         date={poema.data.pubDate}
+                        temas={poema.data.temas}
                         tags={poema.data.tags}
                         format="portrait"
                     />

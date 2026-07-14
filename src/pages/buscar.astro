@@ -35,6 +35,8 @@ const allPosts = [...articulos, ...poemas, ...cartas]
             author: resolveAuthorRef(post.data.author) || "Redacción Chelén",
             description: post.data.description || "",
             category: post.data.category || post.collection,
+            temas: post.data.temas ?? [],
+            tags: post.data.tags ?? [],
             image: imageSrc,
             url: `${linkPrefix}/${post.collection}/${post.id}/`,
             formatClass: isPortrait ? 'format-portrait' : 'format-landscape'
@@ -202,6 +204,8 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
                     data-author={post.author.toLowerCase()}
                     data-category={post.category.toLowerCase()}
                     data-desc={post.description.toLowerCase()}
+                    data-temas={(post.temas ?? []).join(' ').toLowerCase()}
+                    data-tags={(post.tags ?? []).join(' ').toLowerCase()}
                 >
                     <!-- Aquí utilizamos el componente REAL de Astro, asegurando consistencia visual -->
                     <ItemCard
@@ -210,6 +214,8 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
                         category={post.category}
                         author={post.author}
                         heroImage={post.image}
+                        temas={post.temas}
+                        tags={post.tags}
                         format={post.formatClass === 'format-portrait' ? 'portrait' : 'landscape'}
                         hoverRevealImage={true}
                     />
@@ -279,7 +285,9 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
                     dataset.title?.includes(query) ||
                     dataset.author?.includes(query) ||
                     dataset.category?.includes(query) ||
-                    dataset.desc?.includes(query);
+                    dataset.desc?.includes(query) ||
+                    dataset.temas?.includes(query) ||
+                    dataset.tags?.includes(query);
 
                 if (match) {
                     item.classList.remove('hidden');

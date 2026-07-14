@@ -30,6 +30,7 @@ const cartas = (await getCollection('cartas')).sort(
                         category={carta.data.category || 'Carta al Director'}
                         author={carta.data.author}
                         date={carta.data.pubDate}
+                        temas={carta.data.temas}
                         tags={carta.data.tags}
                         format="portrait"
                     />

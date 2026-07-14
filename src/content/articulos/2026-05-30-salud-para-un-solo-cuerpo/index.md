@@ -7,7 +7,7 @@ author: sofia-fuentealba
 affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Salud', 'Feminismos']
-tags: ['Feminismo', 'Corporalidad', 'Ciencia', 'Salud']
+tags: ['Feminismo', 'Corporalidad', 'Ciencia']
 ---
 
 # ¿Existe un cuerpo o mente estándar?

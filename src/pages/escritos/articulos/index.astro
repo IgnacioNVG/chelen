@@ -48,6 +48,7 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Artícul
                         category={post.data.category || 'Artículo'}
                         author={post.data.author || 'Redacción'}
                         date={post.data.pubDate}
+                        temas={post.data.temas}
                         tags={post.data.tags}
                         format="landscape"
                         isFeatured={index === 0}

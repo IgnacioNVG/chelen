@@ -12,6 +12,9 @@ const isCloudflare =
 export default defineConfig({
   site: "https://revistachelen.com",
   output: "static",
+  redirects: {
+    "/tema/filosofia-e-ideas": "/tema/teoria-e-ideas",
+  },
 
   // AQUÍ ESTÁ LA CORRECCIÓN:
   // Si es Cloudflare, usa tu configuración. Si es local, usa undefined.

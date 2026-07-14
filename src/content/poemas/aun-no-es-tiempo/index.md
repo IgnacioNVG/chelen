@@ -5,6 +5,8 @@ author: "Aristóteles España"
 heroImage: ./hero.webp
 category: "Poesía"
 antologia: "el-poeta-dawson"
+temas: ['Historia y memoria']
+tags: ['Isla Dawson']
 ---
 
 Muge la tierra el ocre el terracota el gris el negro

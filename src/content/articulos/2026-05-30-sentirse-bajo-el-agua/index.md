@@ -8,8 +8,7 @@ affiliation: Universidad de Chile
 category: Columna de opinión
 temas: ['Salud', 'Cultura']
 tags:
-  - Cultura
-  - Salud Mental
+  - Salud mental
 ---
 **Adolezco de una pena que no se va; fluye funcionalmente y la oculto, igual que Lloyd Tate, con una dosis de antidepresivos tricíclicos todas las mañanas. Una dosis que dejo de tomar cuando me siento bien, bajo la falsa ilusión de que ya mejoré. Es un sentimiento de angustia constante, una autoexigencia por tener que cumplir con mis estudios y con cada cosa que me propongo, una presión que termina nublando toda la felicidad que me da el haber cumplido.**
 

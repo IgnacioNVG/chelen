@@ -1,18 +1,29 @@
 import { collection, config, fields, singleton } from "@keystatic/core";
-import { TEMAS } from "./src/lib/taxonomy";
+import { TAGS_SUGERIDOS, TEMAS } from "./src/lib/taxonomy";
 
-const tagsField = fields.array(fields.text({ label: "Etiqueta" }), {
-  label: "Etiquetas",
-  itemLabel: (props) => props.value,
-});
+const tagsSugeridosHint = TAGS_SUGERIDOS.slice(0, 12).join(", ") + "…";
+
+const tagsField = fields.array(
+  fields.text({
+    label: "Etiqueta",
+    description: `Descriptor específico (cola larga). Sugeridos: ${tagsSugeridosHint}`,
+  }),
+  {
+    label: "Etiquetas",
+    description:
+      "Nombres propios, eventos o conceptos puntuales. No repetir temas ni categoría. " +
+      "Ejemplo: temas «Ultraderecha y democracia, Política» · tags «Kast, Neofascismo».",
+    itemLabel: (props) => props.value,
+  },
+);
 
 // Nivel superior controlado del sistema de etiquetas. Lista canónica
 // compartida con src/content.config.ts (ver src/lib/taxonomy.ts).
 const temasField = fields.multiselect({
   label: "Temas",
   description:
-    "Ejes temáticos amplios para descubrir contenido entre secciones. " +
-    "Usa «Etiquetas» para descriptores específicos (nombres propios, hechos puntuales).",
+    "Ejes de lectura transversal (máx. 3). Si merece una página /tema/[slug], es tema. " +
+    "Ejemplo: «Política, Izquierda y socialismo, Teoría e ideas».",
   options: TEMAS.map((t) => ({ label: t, value: t })),
 });
 
@@ -87,11 +98,6 @@ export default config({
           collection: "columnistas",
           validation: { isRequired: false },
         }),
-        affiliation: fields.text({
-          label: "Afiliación",
-          defaultValue: "UCh",
-          validation: { isRequired: true },
-        }),
         category: fields.select({
           label: "Categoría",
           // Debe coincidir con el enum de src/content.config.ts (articulos).
@@ -119,7 +125,7 @@ export default config({
       path: "src/content/cartas/*/",
       format: { contentField: "content" },
       entryLayout: "content",
-      columns: ["title", "pubDate", "author", "affiliation"],
+      columns: ["title", "pubDate", "author"],
       schema: {
         title: fields.slug({
           name: { label: "Título" },
@@ -140,10 +146,6 @@ export default config({
           label: "Autor",
           collection: "columnistas",
           validation: { isRequired: false },
-        }),
-        affiliation: fields.text({
-          label: "Afiliación",
-          validation: { isRequired: true },
         }),
         category: fields.select({
           label: "Categoría",
@@ -251,7 +253,7 @@ export default config({
       path: "src/content/columnistas/*",
       format: { contentField: "bio" },
       entryLayout: "content",
-      columns: ["name", "role", "affiliation"],
+      columns: ["name", "role"],
       schema: {
         name: fields.slug({
           name: {
@@ -264,11 +266,6 @@ export default config({
           label: "Rol",
           defaultValue: "Columnista",
           description: "Ej: Columnista, Estudiante, Editor, etc.",
-        }),
-        affiliation: fields.text({
-          label: "Casa de estudios / Afiliación",
-          description:
-            "Ej: Estudiante de Derecho UCh, Facultad de Arte UChile.",
         }),
         summary: fields.text({
           label: "Presentación personal",

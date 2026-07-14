@@ -6,8 +6,8 @@ heroImage: ./hero.webp
 author: constanza-lopez
 affiliation: UCh
 category: Columna de opinión
-temas: ['Feminismos', 'Economía']
-tags: [Feminismo Anticapitalista, Marxismo, Industria Textil, Globalización, División Sexual del Trabajo]
+temas: ['Feminismos', 'Economía', 'Teoría e ideas']
+tags: ['Feminismo anticapitalista', 'Marxismo', 'Industria Textil', 'Globalización', 'División Sexual del Trabajo']
 ---
 
 ### 1. La feminización de la precariedad textil

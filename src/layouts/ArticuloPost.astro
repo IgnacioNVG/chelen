@@ -20,7 +20,7 @@ type Props = Omit<
     author?: string | { id: string };
 };
 
-const { title, description, heroImage, author, affiliation, category, temas, pdf } =
+const { title, description, heroImage, author, category, temas, pdf } =
     Astro.props;
 const authorId = resolveAuthorRef(author);
 const currentArticleId = decodeURIComponent(
@@ -149,11 +149,6 @@ const similarPosts = otherArticulos
             .article-author {
                 font-weight: bold;
                 color: #ff0000;
-            }
-
-            .article-affiliation {
-                color: #666;
-                text-align: right;
             }
 
             .article-description {
@@ -299,10 +294,6 @@ const similarPosts = otherArticulos
                     flex-direction: column;
                 }
 
-                .article-affiliation {
-                    text-align: left;
-                }
-
                 .sidebar-list {
                     grid-template-columns: 1fr;
                 }
@@ -349,7 +340,6 @@ const similarPosts = otherArticulos
                                 name={authorId || "Redacción Chelén"}
                             /></span
                         >
-                        <span class="article-affiliation">{affiliation}</span>
                     </div>
                     <p class="article-description">{description}</p>
                     {
@@ -406,6 +396,8 @@ const similarPosts = otherArticulos
                                             category={post.data.category || 'Artículo'}
                                             author={resolveAuthorRef(post.data.author) || "Redacción"}
                                             date={post.data.pubDate}
+                                            temas={post.data.temas}
+                                            tags={post.data.tags}
                                             format="landscape"
                                         />
                                     </div>
@@ -430,6 +422,8 @@ const similarPosts = otherArticulos
                                                 category={post.data.category || 'Artículo'}
                                                 author={resolveAuthorRef(post.data.author) || "Redacción"}
                                                 date={post.data.pubDate}
+                                                temas={post.data.temas}
+                                                tags={post.data.tags}
                                                 format="landscape"
                                             />
                                         </div>

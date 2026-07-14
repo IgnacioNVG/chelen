@@ -10,8 +10,6 @@ temas: ['Izquierda y socialismo', 'Política', 'Movimientos sociales']
 tags:
   - Política chilena
   - Neoliberalismo
-  - Movimientos sociales
-  - Izquierda
   - Lucha de clases
 ---
 

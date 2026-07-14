@@ -4,6 +4,8 @@ pubDate: 2026-05-25
 author: "Juan Tinola"
 heroImage: ./hero.png
 category: "Poesía"
+temas: ['Izquierda y socialismo', 'Cultura']
+tags: ['Violencia política']
 ---
 
 ¿Qué puede unirnos, si no es el dolor?

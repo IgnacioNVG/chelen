@@ -7,7 +7,7 @@ author: ursula-soto-marillan
 affiliation: UCh
 category: Columna de opinión
 temas: ['Feminismos', 'Salud']
-tags: [Cuidados, Mujeres Cuidadoras, Salud Mental, Corresponsabilidad, Políticas Públicas]
+tags: [Cuidados, Mujeres cuidadoras, Salud mental, Corresponsabilidad, Políticas públicas]
 ---
 
 ### 1. El trabajo que sostiene la vida

@@ -7,7 +7,7 @@ author: ignacio-navas-granizo
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 temas: ['Educación', 'Movimientos sociales']
-tags: ['Movimiento secundario', 'Violencia política', 'Tomas', 'Educación']
+tags: ['Movimiento secundario', 'Violencia política', 'Tomas']
 ---
 
 Leo con especial atención las discusiones que secundarios han esbozado alrededor de la violencia. Tanto la columna inicial como la contra columna entregan visiones que, pese a contener afirmaciones razonables, pecan de problemas de análisis de los cuales hay que hacerse cargo. Varias de estas contradicciones ya habían sido enunciadas —con mayor o menor tolerancia— en las discusiones posteriores y en la sección de comentarios, lo que demuestra que el debate sigue abierto y lejos de resolverse en categorías simples.

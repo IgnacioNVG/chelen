@@ -2,6 +2,7 @@
 import ContentImage from './ContentImage.astro';
 import FormattedDate from './FormattedDate.astro';
 import AuthorLink from './AuthorLink.astro';
+import { temaHref } from '../../lib/taxonomy';
 
 interface Props {
     title: string;
@@ -11,6 +12,7 @@ interface Props {
     description?: string;
     author?: string;
     date?: Date;
+    temas?: string[];
     tags?: string[];
     format?: 'landscape' | 'portrait';
     isFeatured?: boolean;
@@ -25,11 +27,15 @@ const {
     description,
     author, 
     date, 
+    temas = [],
     tags = [], 
     format = 'landscape',
     isFeatured = false,
     hoverRevealImage = false
 } = Astro.props;
+
+const primaryTema = temas[0];
+const visibleTags = tags.slice(0, primaryTema ? 1 : 2);
 ---
 
 <article class={`item-card format-${format} ${isFeatured ? 'featured' : ''} ${!heroImage ? 'no-image' : ''} ${hoverRevealImage ? 'hover-reveal-image' : ''}`}>
@@ -46,7 +52,10 @@ const {
         <div class="item-body">
             <div class="item-tags">
                 <span class="item-tag tag-category">{category}</span>
-                {tags.slice(0, 2).map((tag) => (
+                {primaryTema && (
+                    <a href={temaHref(primaryTema)} class="item-tag tag-tema">{primaryTema}</a>
+                )}
+                {visibleTags.map((tag) => (
                     <span class="item-tag">{tag}</span>
                 ))}
             </div>
@@ -60,8 +69,6 @@ const {
             </div>
             
             <slot />
-            
-            <span class="read-more">Leer más →</span>
         </div>
     </a>
 </article>
@@ -169,11 +176,6 @@ const {
         justify-content: center;
         width: 100%;
     }
-    
-    .item-card.no-image .read-more {
-        align-self: center;
-        margin-top: 1.5rem;
-    }
 
     .item-tags {
         display: flex;
@@ -199,6 +201,19 @@ const {
     .tag-category {
         background: #111;
         color: #fff;
+    }
+
+    .tag-tema {
+        background: #fff;
+        color: #111;
+        border: 1px solid #111;
+        text-decoration: none;
+    }
+
+    .item-card:hover .tag-tema {
+        background: #111;
+        color: #fff;
+        border-color: #111;
     }
 
     .item-card:hover .item-tag:not(.tag-category) {
@@ -260,24 +275,5 @@ const {
     
     .item-card.no-image .item-meta {
         margin-top: 1.5rem;
-    }
-
-    .read-more {
-        display: inline-block;
-        margin-top: 1rem;
-        font-family: monospace;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #111;
-        border-bottom: 2px solid #111;
-        padding-bottom: 1px;
-        align-self: flex-start;
-        transition: color 0.2s, border-color 0.2s;
-    }
-
-    .item-card:hover .read-more {
-        color: #ff0000;
-        border-color: #ff0000;
     }
 </style>

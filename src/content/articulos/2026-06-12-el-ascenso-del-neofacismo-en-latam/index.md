@@ -12,8 +12,7 @@ category: Columna de opinión
 temas: ['Ultraderecha y democracia', 'Internacional', 'Política']
 tags:
   - Neofascismo
-  - Política Latinoamericana
-  - Ultraderecha
+  - Política latinoamericana
   - Democracia
   - Elecciones
 ---

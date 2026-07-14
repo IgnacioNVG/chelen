@@ -1,6 +1,6 @@
 import { defineCollection, reference, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
-import { TEMAS } from './lib/taxonomy';
+import { TEMAS, validateEditorialTags } from './lib/taxonomy';
 
 const stripExtension = ({ entry }: { entry: string }) =>
 	entry.replace(/\.(md|mdx)$/, '');
@@ -14,6 +14,20 @@ const tags = z.array(z.string()).default([]);
 /** Ejes temáticos amplios (vocabulario controlado y compartido con el CMS). */
 const temas = z.array(z.enum(TEMAS)).default([]);
 
+/** Rechaza tags que dupliquen temas o la categoría de la pieza. */
+function withTagValidation<T extends z.ZodRawShape>(shape: T) {
+	return z.object(shape).superRefine((data, ctx) => {
+		const editorial = data as { temas?: string[]; tags?: string[]; category?: string };
+		for (const message of validateEditorialTags(
+			editorial.temas ?? [],
+			editorial.tags ?? [],
+			editorial.category,
+		)) {
+			ctx.addIssue({ code: 'custom', message, path: ['tags'] });
+		}
+	});
+}
+
 const articulos = defineCollection({
 	loader: glob({
 		pattern: '**/index.{md,mdx}',
@@ -21,7 +35,7 @@ const articulos = defineCollection({
 		generateId: articleId,
 	}),
 	schema: ({ image }) =>
-		z.object({
+		withTagValidation({
 			title: z.string(),
 			description: z.string(),
 			pubDate: z.coerce.date(),
@@ -41,7 +55,7 @@ const cartas = defineCollection({
 		generateId: articleId,
 	}),
 	schema: ({ image }) =>
-		z.object({
+		withTagValidation({
 			title: z.string(),
 			pubDate: z.coerce.date(),
 			heroImage: image().optional(),
@@ -59,7 +73,7 @@ const poemas = defineCollection({
 		generateId: articleId,
 	}),
 	schema: ({ image }) =>
-		z.object({
+		withTagValidation({
 			title: z.string(),
 			pubDate: z.coerce.date(),
 			heroImage: image().optional(),
@@ -78,7 +92,7 @@ const antologias = defineCollection({
 		generateId: articleId,
 	}),
 	schema: ({ image }) =>
-		z.object({
+		withTagValidation({
 			title: z.string(),
 			description: z.string(),
 			pubDate: z.coerce.date(),
@@ -100,7 +114,6 @@ const columnistas = defineCollection({
 		z.object({
 			name: z.string(),
 			role: z.string().default('Columnista'),
-			affiliation: z.string().optional(),
 			summary: z.string().optional(),
 			portrait: image().optional(),
 			email: z.union([z.literal(''), z.string().email()]).optional(),

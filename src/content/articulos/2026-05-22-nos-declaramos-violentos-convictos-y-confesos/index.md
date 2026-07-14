@@ -7,7 +7,7 @@ author: vicente-rojas
 affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Educación', 'Movimientos sociales']
-tags: ['Movimiento secundario', 'Violencia política', 'Tomas', 'Educación']
+tags: ['Movimiento secundario', 'Violencia política', 'Tomas']
 ---
 
 ### LA FRAGMENTACIÓN 

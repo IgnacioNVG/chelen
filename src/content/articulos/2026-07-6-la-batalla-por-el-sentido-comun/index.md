@@ -9,14 +9,15 @@ category: 'Columna de opinión'
 temas:
   - Política
   - Izquierda y socialismo
+  - Teoría e ideas
   - Historia y memoria
 tags:
   - Antonio Gramsci
-  - hegemonía cultural
+  - Hegemonía cultural
   - Chile
-  - dictadura
-  - memoria histórica
-  - polarización política
+  - Dictadura
+  - Memoria histórica
+  - Polarización política
 ---
 
 La persistente polarización política en Chile suele expresarse mediante descalificaciones que reducen el debate público a consignas y etiquetas. Sin embargo, detrás de esa confrontación cotidiana existe una disputa mucho más profunda: la lucha por construir el sentido común que organiza la forma en que una sociedad comprende su historia, interpreta su presente y proyecta su futuro.

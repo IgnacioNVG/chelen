@@ -6,8 +6,8 @@ heroImage: ./hero.webp
 author: ignacio-navas-granizo
 affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
-temas: ['Izquierda y socialismo', 'Economía', 'Historia y memoria']
-tags: ['Neoliberalismo', 'Chile', 'Estallido Social', 'Izquierda', 'Materialismo']
+temas: ['Izquierda y socialismo', 'Economía', 'Historia y memoria', 'Teoría e ideas']
+tags: ['Neoliberalismo', 'Chile', 'Estallido social', 'Materialismo histórico']
 ---
 
 Durante décadas, gran parte del análisis político chileno interpretó el neoliberalismo, de manera

@@ -4,6 +4,7 @@ pubDate: 2026-05-25
 author: "Juan Tinola"
 heroImage: ./hero.webp
 category: "Poesía"
+temas: ['Cultura', 'Política']
 ---
 
 Nuevamente sobre la libertad pregunto,

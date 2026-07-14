@@ -8,7 +8,7 @@ import AuthorLink from '../components/ui/AuthorLink.astro';
 import { resolveAuthorRef } from '../lib/authorSlug';
 import { SITE_TITLE } from '../consts';
 
-const { title, pubDate, heroImage, author, affiliation } = Astro.props;
+const { title, pubDate, heroImage, author } = Astro.props;
 const authorId = resolveAuthorRef(author);
 ---
 
@@ -66,16 +66,7 @@ const authorId = resolveAuthorRef(author);
                 gap: 0.8rem;
             }
 
-            .affiliation-line {
-                font-family: monospace;
-                font-size: 0.78rem;
-                font-weight: bold;
-                color: #555;
-                text-transform: uppercase;
-                border-left: 4px solid #FF1321;
-                padding-left: 0.7rem;
-                margin-bottom: 1.8rem;
-            }
+
 
             .cuerpo-carta {
                 font-family: 'Raleway', sans-serif;
@@ -116,9 +107,7 @@ const authorId = resolveAuthorRef(author);
                         <span>Por: <AuthorLink name={author} /></span>
                         <span><FormattedDate date={pubDate} /></span>
                     </div>
-                    {affiliation && (
-                        <div class="affiliation-line">{affiliation}</div>
-                    )}
+
                     <div class="cuerpo-carta">
                         <slot />
                     </div>
