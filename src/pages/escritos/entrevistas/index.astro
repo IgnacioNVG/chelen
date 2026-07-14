@@ -43,7 +43,7 @@ const categories = [...new Set(posts.map(post => post.data.category || 'Entrevis
                     data-date={post.data.pubDate.valueOf()}>
                     <ItemCard 
                         title={post.data.title}
-                        href={`/escritos/articulos/${post.id}`}
+                        href={`/escritos/${post.id}`}
                         heroImage={post.data.heroImage}
                         category={post.data.category || 'Entrevista'}
                         author={post.data.author || 'Redacción'}

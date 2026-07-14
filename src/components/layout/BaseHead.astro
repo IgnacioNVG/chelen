@@ -44,7 +44,7 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
         if (window.hasAddedNavListeners) return;
         window.hasAddedNavListeners = true;
 
-        const navOrder = ['/', '/grafica', '/poemas', '/cartas', '/articulos', '/nosotros', '/organizacion'];
+        const navOrder = ['/', '/grafica', '/poemas', '/cartas', '/escritos', '/nosotros', '/organizacion'];
         
         const sectionFor = (url) => {
             if (!url) return -1;

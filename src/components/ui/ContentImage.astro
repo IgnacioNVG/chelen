@@ -26,12 +26,20 @@ const {
 
 const loading = loadingProp ?? (priority ? 'eager' : 'lazy');
 const fetchpriority = fetchpriorityProp ?? (priority ? 'high' : undefined);
+
+// Generar tamaños responsivos basados en el ancho solicitado
+const defaultWidths = [240, 540, 720, width].filter(w => w <= src.width && w <= width);
+if (!defaultWidths.includes(width) && width <= src.width) defaultWidths.push(width);
+const widths = [...new Set(defaultWidths)].sort((a, b) => a - b);
+const sizes = `(max-width: 360px) 240px, (max-width: 720px) 540px, (max-width: 1600px) 720px, ${width}px`;
 ---
 
 <Image
 	src={src}
 	alt={alt}
 	width={width}
+	widths={widths}
+	sizes={sizes}
 	class={className}
 	loading={loading}
 	fetchpriority={fetchpriority}

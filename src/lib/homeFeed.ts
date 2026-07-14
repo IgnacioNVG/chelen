@@ -33,7 +33,7 @@ export function buildArticuloItems(articulos: CollectionEntry<'articulos'>[]): F
 		category: post.data.category,
 		temas: post.data.temas,
 		tags: post.data.tags,
-		href: `/escritos/articulos/${post.id}`,
+		href: `/escritos/${post.id}`,
 		image: post.data.heroImage,
 		imageLayout: post.data.heroImage ? 'landscape' : 'none',
 	}));

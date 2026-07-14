@@ -28,6 +28,7 @@ const articulos = defineCollection({
 			heroImage: image().optional(),
 			author: reference('columnistas').optional(),
 			category: z.enum(['Artículo', 'Columna de opinión', 'Entrevista']).default('Artículo'),
+			pdf: z.string().optional(),
 			temas,
 			tags,
 		}),

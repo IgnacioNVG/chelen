@@ -460,7 +460,7 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 						{allPublications.map((pub) => (
 							<a
 								class="pub-card"
-								href={pub.type === 'articulo' ? `/articulos/${pub.id}/` : `/cartas/${pub.id}/`}
+								href={pub.type === 'articulo' ? `/escritos/${pub.id}/` : `/cartas/${pub.id}/`}
 							>
 								<div class="pub-thumb">
 									{pub.data.heroImage ? (

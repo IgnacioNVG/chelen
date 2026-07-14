@@ -104,6 +104,12 @@ export default config({
         }),
         temas: temasField,
         tags: tagsField,
+        pdf: fields.file({
+          label: 'Documento PDF (Artículo Diagramado)',
+          description: 'Sube aquí el PDF del artículo. Se visualizará incrustado en la página.',
+          directory: '.', 
+          publicPath: '', 
+        }),
         content: bodyField(),
       },
     }),

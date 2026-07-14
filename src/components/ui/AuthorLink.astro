@@ -18,7 +18,12 @@ const profile = columnistas.find(
 	(c) => c.id === cleanName || authorSlug(c.data.name) === authorSlug(cleanName)
 ) ?? null;
 
-const displayName = profile?.data.name ?? cleanName;
+const unslugify = (slug: string) => {
+	if (!slug.includes('-')) return slug;
+	return slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
+
+const displayName = profile?.data.name ?? unslugify(cleanName);
 const slug = profile?.id ?? authorSlug(cleanName);
 
 const isAnon = displayName.toLowerCase() === 'anónimo' || displayName.toLowerCase() === 'anonimo';

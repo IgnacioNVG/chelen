@@ -29,9 +29,7 @@ const editorialFeed = mergeEditorialFeed(
 
 const edicion = editionLabel(editorialFeed);
 
-const hero =
-    editorialFeed.find((item) => item.kind === 'articulo' && item.imageLayout === 'landscape') ??
-    editorialFeed[0];
+const hero = editorialFeed[0];
 
 const feedSinHero = editorialFeed.filter((item) => item.id !== hero?.id);
 const publicacionesRecientes = feedSinHero.slice(0, 6);
@@ -180,11 +178,14 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             /* --- ESTRUCTURAS DE GRILLA Y PROPORCIONES --- */
-            .hero-zone { margin-bottom: 2.5rem; }
+            .hero-zone { 
+                max-width: 1024px;
+                margin: 0 auto 3rem; 
+            }
 
             .hero-zone :global(.feed-card--hero .feed-card-link) {
-                display: grid;
-                grid-template-columns: 1.15fr 1fr;
+                display: flex;
+                flex-direction: row;
                 text-decoration: none;
                 color: inherit;
             }
@@ -240,6 +241,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             .hero-zone :global([class*="feed-media"]) {
+                flex: 1;
                 border-bottom: none;
                 border-right: 3px solid #111;
             }
@@ -272,9 +274,12 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             .hero-zone :global(.feed-card--hero .feed-body) {
+                flex: 1.25;
                 padding: clamp(1.25rem, 3vw, 2.5rem);
                 display: flex;
                 flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
             }
 
             .feed-grid :global(.feed-body) {
@@ -328,6 +333,8 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 flex-wrap: wrap;
                 gap: 0.4rem;
                 margin-bottom: 0.8rem;
+                align-items: flex-start;
+                align-content: flex-start;
             }
 
             .feed-grid :global(.feed-tag),
@@ -456,7 +463,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
 
             @media (max-width: 720px) {
                 .hero-zone :global(.feed-card--hero .feed-card-link) {
-                    grid-template-columns: 1fr;
+                    flex-direction: column;
                 }
 
                 .hero-zone :global([class*="feed-media"]) {

@@ -20,7 +20,7 @@ type Props = Omit<
     author?: string | { id: string };
 };
 
-const { title, description, heroImage, author, affiliation, category, temas } =
+const { title, description, heroImage, author, affiliation, category, temas, pdf } =
     Astro.props;
 const authorId = resolveAuthorRef(author);
 const currentArticleId = decodeURIComponent(
@@ -228,6 +228,24 @@ const similarPosts = otherArticulos
                 display: flex;
                 flex-direction: column;
                 min-height: 0;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                padding-right: 0.5rem;
+                scrollbar-width: thin;
+                scrollbar-color: #111 transparent;
+            }
+
+            .sidebar::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .sidebar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .sidebar::-webkit-scrollbar-thumb {
+                background: #111;
+                border-radius: 999px;
             }
 
             .sidebar-title {
@@ -249,24 +267,6 @@ const similarPosts = otherArticulos
                 display: flex;
                 flex-direction: column;
                 gap: 1.5rem;
-                overflow-y: auto;
-                overscroll-behavior: contain;
-                padding: 0 0.5rem 0.5rem 0;
-                scrollbar-width: thin;
-                scrollbar-color: #111 transparent;
-            }
-
-            .sidebar-list::-webkit-scrollbar {
-                width: 8px;
-            }
-
-            .sidebar-list::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            .sidebar-list::-webkit-scrollbar-thumb {
-                background: #111;
-                border-radius: 999px;
             }
 
 
@@ -369,7 +369,25 @@ const similarPosts = otherArticulos
                 </header>
 
                 <div class="prose">
-                    <slot />
+                    {pdf ? (
+                        <div class="visor-pdf-wrapper" style="margin-top: 2rem;">
+                            <div style="background: #f9f9f9; padding: 1rem; border: 1px solid #111; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-family: monospace; font-size: 0.9rem;">📄 DOCUMENTO ORIGINAL INCORPORADO</span>
+                                <a href={`/api/pdf/${currentArticleId}.pdf`} download class="nav-pill" style="background: #ff0000; color: white; padding: 0.5rem 1rem; text-decoration: none; font-weight: bold; border: 1px solid #111;">Descargar PDF</a>
+                            </div>
+                            <iframe 
+                                src={`/api/pdf/${currentArticleId}.pdf`}
+                                width="100%" 
+                                height="900px"
+                                style="border: 2px solid #111;"
+                                title="Visor de PDF"
+                            >
+                                <p>Tu navegador no soporta el visor. <a href={`/api/pdf/${currentArticleId}.pdf`}>Descarga el archivo aquí</a>.</p>
+                            </iframe>
+                        </div>
+                    ) : (
+                        <slot />
+                    )}
                 </div>
             </article>
 
@@ -383,7 +401,7 @@ const similarPosts = otherArticulos
                                     <div class="sidebar-card-wrapper">
                                         <ItemCard
                                             title={post.data.title}
-                                            href={`/escritos/articulos/${post.id}/`}
+                                            href={`/escritos/${post.id}/`}
                                             heroImage={post.data.heroImage}
                                             category={post.data.category || 'Artículo'}
                                             author={resolveAuthorRef(post.data.author) || "Redacción"}
@@ -407,7 +425,7 @@ const similarPosts = otherArticulos
                                         <div class="sidebar-card-wrapper">
                                             <ItemCard
                                                 title={post.data.title}
-                                                href={`/escritos/articulos/${post.id}/`}
+                                                href={`/escritos/${post.id}/`}
                                                 heroImage={post.data.heroImage}
                                                 category={post.data.category || 'Artículo'}
                                                 author={resolveAuthorRef(post.data.author) || "Redacción"}
