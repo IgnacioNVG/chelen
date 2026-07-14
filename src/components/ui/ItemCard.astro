@@ -8,6 +8,7 @@ interface Props {
     href: string;
     heroImage?: any;
     category: string;
+    description?: string;
     author?: string;
     date?: Date;
     tags?: string[];
@@ -21,6 +22,7 @@ const {
     href, 
     heroImage, 
     category, 
+    description,
     author, 
     date, 
     tags = [], 
@@ -50,6 +52,7 @@ const {
             </div>
             
             <h3 class="item-title">{title}</h3>
+            {description && <p class="item-description">{description}</p>}
             
             <div class="item-meta">
                 {author && <span><AuthorLink name={author} /></span>}
@@ -229,6 +232,18 @@ const {
 
     .item-card:hover .item-title {
         color: #ff0000;
+    }
+
+    .item-description {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: #444;
+        margin: 0 0 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .item-meta {
