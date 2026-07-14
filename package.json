@@ -21,6 +21,7 @@
 		"@keystatic/astro": "^5.1.0",
 		"@keystatic/core": "^0.5.50",
 		"astro": "^6.4.6",
+		"pdfjs-dist": "^6.1.200",
 		"react": "^19.2.6",
 		"react-dom": "^19.2.6",
 		"typescript": "^5.9.3"

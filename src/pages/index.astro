@@ -3,8 +3,9 @@ import BaseHead from '../components/layout/BaseHead.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import FeedCard from '../components/home/FeedCard.astro';
+import ItemCard from '../components/ui/ItemCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import {
     buildAntologiaItems,
@@ -29,18 +30,39 @@ const editorialFeed = mergeEditorialFeed(
 
 const edicion = editionLabel(editorialFeed);
 
-const hero = editorialFeed[0];
+const heroMain = editorialFeed[0];
+const heroSide1 = editorialFeed[1];
+const heroSide2 = editorialFeed[2];
 
-const feedSinHero = editorialFeed.filter((item) => item.id !== hero?.id);
+const feedSinHero = editorialFeed.slice(3);
 const publicacionesRecientes = feedSinHero.slice(0, 6);
-const recientesIds = new Set([...publicacionesRecientes.map((d) => d.id), hero?.id].filter(Boolean));
+const recientesIds = new Set([
+    ...publicacionesRecientes.map((d) => d.id),
+    heroMain?.id,
+    heroSide1?.id,
+    heroSide2?.id,
+].filter(Boolean));
+
 const columnasRecientes = feedSinHero
     .filter((item) => item.kind === 'articulo' && !recientesIds.has(item.id))
     .slice(0, 3);
-const cartasRecientes = feedSinHero.filter((item) => item.kind === 'carta').slice(0, 3);
+    
 const arteReciente = feedSinHero
     .filter((item) => item.kind === 'poema' || item.kind === 'antologia')
     .slice(0, 3);
+
+const cartasRecientesItems = feedSinHero.filter((item) => item.kind === 'carta').slice(0, 3);
+const cartasRecientesConContenido = await Promise.all(
+    cartasRecientesItems.map(async (item) => {
+        const slug = item.id.replace('carta-', '');
+        const entry = await getEntry('cartas', slug);
+        if (entry) {
+            const { Content } = await render(entry);
+            return { ...item, Content };
+        }
+        return { ...item, Content: null };
+    })
+);
 
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>(
     '../assets/grafica-*.{webp,png,jpg,jpeg}',
@@ -66,7 +88,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
         <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
         <style>
             .home {
-                width: min(1280px, calc(100% - 2rem));
+                width: min(1380px, calc(100% - 2rem));
                 margin: 0 auto;
                 padding: 1.5rem 0 4rem;
             }
@@ -77,7 +99,6 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 margin-bottom: 2rem;
             }
 
-            /* --- REDISEÑO BRUTALISTA DE LA PÍLDORA SUPERIOR --- */
             .masthead-kicker {
                 display: inline-block;
                 font-family: monospace;
@@ -125,6 +146,14 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 padding-top: 1rem;
                 margin: 3.5rem 0 1.5rem;
             }
+            
+            .section-band--compact {
+                margin: 0 0 1.5rem 0;
+                padding-top: 0;
+                border-top: none;
+                border-bottom: 3px solid #111;
+                padding-bottom: 0.5rem;
+            }
 
             .section-band h2 {
                 font-family: 'Sifonn', sans-serif;
@@ -134,7 +163,6 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 color: #111;
             }
 
-            /* Botones de sección más consistentes con brutalismo */
             .section-band a {
                 font-family: monospace;
                 font-size: 0.75rem;
@@ -156,280 +184,142 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 border-color: #ff1321;
             }
 
-            /* --- TARJETAS BRUTALISTAS (HERO, FEED Y GRÁFICA) --- */
-            .hero-zone :global(.feed-card--hero),
-            .feed-grid :global(.feed-card),
-            .graphics-strip a {
-                background-color: #fff;
-                border: 2px solid #111;
-                border-radius: 0; /* Quitamos bordes redondeados para el brutalismo */
-                box-shadow: 5px 5px 0px 0px #111;
-                overflow: hidden;
-                transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .hero-zone :global(.feed-card--hero:hover),
-            .feed-grid :global(.feed-card:hover),
-            .graphics-strip a:hover {
-                transform: translate(-4px, -4px);
-                box-shadow: 9px 9px 0px 0px #ff1321; /* Sombra roja vibrante más dura */
-            }
-
-            /* --- ESTRUCTURAS DE GRILLA Y PROPORCIONES --- */
-            .hero-zone { 
-                max-width: 1024px;
-                margin: 0 auto 3rem; 
-            }
-
-            .hero-zone :global(.feed-card--hero .feed-card-link) {
-                display: flex;
-                flex-direction: row;
-                text-decoration: none;
-                color: inherit;
-            }
-
-            /* Grilla general de CSS base */
-            .feed-grid {
+            /* --- NEWSPAPER HERO --- */
+            .hero-newspaper {
                 display: grid;
+                grid-template-columns: 1fr;
                 gap: 2rem;
+                margin-bottom: 4rem;
+            }
+            
+            @media (min-width: 900px) {
+                .hero-newspaper {
+                    grid-template-columns: 2fr 1fr;
+                }
             }
 
-            /* Rejilla Artículos y Columnas (Forzando imágenes a 2:1) */
-            .feed-grid--articulos {
-                grid-template-columns: repeat(12, 1fr);
-            }
-            .feed-grid--articulos :global(.feed-card) {
-                grid-column: span 4;
-            }
-            .feed-grid--articulos :global(.feed-card--featured) {
-                grid-column: span 6;
-            }
-            /* Garantizamos el 2:1 en el contenedor de la imagen para artículos */
-            .feed-grid--articulos :global([class*="feed-media"]) {
-                aspect-ratio: 2 / 1 !important;
-            }
-
-            /* Rejilla Cartas al Director (Forzando imágenes a 3:4) */
-            .feed-grid--cartas {
-                grid-template-columns: repeat(3, 1fr);
-                margin-bottom: 2rem;
-            }
-            .feed-grid--cartas :global([class*="feed-media"]) {
-                aspect-ratio: 3 / 4 !important;
-            }
-
-            /* Rejilla Arte / Antología (Mantenemos 4:5 original) */
-            .feed-grid--retrato {
-                grid-template-columns: repeat(3, 1fr);
-                margin-bottom: 2rem;
-            }
-            .feed-grid--retrato :global([class*="feed-media"]) {
-                aspect-ratio: 4 / 5 !important;
-            }
-
-            /* --- CONTENEDORES DE IMÁGENES --- */
-            .hero-zone :global([class*="feed-media"]),
-            .feed-grid :global([class*="feed-media"]) {
-                background: #f0f0f0;
+            .hero-main {
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-                border-bottom: 3px solid #111;
+                flex-direction: column;
             }
-
-            .hero-zone :global([class*="feed-media"]) {
-                flex: 1;
-                border-bottom: none;
-                border-right: 3px solid #111;
-            }
-
-            .hero-zone :global([class*="feed-media"] img),
-            .feed-grid :global([class*="feed-media"] img),
-            .graphics-frame :global(img) {
-                width: 100%;
+            
+            .hero-main :global(.item-card) {
                 height: 100%;
-                object-fit: cover;
-                display: block;
-                transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s;
-                filter: grayscale(20%); /* Ligero desaturado brutalista en reposo */
             }
 
-            .hero-zone :global(.feed-card--hero:hover img),
-            .feed-grid :global(.feed-card:hover img),
-            .graphics-strip a:hover .graphics-frame :global(img) {
-                transform: scale(1.08);
-                filter: grayscale(0%);
-            }
-
-            /* --- CONTENEDORES DE TEXTO --- */
-            .feed-grid :global(.feed-card-link) {
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-                text-decoration: none;
-                color: inherit;
-            }
-
-            .hero-zone :global(.feed-card--hero .feed-body) {
-                flex: 1.25;
-                padding: clamp(1.25rem, 3vw, 2.5rem);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-            }
-
-            .feed-grid :global(.feed-body) {
-                padding: 1.25rem;
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
-            }
-
-            /* --- TIPOGRAFÍA Y ETIQUETAS --- */
-            .hero-zone :global(.feed-title--hero) {
-                font-size: clamp(1.6rem, 3.5vw, 3.2rem);
-                font-family: 'Sifonn', sans-serif;
-                text-transform: uppercase;
-                line-height: 0.95;
-                margin: 0 0 0.5rem;
-                color: #111;
-            }
-
-            .feed-grid :global(.feed-title) {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(0.95rem, 1.4vw, 1.35rem);
-                text-transform: uppercase;
-                line-height: 1.1;
-                margin: 0 0 0.5rem;
-                color: #111;
-            }
-
-            .hero-zone :global(.feed-desc),
-            .feed-grid :global(.feed-desc) {
-                font-size: 0.9rem;
-                font-weight: 500;
-                line-height: 1.45;
-                color: #333;
-                margin: 0 0 0.75rem;
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                flex-grow: 1;
-            }
-
-            .hero-zone :global(.feed-desc) {
-                font-size: 1.05rem;
-                line-height: 1.55;
-            }
-
-            .feed-grid :global(.feed-tags),
-            .hero-zone :global(.feed-tags) {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.4rem;
-                margin-bottom: 0.8rem;
-                align-items: flex-start;
-                align-content: flex-start;
-            }
-
-            .feed-grid :global(.feed-tag),
-            .hero-zone :global(.feed-tag) {
-                font-family: monospace;
-                font-size: 0.65rem;
-                font-weight: bold;
-                text-transform: uppercase;
-                border: 1px solid #111;
-                color: #111;
-                padding: 0.2rem 0.5rem;
-                transition: background 0.2s, color 0.2s;
-            }
-
-            .feed-grid :global(.feed-tag--section),
-            .hero-zone :global(.feed-tag--section) {
-                background: #111;
-                color: #fff;
-            }
-
-            .feed-grid :global(.feed-card:hover .feed-tag),
-            .hero-zone :global(.feed-card--hero:hover .feed-tag) {
-                background: #ff1321;
-                color: #fff;
-                border-color: #ff1321;
-            }
-
-            .feed-grid :global(.feed-meta) {
+            .hero-main :global(.item-body) {
                 margin-top: auto;
-                font-family: monospace;
-                font-size: 0.7rem;
-                color: #555;
+            }
+
+            .hero-sidebar {
                 display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                padding-top: 0.8rem;
-                border-top: 3px solid #111; /* Borde más rígido */
-            }
-
-            .feed-grid :global(.feed-author) {
-                font-weight: 800;
-                color: #111;
-                border-left: 4px solid #ff1321;
-                padding-left: 0.5rem;
-            }
-
-            /* --- ARCHIVO GRÁFICO --- */
-            .graphics-strip {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                flex-direction: column;
                 gap: 2rem;
             }
 
-            .graphics-strip a {
-                text-decoration: none;
-                color: inherit;
-                height: 100%;
+            /* --- MAIN LAYOUT (SIDEBAR FOR CARTAS) --- */
+            .newspaper-layout {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 3rem;
             }
 
-            .graphics-frame {
-                aspect-ratio: 4 / 5;
-                background: #f5f5f5;
-                border-bottom: 3px solid #111;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
+            @media (min-width: 1024px) {
+                .newspaper-layout {
+                    grid-template-columns: 3fr 1fr;
+                    align-items: start;
+                }
             }
 
-            .graphics-content {
-                padding: 1.25rem;
+            .newspaper-main {
                 display: flex;
                 flex-direction: column;
-                flex-grow: 1;
-                background: #fff;
             }
 
-            .graphics-content h4 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: 1rem;
-                text-transform: uppercase;
-                margin: 0;
+            .newspaper-sidebar {
+                position: sticky;
+                top: 2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
             }
 
-            .graphics-content span {
-                font-family: monospace;
-                font-size: 0.65rem;
-                font-weight: bold;
-                color: #666;
-                margin-top: 0.4rem;
+            /* Cartas Scrollable Box */
+            .cartas-scrollable {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                max-height: 85vh; /* Prevents it from going forever */
+                overflow-y: auto;
+                padding-right: 1rem;
+            }
+
+            /* Custom Scrollbar for Cartas */
+            .cartas-scrollable::-webkit-scrollbar {
+                width: 6px;
+            }
+            .cartas-scrollable::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-left: 1px solid #ddd;
+            }
+            .cartas-scrollable::-webkit-scrollbar-thumb {
+                background: #111;
+            }
+
+            .carta-texto-completo {
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: #222;
+                margin-top: 1rem;
+                margin-bottom: 1.5rem;
+                border-left: 3px solid #ddd;
+                padding-left: 1rem;
+            }
+            
+            .carta-texto-completo p {
+                margin-top: 0;
+                margin-bottom: 1rem;
+            }
+
+            /* --- MASONRY GRID (Aumentado de columnas) --- */
+            .brutalist-masonry {
+                column-count: 1;
+                column-gap: 2rem;
+                list-style: none;
+                padding: 0;
+                margin: 0 0 2rem 0;
+                width: 100%;
+            }
+
+            @media (min-width: 640px) {
+                .brutalist-masonry {
+                    column-count: 2;
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .brutalist-masonry {
+                    column-count: 3;
+                }
+            }
+
+            /* Contenedor del item que evita romperse entre columnas */
+            .masonry-item {
+                break-inside: avoid;
+                margin-bottom: 2rem;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .masonry-item > * {
+                width: 100%;
+                margin: 0 !important;
             }
 
             .editorial-note {
                 border: 3px solid #111;
-                background: #ffea00; /* Fondo de acento brutalista, opcional */
+                background: #ffea00;
                 box-shadow: 5px 5px 0px #111;
                 padding: clamp(1.2rem, 2vw, 1.8rem);
                 max-width: 760px;
@@ -448,40 +338,6 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 max-width: 620px;
                 background: #fff;
             }
-
-            /* --- RESPONSIVIDAD --- */
-            @media (max-width: 1024px) {
-                .feed-grid--articulos :global(.feed-card),
-                .feed-grid--articulos :global(.feed-card--featured) {
-                    grid-column: span 6;
-                }
-                .feed-grid--retrato,
-                .feed-grid--cartas {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-
-            @media (max-width: 720px) {
-                .hero-zone :global(.feed-card--hero .feed-card-link) {
-                    flex-direction: column;
-                }
-
-                .hero-zone :global([class*="feed-media"]) {
-                    border-right: none;
-                    border-bottom: 3px solid #111;
-                }
-
-                .feed-grid--articulos :global(.feed-card),
-                .feed-grid--articulos :global(.feed-card--featured) {
-                    grid-column: span 12;
-                }
-
-                .feed-grid--retrato,
-                .feed-grid--cartas,
-                .graphics-strip {
-                    grid-template-columns: 1fr;
-                }
-            }
         </style>
     </head>
     <body>
@@ -496,109 +352,210 @@ const graficaDestacada = graphics.slice(-3).reverse();
                 </p>
             </header>
 
-            {hero && (
-                <section class="hero-zone">
-                    <FeedCard item={hero} variant="hero" />
-                </section>
-            )}
-
-            {publicacionesRecientes.length > 0 && (
-                <>
-                    <div class="section-band">
-                        <h2>Publicaciones recientes</h2>
-                        <a href="/escritos">Ver publicaciones -></a>
+            <!-- 1. HERO NEWSPAPER -->
+            <section class="hero-newspaper">
+                {heroMain && (
+                    <div class="hero-main masonry-item">
+                        <ItemCard 
+                            title={heroMain.title}
+                            href={heroMain.href}
+                            heroImage={heroMain.image}
+                            category={heroMain.category}
+                            author={heroMain.author}
+                            date={heroMain.pubDate}
+                            tags={heroMain.tags}
+                            format="landscape"
+                            isFeatured={true}
+                        />
                     </div>
-                    {/* Artículos usando forzado a proporción 2:1 */}
-                    <div class="feed-grid feed-grid--articulos">
-                        {publicacionesRecientes.map((item) => (
-                            <FeedCard item={item} variant="featured" />
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {columnasRecientes.length > 0 && (
-                <>
-                    <div class="section-band">
-                        <h2>Columnas recientes</h2>
-                        <a href="/escritos/columnas">Ver columnas -></a>
-                    </div>
-                    {/* Columnas usando forzado a proporción 2:1 */}
-                    <div class="feed-grid feed-grid--articulos">
-                        {columnasRecientes.map((item) => (
-                            <FeedCard item={item} />
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {arteReciente.length > 0 && (
-                <>
-                    <div class="section-band">
-                        <h2>Arte socialista destacado</h2>
-                        <a href="/multimedia/arte">Ver arte -></a>
-                    </div>
-                    {/* Arte usando proporción original 4:5 */}
-                    <div class="feed-grid feed-grid--retrato">
-                        {arteReciente.map((item) => (
-                            <FeedCard item={item} />
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {graficaDestacada.length > 0 && (
-                <>
-                    <div class="section-band">
-                        <h2>Grafica destacada</h2>
-                        <a href="/multimedia/grafica">Ver todo -></a>
-                    </div>
-                    <div class="graphics-strip">
-                        {graficaDestacada.map((g) => (
-                            <a href="/multimedia/grafica">
-                                <div class="graphics-frame">
-                                    <Image src={g.src} alt={g.title} width={500} />
-                                </div>
-                                <div class="graphics-content">
-                                    <h4>{g.title}</h4>
-                                    <span>Formato 4:5 / Archivo visual</span>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
-                </>
-            )}
-
-            <div class="section-band">
-                <h2>Produccion audiovisual reciente</h2>
-                <a href="/multimedia/audiovisual">Ver audiovisual -></a>
-            </div>
-            <section class="editorial-note">
-                <p>Podcast, conversatorios y paneles se agrupan en una seccion propia, preparada para incorporar nuevas categorias audiovisuales.</p>
+                )}
+                <div class="hero-sidebar">
+                    {heroSide1 && (
+                        <div class="masonry-item">
+                            <ItemCard 
+                                title={heroSide1.title}
+                                href={heroSide1.href}
+                                heroImage={heroSide1.image}
+                                category={heroSide1.category}
+                                author={heroSide1.author}
+                                date={heroSide1.pubDate}
+                                tags={heroSide1.tags}
+                                format="landscape"
+                            />
+                        </div>
+                    )}
+                    {heroSide2 && (
+                        <div class="masonry-item">
+                            <ItemCard 
+                                title={heroSide2.title}
+                                href={heroSide2.href}
+                                heroImage={heroSide2.image}
+                                category={heroSide2.category}
+                                author={heroSide2.author}
+                                date={heroSide2.pubDate}
+                                tags={heroSide2.tags}
+                                format="landscape"
+                            />
+                        </div>
+                    )}
+                </div>
             </section>
 
-            {cartasRecientes.length > 0 && (
-                <>
-                    <div class="section-band">
-                        <h2>Cartas al director</h2>
-                        <a href="/escritos/cartas">Ver cartas -></a>
-                    </div>
-                    {/* Cartas usando la nueva grilla con proporción forzada a 3:4 */}
-                    <div class="feed-grid feed-grid--cartas">
-                        {cartasRecientes.map((item) => (
-                            <FeedCard item={item} />
-                        ))}
-                    </div>
-                </>
-            )}
+            <!-- 2. MAIN LAYOUT WITH SIDEBAR -->
+            <div class="newspaper-layout">
+                
+                <div class="newspaper-main">
+                    {publicacionesRecientes.length > 0 && (
+                        <>
+                            <div class="section-band">
+                                <h2>Publicaciones recientes</h2>
+                                <a href="/escritos">Ver publicaciones -></a>
+                            </div>
+                            <ul class="brutalist-masonry">
+                                {publicacionesRecientes.map((item) => (
+                                    <li class="masonry-item">
+                                        <ItemCard 
+                                            title={item.title}
+                                            href={item.href}
+                                            heroImage={item.image}
+                                            category={item.category}
+                                            author={item.author}
+                                            date={item.pubDate}
+                                            tags={item.tags}
+                                            format="landscape"
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
 
-            <div class="section-band">
-                <h2>Cuadernillos</h2>
-                <a href="/publicaciones/cuadernillos">Ver cuadernillos -></a>
+                    {columnasRecientes.length > 0 && (
+                        <>
+                            <div class="section-band">
+                                <h2>Columnas recientes</h2>
+                                <a href="/escritos/columnas">Ver columnas -></a>
+                            </div>
+                            <ul class="brutalist-masonry">
+                                {columnasRecientes.map((item) => (
+                                    <li class="masonry-item">
+                                        <ItemCard 
+                                            title={item.title}
+                                            href={item.href}
+                                            heroImage={item.image}
+                                            category={item.category}
+                                            author={item.author}
+                                            date={item.pubDate}
+                                            tags={item.tags}
+                                            format="landscape"
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+
+                    {arteReciente.length > 0 && (
+                        <>
+                            <div class="section-band">
+                                <h2>Arte socialista destacado</h2>
+                                <a href="/multimedia/arte">Ver arte -></a>
+                            </div>
+                            <ul class="brutalist-masonry">
+                                {arteReciente.map((item) => (
+                                    <li class="masonry-item">
+                                        <ItemCard 
+                                            title={item.title}
+                                            href={item.href}
+                                            heroImage={item.image}
+                                            category={item.category}
+                                            author={item.author}
+                                            date={item.pubDate}
+                                            tags={item.tags}
+                                            format="portrait"
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+
+                    {graficaDestacada.length > 0 && (
+                        <>
+                            <div class="section-band">
+                                <h2>Grafica destacada</h2>
+                                <a href="/multimedia/grafica">Ver todo -></a>
+                            </div>
+                            <ul class="brutalist-masonry">
+                                {graficaDestacada.map((item) => (
+                                    <li class="masonry-item">
+                                        <ItemCard 
+                                            title={item.title}
+                                            href={`/multimedia/grafica`}
+                                            heroImage={item.src}
+                                            category="Archivo visual"
+                                            tags={["Formato 4:5"]}
+                                            format="portrait"
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+
+                    <div class="section-band">
+                        <h2>Produccion audiovisual reciente</h2>
+                        <a href="/multimedia/audiovisual">Ver audiovisual -></a>
+                    </div>
+                    <section class="editorial-note">
+                        <p>Podcast, conversatorios y paneles se agrupan en una seccion propia, preparada para incorporar nuevas categorias audiovisuales.</p>
+                    </section>
+                    
+                    <div class="section-band">
+                        <h2>Cuadernillos</h2>
+                        <a href="/publicaciones/cuadernillos">Ver cuadernillos -></a>
+                    </div>
+                    <section class="editorial-note editorial-note--compact">
+                        <p>Publicaciones especiales con portada, autores, fecha, descarga PDF y lectura online.</p>
+                    </section>
+                </div>
+
+                <!-- SIDEBAR DERECHA: CARTAS AL DIRECTOR -->
+                <aside class="newspaper-sidebar">
+                    {cartasRecientesConContenido.length > 0 && (
+                        <>
+                            <div class="section-band section-band--compact">
+                                <h2>Cartas al director</h2>
+                                <a href="/escritos/cartas">Ver -></a>
+                            </div>
+                            <div class="cartas-scrollable">
+                                {cartasRecientesConContenido.map((item) => (
+                                    <div class="masonry-item">
+                                        <ItemCard 
+                                            title={item.title}
+                                            href={item.href}
+                                            heroImage={undefined}
+                                            category={item.category}
+                                            author={item.author}
+                                            date={item.pubDate}
+                                            tags={item.tags}
+                                        >
+                                            {item.Content ? (
+                                                <div class="carta-texto-completo">
+                                                    <item.Content />
+                                                </div>
+                                            ) : (
+                                                <p class="carta-texto-completo">{item.description}</p>
+                                            )}
+                                        </ItemCard>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </aside>
+
             </div>
-            <section class="editorial-note editorial-note--compact">
-                <p>Publicaciones especiales con portada, autores, fecha, descarga PDF y lectura online.</p>
-            </section>
         </main>
         <Footer />
     </body>

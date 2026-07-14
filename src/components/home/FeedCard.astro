@@ -7,13 +7,13 @@ import type { FeedItem } from '../../lib/homeFeed';
 interface Props {
 	item: FeedItem;
 	variant?: 'hero' | 'featured' | 'compact';
+	loading?: 'lazy' | 'eager';
 }
 
-const { item, variant = 'compact' } = Astro.props;
+const { item, variant = 'compact', loading: loadingProp } = Astro.props;
 
 const priority = variant === 'hero';
-const aboveFold = variant === 'hero' || variant === 'featured';
-const loading = aboveFold ? 'eager' : 'lazy';
+const loading = loadingProp ?? (priority ? 'eager' : 'lazy');
 ---
 
 <article

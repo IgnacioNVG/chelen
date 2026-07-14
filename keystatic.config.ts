@@ -23,7 +23,7 @@ const bodyField = () =>
   });
 
 export default config({
-  storage: import.meta.env.DEV
+  storage: process.env.NODE_ENV === 'development'
     ? { kind: "local" }
     : {
         kind: "github",
