@@ -56,7 +56,8 @@ const similarPosts = otherArticulos
             }
 
             main {
-                width: min(1240px, calc(100% - 2rem));
+                width: calc(100% - 4vw);
+                max-width: 1800px;
                 margin: 0 auto;
                 padding: clamp(1.5rem, 4vw, 3rem) 0 4rem;
                 display: grid;
@@ -124,7 +125,7 @@ const similarPosts = otherArticulos
             }
 
             .article-title {
-                font-family: "Sifonn", sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: clamp(2.2rem, 5vw, 4.2rem);
                 text-transform: uppercase;
                 line-height: 0.9;
@@ -192,6 +193,7 @@ const similarPosts = otherArticulos
                 font-size: 1.12rem;
                 line-height: 1.7;
                 color: #222;
+                max-width: 80ch;
             }
 
             .prose :global(p) {
@@ -244,7 +246,7 @@ const similarPosts = otherArticulos
             }
 
             .sidebar-title {
-                font-family: "Sifonn", sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: 1.3rem;
                 text-transform: uppercase;
                 line-height: 1;

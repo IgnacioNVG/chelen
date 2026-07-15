@@ -59,11 +59,9 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
 
         /* 2. Sistema unificado de Paddings y Contenedores */
         .search-container {
-            /* Padding horizontal armónico y responsivo similar al que debería tener Publicaciones */
-            width: 100%;
-            max-width: 1280px;
+            width: calc(100% - 4vw);
+            max-width: 1800px;
             margin: 0 auto;
-            padding-inline: clamp(1.5rem, 5vw, 4rem);
             padding-top: 2rem;
             padding-bottom: 6rem;
         }
@@ -107,35 +105,36 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
             border-color: #111;
         }
 
-        .publications-grid {
+        /* --- Grilla Masonry Homogeneizada --- */
+        .brutalist-masonry {
             column-count: 1;
             column-gap: 2rem;
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 0 0 2rem 0;
             width: 100%;
         }
 
-        @media (min-width: 768px) {
-            .publications-grid {
+        @media (min-width: 640px) {
+            .brutalist-masonry {
                 column-count: 2;
             }
         }
 
-        @media (min-width: 1024px) {
-            .publications-grid {
+        @media (min-width: 1200px) {
+            .brutalist-masonry {
                 column-count: 3;
             }
         }
 
-        .search-item {
+        .masonry-item {
             break-inside: avoid;
             margin-bottom: 2rem;
             display: flex;
             flex-direction: column;
         }
 
-        .search-item > * {
+        .masonry-item > * {
             width: 100%;
             margin: 0 !important;
         }
@@ -192,14 +191,14 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
         <h3 id="titulo-resultados" class="results-header">Sugerencias para ti</h3>
 
         <!-- Grid de Resultados (Renderizado del lado del servidor para usar el componente REAL) -->
-        <ul id="contenedor-resultados" class="publications-grid">
+        <ul id="contenedor-resultados" class="brutalist-masonry">
             <li id="mensaje-vacio" class="empty-state hidden">
                 No hay resultados para tu búsqueda.
             </li>
 
             {allPosts.map((post, index) => (
                 <li
-                    class={`search-item ${index >= 6 ? 'hidden not-suggestion' : 'is-suggestion'}`}
+                    class={`masonry-item search-item ${index >= 6 ? 'hidden not-suggestion' : 'is-suggestion'}`}
                     data-title={post.title.toLowerCase()}
                     data-author={post.author.toLowerCase()}
                     data-category={post.category.toLowerCase()}
@@ -217,7 +216,6 @@ const sugerenciasPredeterminadas = allPosts.slice(0, 6);
                         temas={post.temas}
                         tags={post.tags}
                         format={post.formatClass === 'format-portrait' ? 'portrait' : 'landscape'}
-                        hoverRevealImage={true}
                     />
                 </li>
             ))}

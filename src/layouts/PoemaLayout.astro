@@ -25,7 +25,8 @@ const mostrarPortada = !!heroImage && !antologia;
         <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Poema: ${title}, por ${author}`} />
         <style>
             main {
-                width: min(960px, calc(100% - 2rem));
+                width: calc(100% - 4vw);
+                max-width: 1800px;
                 margin: 0 auto;
                 padding: 2.5rem 0 5rem;
             }
@@ -69,7 +70,7 @@ const mostrarPortada = !!heroImage && !antologia;
             .breadcrumb a:hover { color: #111; }
 
             .titulo-poema {
-                font-family: 'Sifonn', sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: clamp(1.6rem, 3.5vw, 2.8rem);
                 text-transform: uppercase;
                 line-height: 1;

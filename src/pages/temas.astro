@@ -43,7 +43,8 @@ const temas = TEMAS.map((tema) => ({
 		/>
 		<style>
 			main {
-				width: min(1080px, calc(100% - 2rem));
+				width: calc(100% - 4vw);
+                max-width: 1800px;
 				margin: 0 auto;
 				padding: 2rem 0 4rem;
 			}
@@ -55,7 +56,7 @@ const temas = TEMAS.map((tema) => ({
 			}
 
 			.page-header h1 {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: clamp(2.2rem, 6vw, 4rem);
 				text-transform: uppercase;
 				line-height: 0.95;
@@ -84,7 +85,6 @@ const temas = TEMAS.map((tema) => ({
 				gap: 0.75rem;
 				border: 2px solid #111;
 				border-radius: 8px;
-				box-shadow: 4px 4px 0px 0px #111;
 				background: #fff;
 				padding: 1rem 1.1rem;
 				text-decoration: none;
@@ -94,21 +94,21 @@ const temas = TEMAS.map((tema) => ({
 
 			.tema-card:hover {
 				transform: translate(-3px, -3px);
-				box-shadow: 6px 6px 0px 0px #ff0000;
 				border-color: #ff0000;
+				background: #111;
+				color: #fff;
 			}
 
 			.tema-card[data-empty='true'] {
 				opacity: 0.5;
-				box-shadow: 2px 2px 0px 0px #111;
 			}
 
 			.tema-name {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: 1.05rem;
 				text-transform: uppercase;
 				line-height: 1.05;
-				color: #111;
+				color: inherit;
 			}
 
 			.tema-badge {

@@ -27,6 +27,7 @@ export const GET: APIRoute = async ({ params }) => {
     // Construimos la ruta real hacia el archivo en colocation
     // entry.data.pdf contiene el nombre del archivo (ej: 'documento.pdf')
     const pdfPath = path.resolve(process.cwd(), `src/content/articulos/${slug}/${entry.data.pdf}`);
+    console.log(`[PDF Build] Attempting to read PDF from: ${pdfPath}`);
     const pdfBuffer = await fs.readFile(pdfPath);
 
     return new Response(pdfBuffer, {
@@ -34,10 +35,11 @@ export const GET: APIRoute = async ({ params }) => {
       headers: {
         'Content-Type': 'application/pdf',
         // 'inline' permite que se vea en el visor. Usa 'attachment' si prefieres que se descargue directo.
-        'Content-Disposition': `inline; filename="${entry.data.pdf}"` 
+        'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(entry.data.pdf)}` 
       }
     });
   } catch (e) {
+    console.error(`[PDF Build] Error loading PDF for slug ${slug}:`, e);
     return new Response('Error al cargar el archivo', { status: 500 });
   }
 }

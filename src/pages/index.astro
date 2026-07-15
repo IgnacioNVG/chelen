@@ -2,7 +2,6 @@
 import BaseHead from '../components/layout/BaseHead.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import FeedCard from '../components/home/FeedCard.astro';
 import ItemCard from '../components/ui/ItemCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection, getEntry, render } from 'astro:content';
@@ -88,7 +87,8 @@ const graficaDestacada = graphics.slice(-3).reverse();
         <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
         <style>
             .home {
-                width: min(1380px, calc(100% - 2rem));
+                width: calc(100% - 4vw);
+                max-width: 1800px;
                 margin: 0 auto;
                 padding: 1.5rem 0 4rem;
             }
@@ -122,7 +122,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             .masthead-title {
-                font-family: 'Sifonn', sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: clamp(2.2rem, 6vw, 4rem);
                 text-transform: uppercase;
                 line-height: 0.95;
@@ -156,7 +156,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             .section-band h2 {
-                font-family: 'Sifonn', sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: clamp(1.2rem, 2.5vw, 1.75rem);
                 text-transform: uppercase;
                 margin: 0;
@@ -267,7 +267,7 @@ const graficaDestacada = graphics.slice(-3).reverse();
             }
 
             .carta-texto-completo {
-                font-family: Georgia, 'Times New Roman', Times, serif;
+                font-family: 'IBM Plex Mono', monospace;
                 font-size: 0.95rem;
                 line-height: 1.6;
                 color: #222;
@@ -490,15 +490,15 @@ const graficaDestacada = graphics.slice(-3).reverse();
                     {graficaDestacada.length > 0 && (
                         <>
                             <div class="section-band">
-                                <h2>Grafica destacada</h2>
-                                <a href="/multimedia/grafica">Ver todo -></a>
+                                <h2>Gráfico destacado</h2>
+                                <a href="/multimedia/grafico">Ver todo -></a>
                             </div>
                             <ul class="brutalist-masonry">
                                 {graficaDestacada.map((item) => (
                                     <li class="masonry-item">
                                         <ItemCard 
                                             title={item.title}
-                                            href={`/multimedia/grafica`}
+                                            href={`/multimedia/grafico`}
                                             heroImage={item.src}
                                             category="Archivo visual"
                                             tags={["Formato 4:5"]}

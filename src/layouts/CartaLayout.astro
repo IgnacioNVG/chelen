@@ -18,7 +18,8 @@ const authorId = resolveAuthorRef(author);
         <BaseHead title={`${title} | ${SITE_TITLE}`} description={`Carta al Director: ${title}, por ${authorId ?? 'Redacción Chelén'}`} />
         <style>
             main {
-                width: min(960px, calc(100% - 2rem));
+                width: calc(100% - 4vw);
+                max-width: 1800px;
                 margin: 0 auto;
                 padding: 2.5rem 0 5rem;
             }
@@ -46,7 +47,7 @@ const authorId = resolveAuthorRef(author);
             .breadcrumb a:hover { color: #111; }
 
             .titulo-carta {
-                font-family: 'Sifonn', sans-serif;
+                font-family: 'Satoshi', sans-serif;
                 font-size: clamp(1.5rem, 3vw, 2.4rem);
                 text-transform: uppercase;
                 line-height: 1.05;
@@ -69,11 +70,11 @@ const authorId = resolveAuthorRef(author);
 
 
             .cuerpo-carta {
-                font-family: 'Raleway', sans-serif;
+                font-family: 'IBM Plex Mono', monospace;
                 font-size: 1.05rem;
                 line-height: 1.75;
                 color: #222;
-                text-align: justify;
+                text-align: left;
                 hyphens: auto;
             }
 

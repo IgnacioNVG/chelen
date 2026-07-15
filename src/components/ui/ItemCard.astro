@@ -113,7 +113,6 @@ const visibleTags = tags.slice(0, primaryTema ? 1 : 2);
         overflow: hidden;
     }
     
-    /* --- REGLAS DE ASPECT RATIO GLOBALES --- */
     /* Formato apaisado para artículos, entrevistas, columnas */
     .item-card.format-landscape .item-media {
         aspect-ratio: 2 / 1;
@@ -122,6 +121,12 @@ const visibleTags = tags.slice(0, primaryTema ? 1 : 2);
     /* Formato vertical para cartas, poemas, gráficas */
     .item-card.format-portrait .item-media {
         aspect-ratio: 4 / 5;
+    }
+
+    /* Expansión dinámica para publicaciones destacadas */
+    .item-card.featured .item-media {
+        aspect-ratio: auto;
+        flex-grow: 1;
     }
 
     /* Imagen interna */
@@ -250,7 +255,7 @@ const visibleTags = tags.slice(0, primaryTema ? 1 : 2);
     }
 
     .item-description {
-        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-family: 'Satoshi', sans-serif;
         font-size: 0.95rem;
         line-height: 1.45;
         color: #444;
@@ -259,6 +264,14 @@ const visibleTags = tags.slice(0, primaryTema ? 1 : 2);
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+    }
+
+    .item-card.featured .item-description {
+        font-family: 'Satoshi', sans-serif !important;
+        font-size: 1.15rem;
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
     }
 
     .item-meta {

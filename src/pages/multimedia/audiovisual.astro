@@ -12,7 +12,8 @@ const sections = ['Podcast', 'Conversatorios', 'Paneles'];
     <head>
         <BaseHead title={`Audiovisual | ${SITE_TITLE}`} description="Podcast, conversatorios y paneles de Revista Chelen" />
         <style>
-            main { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+            main { width: calc(100% - 4vw);
+                max-width: 1800px; margin: 0 auto; padding: 2.5rem 0 4rem; }
             .page-header { border-bottom: 4px solid #111; margin-bottom: 2rem; padding-bottom: 1rem; }
             h1 { font-size: clamp(2.3rem, 8vw, 5rem); text-transform: uppercase; line-height: 0.9; }
             .intro { max-width: 740px; color: #333; font-size: 1rem; line-height: 1.55; }

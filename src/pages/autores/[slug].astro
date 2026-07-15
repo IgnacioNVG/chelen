@@ -94,7 +94,8 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 		<style>
 			/* ── Layout principal ── */
 			main {
-				width: min(1080px, calc(100% - 2rem));
+				width: calc(100% - 4vw);
+                max-width: 1800px;
 				margin: 0 auto;
 				padding: 2.5rem 0 5rem;
 			}
@@ -183,7 +184,7 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 			}
 
 			.profile-name {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: clamp(1.8rem, 4vw, 3rem);
 				text-transform: uppercase;
 				line-height: 1;
@@ -222,7 +223,7 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 			}
 
 			.stat-num {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: 1.8rem;
 				line-height: 1;
 				color: #111;
@@ -238,7 +239,7 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 
 			/* ── Sección de publicaciones ── */
 			.section-title {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: 1.4rem;
 				text-transform: uppercase;
 				letter-spacing: -0.01em;
@@ -331,7 +332,7 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 			}
 
 			.pub-title {
-				font-family: 'Sifonn', sans-serif;
+				font-family: 'Satoshi', sans-serif;
 				font-size: 0.95rem;
 				text-transform: uppercase;
 				line-height: 1.15;
