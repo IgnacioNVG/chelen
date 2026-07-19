@@ -4,7 +4,6 @@ description: 'Ni clase obrera primero, ni mujer después. La urgencia de la dobl
 pubDate: '2026-04-28'
 heroImage: ./hero.webp
 author: celeste-leiva
-affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 temas: ['Feminismos', 'Izquierda y socialismo']
 tags: ['Feminismo', 'Clase obrera', 'Doble militancia']

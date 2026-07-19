@@ -4,7 +4,6 @@ description: 'Una tesis sobre la crisis del movimiento secundario, la esterilida
 pubDate: '2026-05-22'
 heroImage: ./hero.webp
 author: vicente-rojas
-affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Educación', 'Movimientos sociales']
 tags: ['Movimiento secundario', 'Violencia política', 'Tomas']

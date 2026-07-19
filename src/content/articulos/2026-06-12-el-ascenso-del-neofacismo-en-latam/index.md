@@ -7,7 +7,6 @@ description: >-
 pubDate: 2026-06-12
 heroImage: ./hero.webp
 author: tito-riera
-affiliation: Universidad De Chile
 category: Columna de opinión
 temas: ['Ultraderecha y democracia', 'Internacional', 'Política']
 tags:

@@ -4,7 +4,6 @@ description: 'Entrevista a Jacob Eklind sobre los nuevos lineamientos del SAP y 
 pubDate: '2026-04-28'
 heroImage: ./hero.webp
 author: vicente-espinoza
-affiliation: 'Instituto Nacional'
 category: 'Entrevista'
 temas: ['Izquierda y socialismo', 'Internacional', 'Economía']
 tags: ['Suecia', 'Socialdemocracia', 'Anticapitalismo']

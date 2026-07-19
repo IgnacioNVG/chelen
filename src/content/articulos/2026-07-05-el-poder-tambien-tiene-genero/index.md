@@ -4,7 +4,6 @@ description: 'Josefa Lazo reflexiona sobre las desigualdades estructurales que a
 pubDate: '2026-07-05'
 heroImage: ./hero.webp
 author: josefa-lazo
-affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 temas: ['Feminismos', 'Izquierda y socialismo']
 tags: ['Mujeres en política', 'Feminismo', 'Democracia', 'Participación política']

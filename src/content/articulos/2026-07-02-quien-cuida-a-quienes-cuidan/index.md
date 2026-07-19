@@ -4,7 +4,6 @@ description: En Chile, el trabajo de cuidados sostiene silenciosamente miles de 
 pubDate: 2026-07-02
 heroImage: ./hero.webp
 author: ursula-soto-marillan
-affiliation: UCh
 category: Columna de opinión
 temas: ['Feminismos', 'Salud']
 tags: [Cuidados, Mujeres cuidadoras, Salud mental, Corresponsabilidad, Políticas públicas]

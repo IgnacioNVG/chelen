@@ -4,7 +4,6 @@ description: El peligro de las metáforas en el mandato presidencial
 pubDate: 2026-06-13
 heroImage: ./hero.webp
 author: vania-gaete
-affiliation: Universidad Diego Portales
 category: Columna de opinión
 temas: ['Política']
 tags:

@@ -4,7 +4,6 @@ description: 'Cuando un solo cuerpo se convierte en la medida de todos los demá
 pubDate: '2026-05-30'
 heroImage: ./hero.webp
 author: sofia-fuentealba
-affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Salud', 'Feminismos']
 tags: ['Feminismo', 'Corporalidad', 'Ciencia']

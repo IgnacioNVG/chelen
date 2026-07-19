@@ -4,7 +4,6 @@ description: 'Una reflexión crítica sobre la lógica del espectáculo, el ego 
 pubDate: '2026-05-10'
 heroImage: ./hero.webp
 author: vicente-mora
-affiliation: 'Facultad de Gobierno'
 category: 'Columna de opinión'
 temas: ['Movimientos sociales', 'Educación']
 tags: ['Movimiento estudiantil', 'Organización', 'Espectáculo']

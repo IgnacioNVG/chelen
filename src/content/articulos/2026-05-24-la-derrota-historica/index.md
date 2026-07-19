@@ -4,7 +4,6 @@ description: 'Cómo el neoliberalismo chileno destruyó las mediaciones colectiv
 pubDate: '2026-05-01'
 heroImage: ./hero.webp
 author: ignacio-navas-granizo
-affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 temas: ['Izquierda y socialismo', 'Economía', 'Historia y memoria', 'Teoría e ideas']
 tags: ['Neoliberalismo', 'Chile', 'Estallido social', 'Materialismo histórico']

@@ -4,7 +4,6 @@ description: Apuntes sobre mí y sobre el libro y la película *Submarine* de Jo
 pubDate: 2026-05-30
 heroImage: ./hero.webp
 author: ignacio-navas-granizo
-affiliation: Universidad de Chile
 category: Columna de opinión
 temas: ['Salud', 'Cultura']
 tags:

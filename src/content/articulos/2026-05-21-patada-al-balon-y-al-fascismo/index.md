@@ -4,7 +4,6 @@ description: 'Desde Lamine Yamal hasta Carlos Caszely y Eric Cantona, esta colum
 pubDate: '2026-05-21'
 heroImage: ./hero.webp
 author: franchesca-munoz-v
-affiliation: 'Universidad Alberto Hurtado'
 category: 'Columna de opinión'
 temas: ['Cultura', 'Ultraderecha y democracia']
 tags: ['Fútbol', 'Migración', 'Fascismo', 'Deporte']

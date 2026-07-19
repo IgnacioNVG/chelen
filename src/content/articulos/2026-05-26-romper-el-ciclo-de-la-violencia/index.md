@@ -4,7 +4,6 @@ description: 'Respuesta a la columna “Nos declaramos: Violentos, Convictos y C
 pubDate: '2026-05-26'
 heroImage: ./hero.webp
 author: vicente-espinoza
-affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Educación', 'Movimientos sociales']
 tags: ['Movimiento secundario', 'Violencia política', 'Tomas']

@@ -4,7 +4,6 @@ description: Mientras las grandes marcas de moda llenan sus campañas de mensaje
 pubDate: 2026-06-23
 heroImage: ./hero.webp
 author: constanza-lopez
-affiliation: UCh
 category: Columna de opinión
 temas: ['Feminismos', 'Economía', 'Teoría e ideas']
 tags: ['Feminismo anticapitalista', 'Marxismo', 'Industria Textil', 'Globalización', 'División Sexual del Trabajo']

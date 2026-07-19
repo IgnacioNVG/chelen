@@ -4,7 +4,6 @@ description: Una reflexión crítica sobre la fragmentación histórica y estruc
 pubDate: 2026-06-15
 heroImage: ./hero.webp
 author: martin-valencia-vasquez
-affiliation: Universidad de Concepción
 category: Columna de opinión
 temas: ['Izquierda y socialismo', 'Política', 'Movimientos sociales']
 tags:

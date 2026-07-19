@@ -4,7 +4,6 @@ description: 'Plan de Gobierno: ciudadanos bajo condición'
 pubDate: 2026-06-11
 heroImage: ./hero.webp
 author: francisco-saba
-affiliation: Universidad De Chile
 category: Columna de opinión
 temas: ['Política', 'Ultraderecha y democracia']
 tags:

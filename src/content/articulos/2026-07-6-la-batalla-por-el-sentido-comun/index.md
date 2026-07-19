@@ -4,7 +4,6 @@ description: 'Una reflexión sobre la vigencia del pensamiento de Antonio Gramsc
 pubDate: '2026-07-06'
 heroImage: ./hero.webp
 author: johakin-becerra-fuentealba
-affiliation: 'Juventud Socialista de Ñuble'
 category: 'Columna de opinión'
 temas:
   - Política

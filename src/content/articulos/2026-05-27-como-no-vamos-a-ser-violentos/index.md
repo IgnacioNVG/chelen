@@ -4,7 +4,6 @@ description: 'Respuesta a las columnas sobre violencia'
 pubDate: '2026-05-27'
 heroImage: ./hero.webp
 author: ignacio-navas-granizo
-affiliation: 'Facultad de Ciencias Sociales'
 category: 'Columna de opinión'
 temas: ['Educación', 'Movimientos sociales']
 tags: ['Movimiento secundario', 'Violencia política', 'Tomas']

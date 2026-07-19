@@ -4,7 +4,6 @@ description: 'Una defensa de la compatibilidad entre el catolicismo y la teoría
 pubDate: '2026-05-14'
 heroImage: ./hero.webp
 author: joaquin-friz
-affiliation: 'Externo'
 category: 'Columna de opinión'
 temas: ['Teoría e ideas', 'Economía']
 tags: ['Catolicismo', 'Materialismo histórico', 'Neoliberalismo']
