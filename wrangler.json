@@ -21,7 +21,7 @@
     {
       "binding": "DB",
       "database_name": "chelen-db",
-      "database_id": "YOUR_DATABASE_ID",
+      "database_id": "45ffb33f-a7e4-450a-a83a-5c2dcc25e722",
       "migrations_dir": "migrations"
     }
   ]
