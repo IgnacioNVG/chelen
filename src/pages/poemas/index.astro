@@ -1,14 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+import { getCollection } from '../../lib/d1Content';
 import SectionLayout from '../../layouts/SectionLayout.astro';
 import ItemCard from '../../components/ui/ItemCard.astro';
 import { SITE_TITLE } from '../../consts';
 
-const antologias = (await getCollection('antologias')).sort(
+const antologias = (await getCollection(db, 'antologias')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-const todosLosPoemas = (await getCollection('poemas')).sort(
+const todosLosPoemas = (await getCollection(db, 'poemas')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 

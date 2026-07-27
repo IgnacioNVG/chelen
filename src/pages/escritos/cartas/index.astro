@@ -1,10 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+import { getCollection } from '../../../lib/d1Content';
 import SectionLayout from '../../../layouts/SectionLayout.astro';
 import ItemCard from '../../../components/ui/ItemCard.astro';
 import { SITE_TITLE } from '../../../consts';
 
-const cartas = (await getCollection('cartas')).sort(
+const cartas = (await getCollection(db, 'cartas')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 ---

@@ -1,8 +1,9 @@
 ---
 import Layout from "../../layouts/ArticuloPost.astro";
-import { getEntry } from "astro:content";
+import { getEntry } from "../../lib/d1Content";
 
-const nosotrosEntry = await getEntry("nosotros", "index");
+const db = (Astro.locals as any).runtime?.env?.DB;
+const nosotrosEntry = await getEntry(db, "nosotros", "index");
 const data = nosotrosEntry ? nosotrosEntry.data : {
     origen_titulo: "El Origen",
     origen_texto: "Revista Chelén nace en 2026 al alero del Núcleo de la Juventud del Partido Socialista Jaime Robotham, correspondiente al Campus Juan Gómez Millas de la Universidad de Chile. Entre sus objetivos estaba plantear la alternativa socialista, la defensa de la no neutralidad expresa y la articulación para el contenido social y cultural de una amplia izquierda, buscando ser así un espacio donde la reflexión teórica y la acción política se encuentren en un punto de tensión productiva.",

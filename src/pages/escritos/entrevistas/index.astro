@@ -2,9 +2,9 @@
 import SectionLayout from '../../../layouts/SectionLayout.astro';
 import ItemCard from '../../../components/ui/ItemCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../../consts';
-import { getCollection } from 'astro:content';
+import { getCollection } from '../../../lib/d1Content';
 
-const posts = (await getCollection('articulos'))
+const posts = (await getCollection(db, 'articulos'))
     .filter(post => post.data.category === 'Entrevista')
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 

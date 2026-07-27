@@ -1,14 +1,16 @@
 ---
-import { getCollection } from "astro:content";
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+import { getCollection } from '../lib/d1Content';
 import SectionLayout from "../layouts/SectionLayout.astro";
 import ItemCard from "../components/ui/ItemCard.astro";
 import { SITE_TITLE } from "../consts";
 import { resolveAuthorRef } from "../lib/authorSlug";
 
 // 1. Incluimos todas las colecciones para que no quede nada por fuera (Entrevistas, columnas, etc.)
-const articulos = await getCollection("articulos");
-const poemas = await getCollection("poemas");
-const cartas = await getCollection("cartas");
+const articulos = await getCollection(db, 'articulos');
+const poemas = await getCollection(db, 'poemas');
+const cartas = await getCollection(db, 'cartas');
 
 const allPosts = [...articulos, ...poemas, ...cartas]
     .sort((a, b) => {

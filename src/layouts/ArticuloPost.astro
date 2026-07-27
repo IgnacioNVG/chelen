@@ -1,6 +1,4 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import BaseHead from "../components/layout/BaseHead.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
@@ -11,23 +9,26 @@ import ItemCard from "../components/ui/ItemCard.astro";
 import { resolveAuthorRef } from "../lib/authorSlug";
 import { temaSlug } from "../lib/taxonomy";
 import type { ImageMetadata } from "astro";
+import { getCollection } from "../lib/d1Content";
 
-type Props = Omit<
-    CollectionEntry<"articulos">["data"],
-    "heroImage" | "author"
-> & {
+type Props = {
+    title: string;
+    description: string;
     heroImage?: ImageMetadata | string;
     author?: string | { id: string };
+    category?: string;
+    temas?: string[];
+    pdf?: string;
 };
 
-const { title, description, heroImage, author, category, temas, pdf } =
-    Astro.props;
+const { title, description, heroImage, author, category, temas, pdf } = Astro.props;
 const authorId = resolveAuthorRef(author);
 const currentArticleId = decodeURIComponent(
     Astro.url.pathname.split('/').filter(Boolean).pop() || ""
 );
 
-const allArticulos = await getCollection("articulos");
+const db = (Astro.locals as any).runtime?.env?.DB;
+const allArticulos = await getCollection(db, "articulos");
 const otherArticulos = allArticulos.filter((post) => post.id !== currentArticleId);
 
 const latestPosts = otherArticulos

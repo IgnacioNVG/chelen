@@ -1,10 +1,12 @@
 ---
+
+const db = (Astro.locals as any).runtime?.env?.DB;
 import BaseHead from '../../components/layout/BaseHead.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import ItemCard from '../../components/ui/ItemCard.astro';
 import { SITE_TITLE } from '../../consts';
-import { getCollection } from 'astro:content';
+import { getCollection } from '../../lib/d1Content';
 import { TEMAS, temaSlug } from '../../lib/taxonomy';
 import {
 	buildAntologiaItems,
@@ -17,10 +19,10 @@ import {
 // Una ruta estática por cada tema del vocabulario controlado.
 export async function getStaticPaths() {
 	const [articulos, cartas, antologias, poemas] = await Promise.all([
-		getCollection('articulos'),
-		getCollection('cartas'),
-		getCollection('antologias'),
-		getCollection('poemas'),
+		getCollection(db, 'articulos'),
+		getCollection(db, 'cartas'),
+		getCollection(db, 'antologias'),
+		getCollection(db, 'poemas'),
 	]);
 
 	const feed = mergeEditorialFeed(

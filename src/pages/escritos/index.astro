@@ -1,12 +1,14 @@
 ---
+
+const db = (Astro.locals as any).runtime?.env?.DB;
 import SectionLayout from '../../layouts/SectionLayout.astro';
 import ItemCard from '../../components/ui/ItemCard.astro';
 import { SITE_TITLE } from '../../consts';
-import { getCollection } from 'astro:content';
+import { getCollection } from '../../lib/d1Content';
 import { buildArticuloItems, buildCartaItems, mergeEditorialFeed } from '../../lib/homeFeed';
 
-const articulos = await getCollection('articulos');
-const cartas = await getCollection('cartas');
+const articulos = await getCollection(db, 'articulos');
+const cartas = await getCollection(db, 'cartas');
 const feed = mergeEditorialFeed(buildArticuloItems(articulos), buildCartaItems(cartas));
 ---
 

@@ -1,19 +1,30 @@
 ---
-import { getCollection, render } from 'astro:content';
 import PoemaLayout from '../../layouts/PoemaLayout.astro';
+import { marked } from 'marked';
 
-export async function getStaticPaths() {
-    const poemas = await getCollection('poemas');
-    return poemas.map((poema) => ({
-        params: { slug: poema.id },
-        props: { poema },
-    }));
+const { slug } = Astro.params;
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+if (!db) {
+  return new Response("Database not found", { status: 500 });
 }
 
-const { poema } = Astro.props;
-const { Content } = await render(poema);
+const post = await db.prepare('SELECT * FROM poemas WHERE slug = ?').bind(slug).first();
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+const parsedPost = {
+  ...post,
+  pubDate: new Date(post.pubDate),
+  temas: post.temas ? JSON.parse(post.temas) : [],
+  tags: post.tags ? JSON.parse(post.tags) : []
+};
+
+const contentHtml = post.content ? marked.parse(post.content) : '';
 ---
 
-<PoemaLayout {...poema.data} antologia={poema.data.antologia}>
-    <Content />
+<PoemaLayout {...parsedPost}>
+	<div set:html={contentHtml}></div>
 </PoemaLayout>

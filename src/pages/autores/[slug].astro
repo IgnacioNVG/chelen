@@ -1,90 +1,61 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseHead from '../../components/layout/BaseHead.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import ContentImage from '../../components/ui/ContentImage.astro';
 import FormattedDate from '../../components/ui/FormattedDate.astro';
-import { authorSlug, resolveAuthorRef } from '../../lib/authorSlug';
 import { SITE_TITLE } from '../../consts';
 
-export async function getStaticPaths() {
-	const [articulos, cartas, columnistas] = await Promise.all([
-		getCollection('articulos'),
-		getCollection('cartas'),
-		getCollection('columnistas'),
-	]);
+const { slug } = Astro.params;
 
-	// Usamos un Map para agrupar por el slug del autor y garantizar unicidad absoluta
-	const authorMap = new Map<string, { name: string; isProfile: boolean }>();
-
-	// 1. Agregar columnistas registrados
-	columnistas.forEach((c) => {
-		if (c.id !== 'ejemplo-autor') {
-			// El id de la colección ya es el slug en formato kebab-case (ej: "celeste-leiva")
-			const slug = c.id;
-			authorMap.set(slug, { name: c.data.name || c.id, isProfile: true });
-		}
-	});
-
-	// 2. Agregar autores de artículos
-	articulos.forEach((a) => {
-		const authorRef = resolveAuthorRef(a.data.author);
-		if (authorRef) {
-			const slug = authorSlug(authorRef);
-			if (!authorMap.has(slug)) {
-				authorMap.set(slug, { name: authorRef, isProfile: false });
-			}
-		}
-	});
-
-	// 3. Agregar autores de cartas
-	cartas.forEach((c) => {
-		const authorRef = resolveAuthorRef(c.data.author);
-		if (authorRef) {
-			const slug = authorSlug(authorRef);
-			if (!authorMap.has(slug)) {
-				authorMap.set(slug, { name: authorRef, isProfile: false });
-			}
-		}
-	});
-
-	// 4. Filtrar slugs que representen "Anónimo"
-	const filteredSlugs = Array.from(authorMap.entries()).filter(([slug]) => 
-		slug !== 'anonimo' && slug !== 'anonimo'
-	);
-
-	return filteredSlugs.map(([slug, { name }]) => {
-		// Buscar si existe un perfil registrado
-		const profile = columnistas.find((c) => c.id === slug || authorSlug(c.data.name) === slug) ?? null;
-		
-		// Juntar artículos y cartas de este autor
-		const authorArticulos = articulos.filter((a) => {
-			const aRef = resolveAuthorRef(a.data.author);
-			return aRef && authorSlug(aRef) === slug;
-		});
-		const authorCartas = cartas.filter((c) => {
-			const cRef = resolveAuthorRef(c.data.author);
-			return cRef && authorSlug(cRef) === slug;
-		});
-
-		return {
-			params: { slug },
-			props: { name, profile, authorArticulos, authorCartas },
-		};
-	});
+const db = (Astro.locals as any).runtime?.env?.DB;
+if (!db) {
+  return new Response("Database not found", { status: 500 });
 }
 
-const { name, profile, authorArticulos, authorCartas } = Astro.props;
+// Buscar perfil del autor
+const profile = await db.prepare('SELECT * FROM columnistas WHERE slug = ?').bind(slug).first();
+// Considera también artículos o cartas que coincidan con el author_slug
+const authorArticulosRaw = (await db.prepare('SELECT * FROM articulos WHERE author_slug = ? ORDER BY pubDate DESC').bind(slug).all()).results;
+const authorCartasRaw = (await db.prepare('SELECT * FROM cartas WHERE author_slug = ? ORDER BY pubDate DESC').bind(slug).all()).results;
+
+if (!profile && authorArticulosRaw.length === 0 && authorCartasRaw.length === 0) {
+  return Astro.redirect('/404');
+}
+
+const name = profile?.name || slug;
+
+const authorArticulos = authorArticulosRaw.map(a => ({
+  id: a.slug,
+  type: 'articulo' as const,
+  data: {
+    title: a.title,
+    pubDate: new Date(a.pubDate),
+    category: a.category,
+    heroImage: a.heroImage
+  }
+}));
+
+const authorCartas = authorCartasRaw.map(c => ({
+  id: c.slug,
+  type: 'carta' as const,
+  data: {
+    title: c.title,
+    pubDate: new Date(c.pubDate),
+    category: c.category,
+    heroImage: c.heroImage
+  }
+}));
 
 // Ordenar publicaciones por fecha descendente
-const allPublications = [
-	...authorArticulos.map((a) => ({ ...a, type: 'articulo' as const })),
-	...authorCartas.map((c) => ({ ...c, type: 'carta' as const })),
-].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const allPublications = [...authorArticulos, ...authorCartas].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const pageTitle = profile?.data.name ?? name;
-const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
+const pageTitle = profile?.name ?? name;
+const pageDesc = profile?.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
+
+// Mapear profile a la estructura esperada por el template
+const profileData = profile ? { data: profile } : null;
+const profileView = profileData?.data || null;
 ---
 
 <!doctype html>
@@ -407,8 +378,8 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 			<section class="profile-hero">
 				<!-- Avatar -->
 				<div class="profile-avatar">
-					{profile?.data.portrait ? (
-						<ContentImage src={profile.data.portrait} alt={`Foto de ${pageTitle}`} width={260} />
+					{profileView.portrait ? (
+						<ContentImage src={profileView?.portrait} alt={`Foto de ${pageTitle}`} width={260} />
 					) : (
 						<div class="avatar-placeholder" aria-label="Sin foto de perfil">
 							<!-- Silueta estilo Facebook -->
@@ -421,15 +392,15 @@ const pageDesc = profile?.data.summary ?? `Perfil de ${name} en ${SITE_TITLE}`;
 
 				<!-- Info -->
 				<div class="profile-info">
-					{profile?.data.role && (
-						<span class="profile-role">{profile.data.role}</span>
+					{profileView.role && (
+						<span class="profile-role">{profileView?.role}</span>
 					)}
 					<h1 class="profile-name">{pageTitle}</h1>
-					{profile?.data.affiliation && (
-						<p class="profile-affiliation">{profile.data.affiliation}</p>
+					{profileView.affiliation && (
+						<p class="profile-affiliation">{profileView?.affiliation}</p>
 					)}
-					{profile?.data.summary && (
-						<p class="profile-bio">{profile.data.summary}</p>
+					{profileView.summary && (
+						<p class="profile-bio">{profileView?.summary}</p>
 					)}
 
 					<!-- Stats -->

@@ -4,8 +4,8 @@ import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import ItemCard from '../components/ui/ItemCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getCollection, getEntry, render } from 'astro:content';
 import { Image } from 'astro:assets';
+import { marked } from 'marked';
 import {
     buildAntologiaItems,
     buildArticuloItems,
@@ -15,10 +15,19 @@ import {
     editionLabel,
 } from '../lib/homeFeed';
 
-const articulos = await getCollection('articulos');
-const cartas = await getCollection('cartas');
-const antologias = await getCollection('antologias');
-const poemas = await getCollection('poemas');
+const db = (Astro.locals as any).runtime?.env?.DB;
+
+let articulos = [];
+let cartas = [];
+let antologias = [];
+let poemas = [];
+
+if (db) {
+    articulos = (await db.prepare('SELECT * FROM articulos ORDER BY pubDate DESC').all()).results;
+    cartas = (await db.prepare('SELECT * FROM cartas ORDER BY pubDate DESC').all()).results;
+    antologias = (await db.prepare('SELECT * FROM antologias ORDER BY pubDate DESC').all()).results;
+    poemas = (await db.prepare('SELECT * FROM poemas ORDER BY pubDate DESC').all()).results;
+}
 
 const editorialFeed = mergeEditorialFeed(
     buildArticuloItems(articulos),
@@ -51,17 +60,11 @@ const arteReciente = feedSinHero
     .slice(0, 3);
 
 const cartasRecientesItems = feedSinHero.filter((item) => item.kind === 'carta').slice(0, 3);
-const cartasRecientesConContenido = await Promise.all(
-    cartasRecientesItems.map(async (item) => {
-        const slug = item.id.replace('carta-', '');
-        const entry = await getEntry('cartas', slug);
-        if (entry) {
-            const { Content } = await render(entry);
-            return { ...item, Content };
-        }
-        return { ...item, Content: null };
-    })
-);
+const cartasRecientesConContenido = cartasRecientesItems.map((item) => {
+    // Render content if it exists
+    const renderedContent = item.description ? marked.parse(item.description) : null;
+    return { ...item, ContentHtml: renderedContent };
+});
 
 const graphicFiles = import.meta.glob<{ default: ImageMetadata }>(
     '../assets/grafica-*.{webp,png,jpg,jpeg}',
@@ -548,10 +551,8 @@ const graficaDestacada = graphics.slice(-3).reverse();
                                             temas={item.temas}
                                             tags={item.tags}
                                         >
-                                            {item.Content ? (
-                                                <div class="carta-texto-completo">
-                                                    <item.Content />
-                                                </div>
+                                            {item.ContentHtml ? (
+                                                <div class="carta-texto-completo" set:html={item.ContentHtml}></div>
                                             ) : (
                                                 <p class="carta-texto-completo">{item.description}</p>
                                             )}

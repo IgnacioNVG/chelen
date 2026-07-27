@@ -1,26 +1,31 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
 import ArticuloPost from '../../layouts/ArticuloPost.astro';
-import { render } from 'astro:content';
+import { marked } from 'marked';
 
-// 1. Genera las rutas para cada archivo Markdown en src/content/articulos/
-export async function getStaticPaths() {
-	const posts = await getCollection('articulos');
-	return posts.map((post) => ({
-		// El "slug" será el nombre del archivo (id)
-		// Astro se encarga de que sea una URL válida
-		params: { slug: post.id }, 
-		props: post,
-	}));
+const { slug } = Astro.params;
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+if (!db) {
+  return new Response("Database not found", { status: 500 });
 }
 
-type Props = CollectionEntry<'articulos'>;
+const post = await db.prepare('SELECT * FROM articulos WHERE slug = ?').bind(slug).first();
 
-// 2. Obtiene la nota específica y procesa el contenido Markdown
-const post = Astro.props;
-const { Content } = await render(post);
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Convert JSON strings back to arrays for the layout component
+const parsedPost = {
+  ...post,
+  pubDate: new Date(post.pubDate),
+  temas: post.temas ? JSON.parse(post.temas) : [],
+  tags: post.tags ? JSON.parse(post.tags) : []
+};
+
+const contentHtml = post.content ? marked.parse(post.content) : '';
 ---
 
-<ArticuloPost {...post.data}>
-	<Content />
+<ArticuloPost {...parsedPost}>
+	<div set:html={contentHtml}></div>
 </ArticuloPost>

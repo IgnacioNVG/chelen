@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection } from '../../lib/d1Content';
 import { authorSlug, resolveAuthorRef } from '../../lib/authorSlug';
 
 interface Props {
@@ -9,7 +9,8 @@ interface Props {
 
 const { name, class: className } = Astro.props;
 
-const columnistas = await getCollection('columnistas');
+const db = (Astro.locals as any).runtime?.env?.DB;
+const columnistas = await getCollection(db, 'columnistas');
 const authorId = resolveAuthorRef(name);
 const cleanName = authorId || 'Anónimo';
 

@@ -16,5 +16,13 @@
       "binding": "SESSION",
       "id": "d25bfdb9b83a4935807c058d1dd72820"
     }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "chelen-db",
+      "database_id": "YOUR_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
   ]
 }
