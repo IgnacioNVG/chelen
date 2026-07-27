@@ -1,35 +1,31 @@
 ---
-
 const db = (Astro.locals as any).runtime?.env?.DB;
-import { getCollection } from '../../../lib/d1Content';
+import { getCollection, getEntry } from '../../../lib/d1Content';
 import BaseHead from '../../../components/layout/BaseHead.astro';
 import Header from '../../../components/layout/Header.astro';
 import Footer from '../../../components/layout/Footer.astro';
 import ContentImage from '../../../components/ui/ContentImage.astro';
 import FormattedDate from '../../../components/ui/FormattedDate.astro';
 import { SITE_TITLE } from '../../../consts';
+import { marked } from 'marked';
 
-export async function getStaticPaths() {
-    const antologias = await getCollection(db, 'antologias');
-    return antologias.map((antologia) => ({
-        params: { slug: antologia.id },
-        props: { antologia },
-    }));
+const { slug } = Astro.params;
+
+const antologia = await getEntry(db, 'antologias', slug);
+if (!antologia) {
+	return Astro.redirect('/404');
 }
 
-const { antologia } = Astro.props;
-const { Content } = await render(antologia);
-
 const poemas = (await getCollection(db, 'poemas'))
-    .filter((p) => p.data.antologia === antologia.id)
+    .filter((p) => p.data.antologia_slug === antologia.id || p.data.antologia === antologia.id)
     .sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
 
-const poemasRenderizados = await Promise.all(
-    poemas.map(async (poema) => ({
-        poema,
-        ...(await render(poema)),
-    }))
-);
+const poemasRenderizados = poemas.map((poema) => ({
+    poema,
+    ContentHtml: poema.body ? marked.parse(poema.body) : '',
+}));
+
+const antologiaContentHtml = antologia.body ? marked.parse(antologia.body) : '';
 ---
 
 <!doctype html>
@@ -291,8 +287,7 @@ const poemasRenderizados = await Promise.all(
                         <span><FormattedDate date={antologia.data.pubDate} /></span>
                         <span>{poemas.length} poema{poemas.length !== 1 ? 's' : ''}</span>
                     </div>
-                    <div class="antologia-body">
-                        <Content />
+                    <div class="antologia-body" set:html={antologiaContentHtml}>
                     </div>
                 </div>
             </header>
@@ -301,7 +296,7 @@ const poemasRenderizados = await Promise.all(
                 <>
                     <p class="seccion-header">// Lectura continua</p>
                     <div class="antologia-lectura">
-                        {poemasRenderizados.map(({ poema, Content: PoemaContent }) => (
+                        {poemasRenderizados.map(({ poema, ContentHtml }) => (
                             <article class="poema-bloque" id={poema.id}>
                                 <h2 class="poema-bloque-titulo">
                                     <a href={`/poemas/${poema.id}`}>{poema.data.title}</a>
@@ -310,8 +305,7 @@ const poemasRenderizados = await Promise.all(
                                     <span>{poema.data.author}</span>
                                     <span><FormattedDate date={poema.data.pubDate} /></span>
                                 </div>
-                                <div class="poema-bloque-cuerpo">
-                                    <PoemaContent />
+                                <div class="poema-bloque-cuerpo" set:html={ContentHtml}>
                                 </div>
                                 <a class="poema-enlace-permalink" href={`/poemas/${poema.id}`}>
                                     Enlace permanente →

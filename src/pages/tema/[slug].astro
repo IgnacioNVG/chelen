@@ -1,5 +1,4 @@
 ---
-
 const db = (Astro.locals as any).runtime?.env?.DB;
 import BaseHead from '../../components/layout/BaseHead.astro';
 import Header from '../../components/layout/Header.astro';
@@ -16,29 +15,29 @@ import {
 	mergeEditorialFeed,
 } from '../../lib/homeFeed';
 
-// Una ruta estática por cada tema del vocabulario controlado.
-export async function getStaticPaths() {
-	const [articulos, cartas, antologias, poemas] = await Promise.all([
-		getCollection(db, 'articulos'),
-		getCollection(db, 'cartas'),
-		getCollection(db, 'antologias'),
-		getCollection(db, 'poemas'),
-	]);
+const { slug } = Astro.params;
 
-	const feed = mergeEditorialFeed(
-		buildArticuloItems(articulos),
-		buildCartaItems(cartas),
-		buildPoemaItems(poemas),
-		buildAntologiaItems(antologias, poemas),
-	);
-
-	return TEMAS.map((tema) => ({
-		params: { slug: temaSlug(tema) },
-		props: { tema, items: feed.filter((item) => item.temas.includes(tema)) },
-	}));
+// Find the original tema string from the slug
+const tema = TEMAS.find(t => temaSlug(t) === slug);
+if (!tema) {
+	return Astro.redirect('/404');
 }
 
-const { tema, items } = Astro.props;
+const [articulos, cartas, antologias, poemas] = await Promise.all([
+	getCollection(db, 'articulos'),
+	getCollection(db, 'cartas'),
+	getCollection(db, 'antologias'),
+	getCollection(db, 'poemas'),
+]);
+
+const feed = mergeEditorialFeed(
+	buildArticuloItems(articulos),
+	buildCartaItems(cartas),
+	buildPoemaItems(poemas),
+	buildAntologiaItems(antologias, poemas),
+);
+
+const items = feed.filter((item) => item.temas.includes(tema));
 const titulo = `Tema · ${tema}`;
 const descripcion = `Todo el contenido de Revista Chelén sobre ${tema}: columnas, cartas, poesía y más.`;
 ---

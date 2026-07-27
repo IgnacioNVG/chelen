@@ -1,5 +1,5 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import BaseHead from "../../components/layout/BaseHead.astro";
 
 // Check authentication
 const session = Astro.cookies.get('admin_session');
@@ -29,7 +29,12 @@ if (db) {
   }
 }
 ---
-<Layout title="Dashboard - Admin">
+<!doctype html>
+<html lang="es">
+<head>
+  <BaseHead title="Panel de Administración" description="Dashboard de administración" />
+</head>
+<body>
   <div class="admin-layout">
     <aside class="sidebar">
       <h2>Panel CMS</h2>
@@ -75,7 +80,8 @@ if (db) {
       </section>
     </main>
   </div>
-</Layout>
+</body>
+</html>
 
 <style>
   .admin-layout {

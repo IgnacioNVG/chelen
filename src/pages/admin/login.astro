@@ -1,9 +1,14 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import BaseHead from "../../components/layout/BaseHead.astro";
 
 const error = Astro.url.searchParams.get('error');
 ---
-<Layout title="Admin Login">
+<!doctype html>
+<html lang="es">
+<head>
+  <BaseHead title="Admin Login" description="Acceso al panel de administración" />
+</head>
+<body>
   <main class="login-container">
     <div class="login-box">
       <h1>Panel de Control</h1>
@@ -26,7 +31,8 @@ const error = Astro.url.searchParams.get('error');
       </form>
     </div>
   </main>
-</Layout>
+</body>
+</html>
 
 <style>
   .login-container {
