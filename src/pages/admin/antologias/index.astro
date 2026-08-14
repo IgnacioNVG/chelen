@@ -1,0 +1,46 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+let antologias = [];
+if (db) {
+  antologias = await db.prepare('SELECT slug, title, pubDate, editor FROM antologias ORDER BY pubDate DESC').all().then(r => r.results);
+}
+---
+
+<AdminLayout title="Antologías">
+  <header class="admin-header">
+    <h1>Antologías</h1>
+    <a href="/admin/antologias/new" class="btn btn-primary">Nueva Antología</a>
+  </header>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Slug</th>
+        <th>Título</th>
+        <th>Editor</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {antologias.map((a: any) => (
+        <tr>
+          <td>{a.slug}</td>
+          <td>{a.title}</td>
+          <td>{a.editor}</td>
+          <td>{new Date(a.pubDate).toLocaleDateString()}</td>
+          <td class="actions-cell">
+            <a href={`/admin/antologias/${a.slug}`} class="btn" style="background:#eee; color:#111;">Editar</a>
+          </td>
+        </tr>
+      ))}
+      {antologias.length === 0 && (
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2rem;">No hay antologías creadas.</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</AdminLayout>

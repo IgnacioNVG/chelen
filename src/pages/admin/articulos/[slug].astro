@@ -1,0 +1,184 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+const { slug } = Astro.params;
+
+let error = "";
+let article: any = null;
+let authors = [];
+
+if (db) {
+  authors = await db.prepare("SELECT slug, name FROM columnistas").all().then(r => r.results);
+  article = await db.prepare("SELECT * FROM articulos WHERE slug = ?").bind(slug).first();
+  if (!article) {
+    return Astro.redirect("/admin/articulos");
+  }
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const action = data.get("action")?.toString();
+
+    if (action === "delete") {
+      if (db) {
+        await db.prepare("DELETE FROM articulos WHERE slug = ?").bind(slug).run();
+        return Astro.redirect("/admin/articulos");
+      }
+    }
+
+    if (action === "update") {
+      const title = data.get("title")?.toString().trim();
+      const description = data.get("description")?.toString().trim();
+      const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+      const author_slug = data.get("author_slug")?.toString() || null;
+      const category = data.get("category")?.toString() || "Artículo";
+      const temasRaw = data.get("temas")?.toString() || "";
+      const tagsRaw = data.get("tags")?.toString() || "";
+      const content = data.get("content")?.toString() || "";
+
+      const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+      const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+      let heroImageUrl = article.heroImage;
+      const heroImageFile = data.get("heroImage") as File;
+      if (heroImageFile && heroImageFile.size > 0 && storage) {
+        const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+          httpMetadata: { contentType: heroImageFile.type }
+        });
+        heroImageUrl = `/images/${fileName}`;
+      }
+
+      let pdfUrl = article.pdf;
+      const pdfFile = data.get("pdf") as File;
+      if (pdfFile && pdfFile.size > 0 && storage) {
+        const fileName = `${Date.now()}-pdf-${pdfFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await storage.put(fileName, await pdfFile.arrayBuffer(), {
+          httpMetadata: { contentType: pdfFile.type }
+        });
+        pdfUrl = `/images/${fileName}`;
+      }
+
+      if (db) {
+        await db.prepare(`
+          UPDATE articulos 
+          SET title=?, description=?, pubDate=?, heroImage=?, author_slug=?, category=?, pdf=?, temas=?, tags=?, content=?
+          WHERE slug=?
+        `).bind(title, description, pubDate, heroImageUrl, author_slug, category, pdfUrl, temas, tags, content, slug).run();
+        
+        return Astro.redirect("/admin/articulos");
+      }
+    }
+  } catch (err: any) {
+    error = err.message || "Error al actualizar el artículo";
+  }
+}
+
+// Convert JSON strings back to comma-separated for the form
+let initialTemas = "";
+let initialTags = "";
+try {
+  initialTemas = JSON.parse(article.temas || "[]").join(", ");
+  initialTags = JSON.parse(article.tags || "[]").join(", ");
+} catch (e) {}
+
+// Format date for datetime-local input
+const fmtDate = article.pubDate ? new Date(article.pubDate).toISOString().slice(0, 16) : "";
+---
+
+<AdminLayout title="Editar Artículo">
+  <header class="admin-header">
+    <h1>Editar Artículo</h1>
+    <div style="display:flex; gap:1rem;">
+      <a href="/admin/articulos" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+      <form method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artículo? Esta acción no se puede deshacer.');" style="margin:0;">
+        <input type="hidden" name="action" value="delete" />
+        <button type="submit" class="btn btn-danger">Eliminar Artículo</button>
+      </form>
+    </div>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="action" value="update" />
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" value={article.title} required />
+    </div>
+
+    <div class="form-group">
+      <label>Slug (URL)</label>
+      <input type="text" class="form-control" value={article.slug} disabled />
+      <small style="color:#666;">El slug no se puede cambiar después de creado.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción (Resumen)</label>
+      <textarea id="description" name="description" class="form-control" style="min-height: 80px;" required>{article.description}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="author_slug">Autor / Columnista</label>
+      <select id="author_slug" name="author_slug" class="form-control">
+        <option value="">Seleccionar Autor</option>
+        {authors.map((a: any) => (
+          <option value={a.slug} selected={a.slug === article.author_slug}>{a.name}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" value={fmtDate} required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value={article.category} />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal (Opcional)</label>
+      {article.heroImage && (
+        <div style="margin-bottom:0.5rem;">
+          <img src={article.heroImage} style="height:100px; border-radius:4px; object-fit:cover;" />
+          <p style="font-size:0.8rem; color:#666;">Imagen actual. Sube otra para reemplazarla.</p>
+        </div>
+      )}
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="pdf">Documento PDF Adjunto (Opcional)</label>
+      {article.pdf && (
+        <div style="margin-bottom:0.5rem; font-size:0.9rem; font-family:monospace;">
+          PDF Actual: <a href={article.pdf} target="_blank">{article.pdf}</a>
+        </div>
+      )}
+      <input type="file" id="pdf" name="pdf" class="form-control" accept=".pdf" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" value={initialTemas} />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" value={initialTags} />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" style="min-height:400px;">{article.content}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Actualizar Artículo</button>
+  </form>
+</AdminLayout>

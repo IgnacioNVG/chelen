@@ -1,0 +1,160 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+const { slug } = Astro.params;
+
+let error = "";
+let poema: any = null;
+let antologias = [];
+
+if (db) {
+  antologias = await db.prepare("SELECT slug, title FROM antologias").all().then(r => r.results);
+  poema = await db.prepare("SELECT * FROM poemas WHERE slug = ?").bind(slug).first();
+  if (!poema) {
+    return Astro.redirect("/admin/poemas");
+  }
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const action = data.get("action")?.toString();
+
+    if (action === "delete") {
+      if (db) {
+        await db.prepare("DELETE FROM poemas WHERE slug = ?").bind(slug).run();
+        return Astro.redirect("/admin/poemas");
+      }
+    }
+
+    if (action === "update") {
+      const title = data.get("title")?.toString().trim();
+      const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+      const author = data.get("author")?.toString().trim() || "Anónimo";
+      const antologia_slug = data.get("antologia_slug")?.toString() || null;
+      const category = data.get("category")?.toString() || "Poesía";
+      const temasRaw = data.get("temas")?.toString() || "";
+      const tagsRaw = data.get("tags")?.toString() || "";
+      const content = data.get("content")?.toString() || "";
+
+      const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+      const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+      let heroImageUrl = poema.heroImage;
+      const heroImageFile = data.get("heroImage") as File;
+      if (heroImageFile && heroImageFile.size > 0 && storage) {
+        const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+          httpMetadata: { contentType: heroImageFile.type }
+        });
+        heroImageUrl = `/images/${fileName}`;
+      }
+
+      if (db) {
+        await db.prepare(`
+          UPDATE poemas 
+          SET title=?, pubDate=?, heroImage=?, author=?, category=?, antologia_slug=?, temas=?, tags=?, content=?
+          WHERE slug=?
+        `).bind(title, pubDate, heroImageUrl, author, category, antologia_slug, temas, tags, content, slug).run();
+        
+        return Astro.redirect("/admin/poemas");
+      }
+    }
+  } catch (err: any) {
+    error = err.message || "Error al actualizar el poema";
+  }
+}
+
+let initialTemas = "";
+let initialTags = "";
+try {
+  initialTemas = JSON.parse(poema.temas || "[]").join(", ");
+  initialTags = JSON.parse(poema.tags || "[]").join(", ");
+} catch (e) {}
+
+const fmtDate = poema.pubDate ? new Date(poema.pubDate).toISOString().slice(0, 16) : "";
+---
+
+<AdminLayout title="Editar Poema">
+  <header class="admin-header">
+    <h1>Editar Poema</h1>
+    <div style="display:flex; gap:1rem;">
+      <a href="/admin/poemas" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+      <form method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este poema?');" style="margin:0;">
+        <input type="hidden" name="action" value="delete" />
+        <button type="submit" class="btn btn-danger">Eliminar Poema</button>
+      </form>
+    </div>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="action" value="update" />
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" value={poema.title} required />
+    </div>
+
+    <div class="form-group">
+      <label>Slug (URL)</label>
+      <input type="text" class="form-control" value={poema.slug} disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="author">Autor (Texto Libre)</label>
+      <input type="text" id="author" name="author" class="form-control" value={poema.author} />
+    </div>
+
+    <div class="form-group">
+      <label for="antologia_slug">Pertenece a una Antología (Opcional)</label>
+      <select id="antologia_slug" name="antologia_slug" class="form-control">
+        <option value="">No pertenece a ninguna</option>
+        {antologias.map((a: any) => (
+          <option value={a.slug} selected={a.slug === poema.antologia_slug}>{a.title}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" value={fmtDate} required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value={poema.category} />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal (Opcional)</label>
+      {poema.heroImage && (
+        <div style="margin-bottom:0.5rem;">
+          <img src={poema.heroImage} style="height:100px; border-radius:4px; object-fit:cover;" />
+        </div>
+      )}
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" value={initialTemas} />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" value={initialTags} />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" style="min-height:400px;">{poema.content}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Actualizar Poema</button>
+  </form>
+</AdminLayout>

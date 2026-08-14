@@ -1,0 +1,140 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+let error = "";
+let authors = [];
+
+if (db) {
+  authors = await db.prepare("SELECT slug, name FROM columnistas").all().then(r => r.results);
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const slug = data.get("slug")?.toString().trim() || Date.now().toString();
+    const title = data.get("title")?.toString().trim();
+    const description = data.get("description")?.toString().trim();
+    const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+    const author_slug = data.get("author_slug")?.toString() || null;
+    const category = data.get("category")?.toString() || "Artículo";
+    const temasRaw = data.get("temas")?.toString() || "";
+    const tagsRaw = data.get("tags")?.toString() || "";
+    const content = data.get("content")?.toString() || "";
+
+    // Parse temas/tags as JSON arrays
+    const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+    const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+    // Handle File Uploads (heroImage)
+    let heroImageUrl = "";
+    const heroImageFile = data.get("heroImage") as File;
+    if (heroImageFile && heroImageFile.size > 0 && storage) {
+      const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+        httpMetadata: { contentType: heroImageFile.type }
+      });
+      heroImageUrl = `/images/${fileName}`;
+    }
+
+    // Handle File Uploads (pdf)
+    let pdfUrl = "";
+    const pdfFile = data.get("pdf") as File;
+    if (pdfFile && pdfFile.size > 0 && storage) {
+      const fileName = `${Date.now()}-pdf-${pdfFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      await storage.put(fileName, await pdfFile.arrayBuffer(), {
+        httpMetadata: { contentType: pdfFile.type }
+      });
+      pdfUrl = `/images/${fileName}`;
+    }
+
+    if (db) {
+      await db.prepare(`
+        INSERT INTO articulos (slug, title, description, pubDate, heroImage, author_slug, category, pdf, temas, tags, content)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(slug, title, description, pubDate, heroImageUrl, author_slug, category, pdfUrl, temas, tags, content).run();
+      
+      return Astro.redirect("/admin/articulos");
+    }
+  } catch (err: any) {
+    error = err.message || "Error al guardar el artículo";
+  }
+}
+---
+
+<AdminLayout title="Nuevo Artículo">
+  <header class="admin-header">
+    <h1>Crear Nuevo Artículo</h1>
+    <a href="/admin/articulos" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="slug">Slug (URL)</label>
+      <input type="text" id="slug" name="slug" class="form-control" placeholder="mi-titulo-genial" required />
+      <small style="color:#666;">Debe ser único, en minúsculas y sin espacios.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción (Resumen)</label>
+      <textarea id="description" name="description" class="form-control" style="min-height: 80px;" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="author_slug">Autor / Columnista</label>
+      <select id="author_slug" name="author_slug" class="form-control">
+        <option value="">Seleccionar Autor</option>
+        {authors.map((a: any) => (
+          <option value={a.slug}>{a.name}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value="Artículo" />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal</label>
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="pdf">Documento PDF Adjunto (Opcional)</label>
+      <input type="file" id="pdf" name="pdf" class="form-control" accept=".pdf" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" placeholder="Política, Economía, Historia" />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" placeholder="marxismo, chile, 2026" />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" placeholder="# Título Principal&#10;&#10;Escribe tu contenido aquí..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Guardar Artículo</button>
+  </form>
+</AdminLayout>

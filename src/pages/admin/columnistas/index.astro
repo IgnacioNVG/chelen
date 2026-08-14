@@ -1,0 +1,46 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+let columnistas = [];
+if (db) {
+  columnistas = await db.prepare('SELECT slug, name, role, featured FROM columnistas ORDER BY name ASC').all().then(r => r.results);
+}
+---
+
+<AdminLayout title="Columnistas">
+  <header class="admin-header">
+    <h1>Columnistas y Autores</h1>
+    <a href="/admin/columnistas/new" class="btn btn-primary">Nuevo Autor</a>
+  </header>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Slug</th>
+        <th>Nombre</th>
+        <th>Rol</th>
+        <th>Destacado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {columnistas.map((col: any) => (
+        <tr>
+          <td>{col.slug}</td>
+          <td>{col.name}</td>
+          <td>{col.role}</td>
+          <td>{col.featured ? 'Sí' : 'No'}</td>
+          <td class="actions-cell">
+            <a href={`/admin/columnistas/${col.slug}`} class="btn" style="background:#eee; color:#111;">Editar</a>
+          </td>
+        </tr>
+      ))}
+      {columnistas.length === 0 && (
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2rem;">No hay autores creados.</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</AdminLayout>

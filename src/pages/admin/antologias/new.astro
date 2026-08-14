@@ -1,0 +1,112 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const slug = data.get("slug")?.toString().trim() || Date.now().toString();
+    const title = data.get("title")?.toString().trim();
+    const description = data.get("description")?.toString().trim();
+    const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+    const editor = data.get("editor")?.toString().trim() || "Redacción Chelén";
+    const category = data.get("category")?.toString() || "Antología";
+    const temasRaw = data.get("temas")?.toString() || "";
+    const tagsRaw = data.get("tags")?.toString() || "";
+    const content = data.get("content")?.toString() || "";
+
+    const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+    const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+    let heroImageUrl = "";
+    const heroImageFile = data.get("heroImage") as File;
+    if (heroImageFile && heroImageFile.size > 0 && storage) {
+      const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+        httpMetadata: { contentType: heroImageFile.type }
+      });
+      heroImageUrl = `/images/${fileName}`;
+    }
+
+    if (db) {
+      await db.prepare(`
+        INSERT INTO antologias (slug, title, description, pubDate, heroImage, editor, category, temas, tags, content)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(slug, title, description, pubDate, heroImageUrl, editor, category, temas, tags, content).run();
+      
+      return Astro.redirect("/admin/antologias");
+    }
+  } catch (err: any) {
+    error = err.message || "Error al guardar la antología";
+  }
+}
+---
+
+<AdminLayout title="Nueva Antología">
+  <header class="admin-header">
+    <h1>Crear Nueva Antología</h1>
+    <a href="/admin/antologias" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="slug">Slug (URL)</label>
+      <input type="text" id="slug" name="slug" class="form-control" placeholder="antologia-poesia-2026" required />
+      <small style="color:#666;">Debe ser único, en minúsculas y sin espacios.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" name="description" class="form-control" style="min-height: 80px;" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="editor">Editor (Texto Libre)</label>
+      <input type="text" id="editor" name="editor" class="form-control" value="Redacción Chelén" />
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value="Antología" />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal (Opcional)</label>
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" placeholder="Poesía, Antología" />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" placeholder="chile, 2026" />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" style="min-height:300px;"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Guardar Antología</button>
+  </form>
+</AdminLayout>

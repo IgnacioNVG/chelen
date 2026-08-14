@@ -1,0 +1,111 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const slug = data.get("slug")?.toString().trim() || Date.now().toString();
+    const name = data.get("name")?.toString().trim();
+    const role = data.get("role")?.toString().trim() || "Columnista";
+    const summary = data.get("summary")?.toString().trim() || "";
+    const email = data.get("email")?.toString().trim() || "";
+    const instagram = data.get("instagram")?.toString().trim() || "";
+    const bio = data.get("bio")?.toString() || "";
+    const featured = data.get("featured") === "on" ? 1 : 0;
+    
+    const tagsRaw = data.get("tags")?.toString() || "";
+    const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+    let portraitUrl = "";
+    const portraitFile = data.get("portrait") as File;
+    if (portraitFile && portraitFile.size > 0 && storage) {
+      const fileName = `${Date.now()}-portrait-${portraitFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      await storage.put(fileName, await portraitFile.arrayBuffer(), {
+        httpMetadata: { contentType: portraitFile.type }
+      });
+      portraitUrl = `/images/${fileName}`;
+    }
+
+    if (db) {
+      await db.prepare(`
+        INSERT INTO columnistas (slug, name, role, summary, portrait, email, instagram, tags, featured, bio)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(slug, name, role, summary, portraitUrl, email, instagram, tags, featured, bio).run();
+      
+      return Astro.redirect("/admin/columnistas");
+    }
+  } catch (err: any) {
+    error = err.message || "Error al guardar el autor";
+  }
+}
+---
+
+<AdminLayout title="Nuevo Autor">
+  <header class="admin-header">
+    <h1>Crear Nuevo Autor</h1>
+    <a href="/admin/columnistas" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input type="text" id="name" name="name" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="slug">Slug (URL)</label>
+      <input type="text" id="slug" name="slug" class="form-control" placeholder="juan-perez" required />
+      <small style="color:#666;">Debe ser único, en minúsculas y sin espacios.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Rol</label>
+      <input type="text" id="role" name="role" class="form-control" value="Columnista" />
+    </div>
+
+    <div class="form-group">
+      <label for="summary">Resumen Corto</label>
+      <textarea id="summary" name="summary" class="form-control" style="min-height: 80px;"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="portrait">Foto de Perfil (Retrato)</label>
+      <input type="file" id="portrait" name="portrait" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="instagram">Instagram</label>
+      <input type="text" id="instagram" name="instagram" class="form-control" placeholder="https://instagram.com/usuario" />
+    </div>
+
+    <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+      <input type="checkbox" id="featured" name="featured" />
+      <label for="featured" style="margin:0;">Destacar en la portada</label>
+    </div>
+
+    <div class="form-group" style="margin-top: 1rem;">
+      <label for="tags">Etiquetas (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" placeholder="experto, invitado" />
+    </div>
+
+    <div class="form-group">
+      <label for="bio">Biografía (Markdown)</label>
+      <textarea id="bio" name="bio" class="form-control" style="min-height:200px;"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Guardar Autor</button>
+  </form>
+</AdminLayout>

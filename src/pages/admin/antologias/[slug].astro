@@ -1,0 +1,153 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+const { slug } = Astro.params;
+
+let error = "";
+let antologia: any = null;
+
+if (db) {
+  antologia = await db.prepare("SELECT * FROM antologias WHERE slug = ?").bind(slug).first();
+  if (!antologia) {
+    return Astro.redirect("/admin/antologias");
+  }
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const action = data.get("action")?.toString();
+
+    if (action === "delete") {
+      if (db) {
+        await db.prepare("DELETE FROM antologias WHERE slug = ?").bind(slug).run();
+        return Astro.redirect("/admin/antologias");
+      }
+    }
+
+    if (action === "update") {
+      const title = data.get("title")?.toString().trim();
+      const description = data.get("description")?.toString().trim();
+      const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+      const editor = data.get("editor")?.toString().trim() || "Redacción Chelén";
+      const category = data.get("category")?.toString() || "Antología";
+      const temasRaw = data.get("temas")?.toString() || "";
+      const tagsRaw = data.get("tags")?.toString() || "";
+      const content = data.get("content")?.toString() || "";
+
+      const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+      const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+      let heroImageUrl = antologia.heroImage;
+      const heroImageFile = data.get("heroImage") as File;
+      if (heroImageFile && heroImageFile.size > 0 && storage) {
+        const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+          httpMetadata: { contentType: heroImageFile.type }
+        });
+        heroImageUrl = `/images/${fileName}`;
+      }
+
+      if (db) {
+        await db.prepare(`
+          UPDATE antologias 
+          SET title=?, description=?, pubDate=?, heroImage=?, editor=?, category=?, temas=?, tags=?, content=?
+          WHERE slug=?
+        `).bind(title, description, pubDate, heroImageUrl, editor, category, temas, tags, content, slug).run();
+        
+        return Astro.redirect("/admin/antologias");
+      }
+    }
+  } catch (err: any) {
+    error = err.message || "Error al actualizar la antología";
+  }
+}
+
+let initialTemas = "";
+let initialTags = "";
+try {
+  initialTemas = JSON.parse(antologia.temas || "[]").join(", ");
+  initialTags = JSON.parse(antologia.tags || "[]").join(", ");
+} catch (e) {}
+
+const fmtDate = antologia.pubDate ? new Date(antologia.pubDate).toISOString().slice(0, 16) : "";
+---
+
+<AdminLayout title="Editar Antología">
+  <header class="admin-header">
+    <h1>Editar Antología</h1>
+    <div style="display:flex; gap:1rem;">
+      <a href="/admin/antologias" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+      <form method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta antología? Los poemas asociados quedarán huérfanos.');" style="margin:0;">
+        <input type="hidden" name="action" value="delete" />
+        <button type="submit" class="btn btn-danger">Eliminar Antología</button>
+      </form>
+    </div>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="action" value="update" />
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" value={antologia.title} required />
+    </div>
+
+    <div class="form-group">
+      <label>Slug (URL)</label>
+      <input type="text" class="form-control" value={antologia.slug} disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" name="description" class="form-control" style="min-height: 80px;" required>{antologia.description}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="editor">Editor (Texto Libre)</label>
+      <input type="text" id="editor" name="editor" class="form-control" value={antologia.editor} />
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" value={fmtDate} required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value={antologia.category} />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal (Opcional)</label>
+      {antologia.heroImage && (
+        <div style="margin-bottom:0.5rem;">
+          <img src={antologia.heroImage} style="height:100px; border-radius:4px; object-fit:cover;" />
+        </div>
+      )}
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" value={initialTemas} />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" value={initialTags} />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" style="min-height:300px;">{antologia.content}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Actualizar Antología</button>
+  </form>
+</AdminLayout>

@@ -1,0 +1,150 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+const { slug } = Astro.params;
+
+let error = "";
+let col: any = null;
+
+if (db) {
+  col = await db.prepare("SELECT * FROM columnistas WHERE slug = ?").bind(slug).first();
+  if (!col) {
+    return Astro.redirect("/admin/columnistas");
+  }
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const action = data.get("action")?.toString();
+
+    if (action === "delete") {
+      if (db) {
+        // Warning: Might fail if there are foreign key constraints, 
+        // though we turned them off in schema by default for simple sqlite unless PRAGMA foreign_keys=ON
+        await db.prepare("DELETE FROM columnistas WHERE slug = ?").bind(slug).run();
+        return Astro.redirect("/admin/columnistas");
+      }
+    }
+
+    if (action === "update") {
+      const name = data.get("name")?.toString().trim();
+      const role = data.get("role")?.toString().trim() || "Columnista";
+      const summary = data.get("summary")?.toString().trim() || "";
+      const email = data.get("email")?.toString().trim() || "";
+      const instagram = data.get("instagram")?.toString().trim() || "";
+      const bio = data.get("bio")?.toString() || "";
+      const featured = data.get("featured") === "on" ? 1 : 0;
+      
+      const tagsRaw = data.get("tags")?.toString() || "";
+      const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+      let portraitUrl = col.portrait;
+      const portraitFile = data.get("portrait") as File;
+      if (portraitFile && portraitFile.size > 0 && storage) {
+        const fileName = `${Date.now()}-portrait-${portraitFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await storage.put(fileName, await portraitFile.arrayBuffer(), {
+          httpMetadata: { contentType: portraitFile.type }
+        });
+        portraitUrl = `/images/${fileName}`;
+      }
+
+      if (db) {
+        await db.prepare(`
+          UPDATE columnistas 
+          SET name=?, role=?, summary=?, portrait=?, email=?, instagram=?, tags=?, featured=?, bio=?
+          WHERE slug=?
+        `).bind(name, role, summary, portraitUrl, email, instagram, tags, featured, bio, slug).run();
+        
+        return Astro.redirect("/admin/columnistas");
+      }
+    }
+  } catch (err: any) {
+    error = err.message || "Error al actualizar el autor";
+  }
+}
+
+let initialTags = "";
+try {
+  initialTags = JSON.parse(col.tags || "[]").join(", ");
+} catch (e) {}
+---
+
+<AdminLayout title="Editar Autor">
+  <header class="admin-header">
+    <h1>Editar Autor</h1>
+    <div style="display:flex; gap:1rem;">
+      <a href="/admin/columnistas" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+      <form method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este autor? Asegúrate de que no tenga artículos asociados.');" style="margin:0;">
+        <input type="hidden" name="action" value="delete" />
+        <button type="submit" class="btn btn-danger">Eliminar Autor</button>
+      </form>
+    </div>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <input type="hidden" name="action" value="update" />
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input type="text" id="name" name="name" class="form-control" value={col.name} required />
+    </div>
+
+    <div class="form-group">
+      <label>Slug (URL)</label>
+      <input type="text" class="form-control" value={col.slug} disabled />
+    </div>
+
+    <div class="form-group">
+      <label for="role">Rol</label>
+      <input type="text" id="role" name="role" class="form-control" value={col.role} />
+    </div>
+
+    <div class="form-group">
+      <label for="summary">Resumen Corto</label>
+      <textarea id="summary" name="summary" class="form-control" style="min-height: 80px;">{col.summary}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="portrait">Foto de Perfil (Retrato)</label>
+      {col.portrait && (
+        <div style="margin-bottom:0.5rem;">
+          <img src={col.portrait} style="height:100px; border-radius:4px; object-fit:cover;" />
+        </div>
+      )}
+      <input type="file" id="portrait" name="portrait" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" class="form-control" value={col.email} />
+    </div>
+
+    <div class="form-group">
+      <label for="instagram">Instagram</label>
+      <input type="text" id="instagram" name="instagram" class="form-control" value={col.instagram} />
+    </div>
+
+    <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+      <input type="checkbox" id="featured" name="featured" checked={col.featured === 1} />
+      <label for="featured" style="margin:0;">Destacar en la portada</label>
+    </div>
+
+    <div class="form-group" style="margin-top: 1rem;">
+      <label for="tags">Etiquetas (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" value={initialTags} />
+    </div>
+
+    <div class="form-group">
+      <label for="bio">Biografía (Markdown)</label>
+      <textarea id="bio" name="bio" class="form-control" style="min-height:200px;">{col.bio}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Actualizar Autor</button>
+  </form>
+</AdminLayout>

@@ -1,11 +1,5 @@
 ---
-import BaseHead from "../../components/layout/BaseHead.astro";
-
-// Check authentication
-const session = Astro.cookies.get('admin_session');
-if (!session || session.value !== 'authenticated') {
-  return Astro.redirect('/admin/login');
-}
+import AdminLayout from "../../components/admin/AdminLayout.astro";
 
 // In a real app we'd fetch counts from DB
 const env = (Astro.locals as any).runtime?.env;
@@ -29,111 +23,39 @@ if (db) {
   }
 }
 ---
-<!doctype html>
-<html lang="es">
-<head>
-  <BaseHead title="Panel de Administración" description="Dashboard de administración" />
-</head>
-<body>
-  <div class="admin-layout">
-    <aside class="sidebar">
-      <h2>Panel CMS</h2>
-      <nav>
-        <a href="/admin" class="active">Dashboard</a>
-        <a href="/admin/articulos">Artículos</a>
-        <a href="/admin/cartas">Cartas al Director</a>
-        <a href="/admin/poemas">Poemas</a>
-        <a href="/admin/columnistas">Columnistas</a>
-        <a href="/api/auth/logout" class="logout">Cerrar Sesión</a>
-      </nav>
-    </aside>
+<AdminLayout title="Dashboard">
+  <header class="admin-header">
+    <h1>Bienvenido al Panel de Control</h1>
+  </header>
 
-    <main class="content">
-      <header>
-        <h1>Bienvenido al Panel de Control</h1>
-      </header>
-
-      <section class="stats-grid">
-        <div class="stat-card">
-          <h3>Artículos</h3>
-          <p class="number">{stats.articulos}</p>
-          <a href="/admin/articulos">Administrar &rarr;</a>
-        </div>
-        
-        <div class="stat-card">
-          <h3>Cartas</h3>
-          <p class="number">{stats.cartas}</p>
-          <a href="/admin/cartas">Administrar &rarr;</a>
-        </div>
-        
-        <div class="stat-card">
-          <h3>Poemas</h3>
-          <p class="number">{stats.poemas}</p>
-          <a href="/admin/poemas">Administrar &rarr;</a>
-        </div>
-        
-        <div class="stat-card">
-          <h3>Autores</h3>
-          <p class="number">{stats.columnistas}</p>
-          <a href="/admin/columnistas">Administrar &rarr;</a>
-        </div>
-      </section>
-    </main>
-  </div>
-</body>
-</html>
+  <section class="stats-grid">
+    <div class="stat-card">
+      <h3>Artículos</h3>
+      <p class="number">{stats.articulos}</p>
+      <a href="/admin/articulos">Administrar &rarr;</a>
+    </div>
+    
+    <div class="stat-card">
+      <h3>Cartas</h3>
+      <p class="number">{stats.cartas}</p>
+      <a href="/admin/cartas">Administrar &rarr;</a>
+    </div>
+    
+    <div class="stat-card">
+      <h3>Poemas</h3>
+      <p class="number">{stats.poemas}</p>
+      <a href="/admin/poemas">Administrar &rarr;</a>
+    </div>
+    
+    <div class="stat-card">
+      <h3>Autores</h3>
+      <p class="number">{stats.columnistas}</p>
+      <a href="/admin/columnistas">Administrar &rarr;</a>
+    </div>
+  </section>
+</AdminLayout>
 
 <style>
-  .admin-layout {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f8f9fa;
-  }
-  .sidebar {
-    width: 250px;
-    background: #111;
-    color: white;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .sidebar h2 {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    padding-left: 1rem;
-    color: #fff;
-  }
-  .sidebar nav a {
-    display: block;
-    padding: 0.8rem 1rem;
-    color: #aaa;
-    text-decoration: none;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-    transition: all 0.2s;
-  }
-  .sidebar nav a:hover, .sidebar nav a.active {
-    background: #222;
-    color: white;
-  }
-  .sidebar nav a.logout {
-    margin-top: auto;
-    color: #ff6b6b;
-  }
-  .sidebar nav a.logout:hover {
-    background: rgba(255,107,107,0.1);
-  }
-  
-  .content {
-    flex: 1;
-    padding: 3rem;
-  }
-  .content header h1 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 2rem;
-  }
-  
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -168,3 +90,5 @@ if (db) {
     text-decoration: underline;
   }
 </style>
+
+

@@ -1,0 +1,171 @@
+---
+import BaseHead from "../layout/BaseHead.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <BaseHead title={`${title} | Panel de Administración`} description="Dashboard de administración" />
+  <style is:global>
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+    }
+    .admin-sidebar {
+      width: 250px;
+      background: #111;
+      color: white;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      padding-left: 1rem;
+      color: #fff;
+    }
+    .admin-sidebar nav a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+    }
+    .admin-sidebar nav a:hover, .admin-sidebar nav a.active {
+      background: #222;
+      color: white;
+    }
+    .admin-sidebar nav a.logout {
+      margin-top: auto;
+      color: #ff6b6b;
+    }
+    .admin-sidebar nav a.logout:hover {
+      background: rgba(255,107,107,0.1);
+    }
+    .admin-content {
+      flex: 1;
+      padding: 3rem;
+      overflow-y: auto;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 1rem;
+    }
+    .admin-header h1 {
+      font-size: 2rem;
+      color: #333;
+      margin: 0;
+    }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      font-weight: bold;
+      transition: opacity 0.2s;
+      display: inline-block;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .btn-primary {
+      background-color: #111;
+      color: #fff;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .admin-table th, .admin-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .admin-table th {
+      background-color: #fafafa;
+      font-weight: 600;
+      color: #555;
+    }
+    .admin-table tr:hover {
+      background-color: #fcfcfc;
+    }
+    .actions-cell {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .admin-form {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      max-width: 800px;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    textarea.form-control {
+      min-height: 300px;
+      resize: vertical;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2>Panel CMS</h2>
+      <nav>
+        <a href="/admin" class={Astro.url.pathname === '/admin' ? 'active' : ''}>Dashboard</a>
+        <a href="/admin/articulos" class={Astro.url.pathname.startsWith('/admin/articulos') ? 'active' : ''}>Artículos</a>
+        <a href="/admin/cartas" class={Astro.url.pathname.startsWith('/admin/cartas') ? 'active' : ''}>Cartas</a>
+        <a href="/admin/poemas" class={Astro.url.pathname.startsWith('/admin/poemas') ? 'active' : ''}>Poemas</a>
+        <a href="/admin/antologias" class={Astro.url.pathname.startsWith('/admin/antologias') ? 'active' : ''}>Antologías</a>
+        <a href="/admin/columnistas" class={Astro.url.pathname.startsWith('/admin/columnistas') ? 'active' : ''}>Columnistas</a>
+        <a href="/admin/nosotros" class={Astro.url.pathname.startsWith('/admin/nosotros') ? 'active' : ''}>Nosotros</a>
+        <a href="/api/auth/logout" class="logout">Cerrar Sesión</a>
+      </nav>
+    </aside>
+
+    <main class="admin-content">
+      <slot />
+    </main>
+  </div>
+</body>
+</html>

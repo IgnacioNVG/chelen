@@ -1,0 +1,122 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+const storage = env?.STORAGE;
+
+let error = "";
+let antologias = [];
+
+if (db) {
+  antologias = await db.prepare("SELECT slug, title FROM antologias").all().then(r => r.results);
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const slug = data.get("slug")?.toString().trim() || Date.now().toString();
+    const title = data.get("title")?.toString().trim();
+    const pubDate = data.get("pubDate")?.toString() || new Date().toISOString();
+    const author = data.get("author")?.toString().trim() || "Anónimo";
+    const antologia_slug = data.get("antologia_slug")?.toString() || null;
+    const category = data.get("category")?.toString() || "Poesía";
+    const temasRaw = data.get("temas")?.toString() || "";
+    const tagsRaw = data.get("tags")?.toString() || "";
+    const content = data.get("content")?.toString() || "";
+
+    const temas = JSON.stringify(temasRaw.split(",").map(t => t.trim()).filter(Boolean));
+    const tags = JSON.stringify(tagsRaw.split(",").map(t => t.trim()).filter(Boolean));
+
+    let heroImageUrl = "";
+    const heroImageFile = data.get("heroImage") as File;
+    if (heroImageFile && heroImageFile.size > 0 && storage) {
+      const fileName = `${Date.now()}-img-${heroImageFile.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+      await storage.put(fileName, await heroImageFile.arrayBuffer(), {
+        httpMetadata: { contentType: heroImageFile.type }
+      });
+      heroImageUrl = `/images/${fileName}`;
+    }
+
+    if (db) {
+      await db.prepare(`
+        INSERT INTO poemas (slug, title, pubDate, heroImage, author, category, antologia_slug, temas, tags, content)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(slug, title, pubDate, heroImageUrl, author, category, antologia_slug, temas, tags, content).run();
+      
+      return Astro.redirect("/admin/poemas");
+    }
+  } catch (err: any) {
+    error = err.message || "Error al guardar el poema";
+  }
+}
+---
+
+<AdminLayout title="Nuevo Poema">
+  <header class="admin-header">
+    <h1>Crear Nuevo Poema</h1>
+    <a href="/admin/poemas" class="btn" style="background:#eee; color:#111;">&larr; Volver</a>
+  </header>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+
+    <div class="form-group">
+      <label for="title">Título</label>
+      <input type="text" id="title" name="title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="slug">Slug (URL)</label>
+      <input type="text" id="slug" name="slug" class="form-control" placeholder="titulo-poema" required />
+      <small style="color:#666;">Debe ser único, en minúsculas y sin espacios.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="author">Autor (Texto Libre)</label>
+      <input type="text" id="author" name="author" class="form-control" value="Anónimo" />
+    </div>
+
+    <div class="form-group">
+      <label for="antologia_slug">Pertenece a una Antología (Opcional)</label>
+      <select id="antologia_slug" name="antologia_slug" class="form-control">
+        <option value="">No pertenece a ninguna</option>
+        {antologias.map((a: any) => (
+          <option value={a.slug}>{a.title}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="pubDate">Fecha de Publicación</label>
+      <input type="datetime-local" id="pubDate" name="pubDate" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría</label>
+      <input type="text" id="category" name="category" class="form-control" value="Poesía" />
+    </div>
+
+    <div class="form-group">
+      <label for="heroImage">Imagen Principal (Opcional)</label>
+      <input type="file" id="heroImage" name="heroImage" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+      <label for="temas">Temas (separados por coma)</label>
+      <input type="text" id="temas" name="temas" class="form-control" placeholder="Amor, Muerte" />
+    </div>
+
+    <div class="form-group">
+      <label for="tags">Etiquetas Libres (separadas por coma)</label>
+      <input type="text" id="tags" name="tags" class="form-control" placeholder="poesia, 2026" />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Contenido (Markdown)</label>
+      <textarea id="content" name="content" class="form-control" style="min-height:300px;"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Guardar Poema</button>
+  </form>
+</AdminLayout>

@@ -1,0 +1,46 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const db = (Astro.locals as any).runtime?.env?.DB;
+let cartas = [];
+if (db) {
+  cartas = await db.prepare('SELECT slug, title, pubDate, author_slug FROM cartas ORDER BY pubDate DESC').all().then(r => r.results);
+}
+---
+
+<AdminLayout title="Cartas al Director">
+  <header class="admin-header">
+    <h1>Cartas al Director</h1>
+    <a href="/admin/cartas/new" class="btn btn-primary">Nueva Carta</a>
+  </header>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Slug</th>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {cartas.map((c: any) => (
+        <tr>
+          <td>{c.slug}</td>
+          <td>{c.title}</td>
+          <td>{c.author_slug}</td>
+          <td>{new Date(c.pubDate).toLocaleDateString()}</td>
+          <td class="actions-cell">
+            <a href={`/admin/cartas/${c.slug}`} class="btn" style="background:#eee; color:#111;">Editar</a>
+          </td>
+        </tr>
+      ))}
+      {cartas.length === 0 && (
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2rem;">No hay cartas creadas.</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</AdminLayout>

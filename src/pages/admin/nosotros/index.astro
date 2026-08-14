@@ -1,0 +1,98 @@
+---
+import AdminLayout from "../../../components/admin/AdminLayout.astro";
+
+const env = (Astro.locals as any).runtime?.env;
+const db = env?.DB;
+
+let error = "";
+let success = "";
+let nosotros: any = null;
+
+if (db) {
+  nosotros = await db.prepare("SELECT * FROM nosotros WHERE id = 1").first();
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const origen_titulo = data.get("origen_titulo")?.toString().trim() || "";
+    const origen_texto = data.get("origen_texto")?.toString().trim() || "";
+    const highlight_box = data.get("highlight_box")?.toString().trim() || "";
+    const teoria_titulo = data.get("teoria_titulo")?.toString().trim() || "";
+    const teoria_texto = data.get("teoria_texto")?.toString().trim() || "";
+    const repensar_titulo = data.get("repensar_titulo")?.toString().trim() || "";
+    const repensar_texto = data.get("repensar_texto")?.toString().trim() || "";
+
+    if (db) {
+      if (nosotros) {
+        await db.prepare(`
+          UPDATE nosotros 
+          SET origen_titulo=?, origen_texto=?, highlight_box=?, teoria_titulo=?, teoria_texto=?, repensar_titulo=?, repensar_texto=?
+          WHERE id=1
+        `).bind(origen_titulo, origen_texto, highlight_box, teoria_titulo, teoria_texto, repensar_titulo, repensar_texto).run();
+      } else {
+        await db.prepare(`
+          INSERT INTO nosotros (id, origen_titulo, origen_texto, highlight_box, teoria_titulo, teoria_texto, repensar_titulo, repensar_texto)
+          VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(origen_titulo, origen_texto, highlight_box, teoria_titulo, teoria_texto, repensar_titulo, repensar_texto).run();
+      }
+      
+      success = "Sección 'Nosotros' actualizada correctamente.";
+      nosotros = await db.prepare("SELECT * FROM nosotros WHERE id = 1").first();
+    }
+  } catch (err: any) {
+    error = err.message || "Error al actualizar la página Nosotros";
+  }
+}
+
+// Fallbacks if empty
+nosotros = nosotros || {};
+---
+
+<AdminLayout title="Editar Nosotros">
+  <header class="admin-header">
+    <h1>Editar Página "Nosotros"</h1>
+  </header>
+
+  <form method="POST" class="admin-form">
+    {error && <div style="color:red; margin-bottom: 1rem;">{error}</div>}
+    {success && <div style="color:green; margin-bottom: 1rem; font-weight:bold;">{success}</div>}
+
+    <div class="form-group">
+      <label for="origen_titulo">Título de Origen</label>
+      <input type="text" id="origen_titulo" name="origen_titulo" class="form-control" value={nosotros.origen_titulo} />
+    </div>
+
+    <div class="form-group">
+      <label for="origen_texto">Texto de Origen (Markdown)</label>
+      <textarea id="origen_texto" name="origen_texto" class="form-control" style="min-height: 150px;">{nosotros.origen_texto}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="highlight_box">Caja Destacada (Markdown)</label>
+      <textarea id="highlight_box" name="highlight_box" class="form-control" style="min-height: 100px;">{nosotros.highlight_box}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="teoria_titulo">Título Teoría</label>
+      <input type="text" id="teoria_titulo" name="teoria_titulo" class="form-control" value={nosotros.teoria_titulo} />
+    </div>
+
+    <div class="form-group">
+      <label for="teoria_texto">Texto Teoría (Markdown)</label>
+      <textarea id="teoria_texto" name="teoria_texto" class="form-control" style="min-height: 150px;">{nosotros.teoria_texto}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="repensar_titulo">Título Repensar</label>
+      <input type="text" id="repensar_titulo" name="repensar_titulo" class="form-control" value={nosotros.repensar_titulo} />
+    </div>
+
+    <div class="form-group">
+      <label for="repensar_texto">Texto Repensar (Markdown)</label>
+      <textarea id="repensar_texto" name="repensar_texto" class="form-control" style="min-height: 150px;">{nosotros.repensar_texto}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Guardar Cambios</button>
+  </form>
+</AdminLayout>
