@@ -14,10 +14,15 @@ let stats = {
 
 if (db) {
   try {
-    stats.articulos = await db.prepare('SELECT count(*) as c FROM articulos').first('c');
-    stats.cartas = await db.prepare('SELECT count(*) as c FROM cartas').first('c');
-    stats.poemas = await db.prepare('SELECT count(*) as c FROM poemas').first('c');
-    stats.columnistas = await db.prepare('SELECT count(*) as c FROM columnistas').first('c');
+    const resA = await db.prepare('SELECT count(*) as c FROM articulos').first();
+    const resC = await db.prepare('SELECT count(*) as c FROM cartas').first();
+    const resP = await db.prepare('SELECT count(*) as c FROM poemas').first();
+    const resCol = await db.prepare('SELECT count(*) as c FROM columnistas').first();
+    
+    stats.articulos = resA ? (resA.c as number) : 0;
+    stats.cartas = resC ? (resC.c as number) : 0;
+    stats.poemas = resP ? (resP.c as number) : 0;
+    stats.columnistas = resCol ? (resCol.c as number) : 0;
   } catch(e) {
     console.error("DB Error: ", e);
   }
